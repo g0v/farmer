@@ -643,7 +643,7 @@
 
                     var n = $scope.n;
 
-                    if (!$scope.base.hands[n] || $scope.base.hands[n].id == $scope.root.id || $scope.base.hands[n].name == $scope.root.name || $scope.base.hands[n].username == $scope.root.username)  {
+                    if (!$scope.base.hands || !$scope.base.hands[n] || $scope.base.hands[n].id == $scope.root.id || $scope.base.hands[n].name == $scope.root.name || $scope.base.hands[n].username == $scope.root.username)  {
                        
                        if ($scope.root.note && $scope.root.site && $scope.root.share) {
 

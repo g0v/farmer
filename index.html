@@ -114,11 +114,7 @@
 
         var toM = function (list, key, nameKey, geoKey, maybeHideLatLng, expId) {
                 var ms = [
-                    {
-                        lat: 50,
-                        lng: 50,
-                        incon: 'img/leaf-orange.png'
-                    }
+                    dummyIcon
                 ];
                 var autos = angular.copy(list);
                 var latlngUsed = [];
@@ -294,6 +290,12 @@
             }
         });
 
+        var dummyIcon = {
+                        lat: 50,
+                        lng: 50,
+                        incon: 'http://www.coa.gov.tw/graph/coa_fb/coa_pan_20120413094200/coa_pan_20120413094200_general_000001.jpg'
+                    };
+
         var DemoController = function($scope, $firebase, $filter) {
 
           $scope.pageUrl = window.location.href;
@@ -309,13 +311,8 @@
             }
 
 
-            $scope.markers = [
-                 {
-                        lat: 23,
-                        lng: 121.5,
-                        focus: false,
-                        icon: 'http://www.coa.gov.tw/graph/coa_fb/coa_pan_20120413094200/coa_pan_20120413094200_general_000001.jpg',
-                 }
+            $scope.markers = [                 
+                 dummyIcon
             ];   //補位
 
 //            $scope.markers = autoMirror;

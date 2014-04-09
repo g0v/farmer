@@ -652,7 +652,7 @@
                                 return;
                             }
 
-                            if ($scope.root.learner_role.indexOf('農') == -1) {
+                            if (!$scope.root.learner_role || $scope.root.learner_role.indexOf('農') == -1) {
                                 alert("角色需包含「農」字");
                                 return;
                             }

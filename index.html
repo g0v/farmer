@@ -1,92 +1,1034 @@
-<!doctype html>
-<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
-<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
 
-  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
-  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script type="text/javascript" src="javascripts/script.js"></script>
+    <title>農學互助支持網 ➭ 上下游互助地圖</title>
 
-  <title>Farmer</title>
-  <meta name="description" content="農業相關資訊工具">
+    <meta charset="UTF-8">
+    
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+   <meta property="fb:admins" content="100000207390400" />
+   <meta property="fb:app_id" content="697252030337861" />
 
+
+    
+    <meta property="og:site_name" content="農學互助支持網" />
+    <meta property="og:description" content="農學互助支持網 ➭ 上下游互助地圖。" />
+    <meta property="og:title" content="農學互助支持網" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://bestian.github.io/shackhand/auto20.html" />
+
+    <meta property="og:image" content="http://bestian.github.io/shackhand/img/auto20.jpg" />
+
+<script src="javascripts/lib/jquery-1.10.2.js"></script>
+
+    <script src="javascripts/lib/angularLeaf/bower_components/angular/angular.min.js"></script>
+    <script src="javascripts/lib/angularLeaf/bower_components/angular-route/angular-route.min.js"></script>
+
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+    <script src="javascripts/lib/angularLeaf/dist/angular-leaflet-directive.js"></script>
+
+    <link rel="stylesheet" href="javascripts/lib/angularLeaf/bower_components/leaflet-dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="javascripts/lib/angularLeaf/bower_components/leaflet-dist/leaflet.ie.css" /> 
+
+
+<script src='https://cdn.firebase.com/v0/firebase.js'></script>
+<script src='https://cdn.firebase.com/libs/angularfire/0.5.0/angularfire.min.js'></script>
+
+<script type='text/javascript'
+        src='https://cdn.firebase.com/js/simple-login/1.2.5/firebase-simple-login.js'>
+</script>
+
+<script src="javascripts/lib/angular-easyfb.min.js"></script>
+
+<script src='javascripts/news.js'></script>
+
+
+<!-- CSS is optional -->
+
+
+<link rel="stylesheet" href="stylesheets/bootstrap.css" />
+
+
+
+	<script type="text/javascript" src="http://l2.io/ip.js?var=myip"></script>
+                                                      <!-- ^^^^ -->
+<!--	<script>alert(myip);</script>  -->
+
+     <script>
+
+
+     var auth;
+
+     function toIcon (url) {
+        return {
+            iconUrl: url,
+            iconSize: [60, 60], // size of the icon
+     //       iconAnchor:   [20, 40], // point of the icon which will correspond to marker's location
+    //        popupAnchor:  [-3, -30] // point from which the popup should open relative to the iconAnchor
+        }
+
+    };
+
+
+    function isClose(l1, l2) {
+        return Math.pow(parseFloat(l1.split(',')[0]) - parseFloat(l2.split(',')[0]), 2) + Math.pow(parseFloat(l1.split(',')[0]) - parseFloat(l2.split(',')[0]), 2) < 0.0001;
+    }
+
+    function modifyLatLng (latlngColumn, counter) {   //  "lat,lng"
+        var lat = parseFloat(latlngColumn.split(',')[0]);
+        var lng = parseFloat(latlngColumn.split(',')[1]);
+
+        var r = counter / 1000 * 20;
+        var theta = counter * Math.PI / 12;
+
+        var lngOffSet = r * Math.cos(theta);    // x
+        var latOffSet = r * Math.sin(theta) / 2;    // y
+
+//           console.log(latOffSet + ',' + lngOffSet);
+
+        return ((lat + latOffSet) + ',' + (lng + lngOffSet));
+    }
+
+    function toAge(str) {
+        var age;
+
+        if (str) age = parseInt(makeTimeStamp().split('/')[0]) - parseInt(str.split(',')[0].split('年')[0].split('/')[0].substr(0,4));
+    
+        if (age == 0) age = 1;
+        return age;
+    }
+
+    function has(val) {
+        return (val && val != 'undefined');
+    }
+    
+        var local_icons = {
+            defaultIcon: {
+                    iconUrl: 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/200px-Smiley.svg.png',
+                    iconSize: [40, 40]
+            }
+        }
+
+
+        var toM = function (list, key, nameKey, geoKey, maybeHideLatLng, expId) {
+                var ms = [
+                    {
+                        lat: 50,
+                        lng: 50,
+                        incon: 'img/leaf-orange.png'
+                    }
+                ];
+                var autos = angular.copy(list);
+                var latlngUsed = [];
+
+
+                for (var i = 0; i < (autos.length || 0); i++) {
+
+                    if (!autos[i]) { console.log('略過空格'); continue }
+
+                    var hand;
+                    !autos[i][1] ? hand = autos[i] : hand = autos[i][autos[i].length -1]; // check autos[i] 是不是一個陣列
+
+                    if (!hand.id && !hand.username) {
+                    // console.log('略過未註冊者');
+                    continue }
+
+                    if (!hand.name) { 
+                   	//console.log('略過無名氏');
+                   	 continue }
+
+                    if (hand.invis) { 
+                    	// console.log('略過已移除者');
+                     continue }
+
+                    if (maybeHideLatLng && isClose(hand.latlngColumn,maybeHideLatLng) && hand.id != expId) { console.log('略過同地址'); continue }
+
+                    var fbIcon;
+
+                    if (hand.id) {
+                        fbIcon = "http://graph.facebook.com/" + hand.id + "/picture";
+                    } else {
+                        fbIcon = "";
+                    }
+
+                        if (hand.site2 && hand.site2 == hand.site) hand.site2 = "";
+
+                        if (hand.site && hand.site.indexOf('http') == -1 && hand.site.indexOf('@') == -1) hand.site = 'http://' + hand.site;
+                        if (hand.site.indexOf('@') > -1) { hand.site = '<a href = "mailto:'+hand.site+'?subject=您好&body='+hand.name+'您好：我在自學2.0上看到您的交友旗幟，我是">'+hand.site+'</a>'; } else { hand.site = hand.site.replace(/(.*?)(http.+)\s*/, '$1 <a href = $2> $2 </a>'); }
+
+                        if (hand.site2 && hand.site2.indexOf('http') == -1 && hand.site2.indexOf('@') == -1) hand.site2 = 'http://' + hand.site2;
+
+                        if (hand.site2 && hand.site2.indexOf('@') > -1) { hand.site2 = '<a href = "mailto:'+hand.site2+'?subject=您好&body='+hand.name+'您好：我在自學2.0上看到您的交友旗幟，我是">'+hand.site2+'</a>'; } else { hand.site2 = hand.site2 && hand.site2.replace(/(.*?)(http.+)\s*/, '$1 <a href = $2> $2 </a>'); }
+
+                    hand.latlngColumn = hand.latlngColumn.replace('(','').replace(')','').replace('附近','');
+
+                     //重覆座標的解決  displacement algorithm
+
+                    var counter = 0;
+                    for (var j = 0; j < latlngUsed.length; j++) {
+                        if (latlngUsed[j] == hand.latlngColumn) counter++ ;
+                    };
+
+                    
+                    latlngUsed.push(hand.latlngColumn);
+
+                    var flag = '<div class="flag">'
+
+                        + ((hand.username && '<a href = "http://www.facebook.com/'+hand.username+'" target = "_blank"> <img id = "fb" src="'+ fbIcon +'" />' ) || '')
+
+                        +((!hand.username && hand.id && '<a href = "https://www.facebook.com/profile.php?id='+hand.id+'" target = "_blank"><img id = "fb" src="'+ fbIcon +'" />' ) || '')
+
+                        +'<strong>第'+ (i+1) +'位農友：'+ hand.name+'</strong></a><br />'
+
+                        +(has(hand.learner_birth) && toAge(hand.learner_birth)+'歲的' || '')
+                        +hand.learner_role
+                        +((has(hand.learner_type) && '('+hand.learner_type+')') || '')
+                  
+
+                        +'<br>&nbsp;&nbsp;&nbsp;&nbsp;住在&nbsp;&nbsp;'+
+                        '<a href = "https://maps.google.com.tw/maps?hl=zh-TW&q='
+                        +hand.address+'" target = "_blank">'+hand.address+'</a>&nbsp;&nbsp;附近<hr>'
+
+                        +'<b>網址： </b>'+hand.site+'<br />'
+
+                        +((hand.site2 && '<b>社群網址: </b><a href = "'+hand.site2+'" target = "_blank">' + hand.site2 +'</a><br />') || "")
+                        +'<b>比較有空的時段：</b>'+( hand.freetime || "")+'<br />'
+                        +'<b>比較需要人手的時段：</b>'+( hand.freetime || "")+'<br />'
+                        +'<b>聯絡方式：</b>'+( hand.connect_me || "")+'<br />'
+                        +'<a href="https://www.facebook.com/messages/' + hand.id + 'target="_blank">FB訊息</a><br/>'
+                        +'<hr>'
+                        +'<b>興趣包含：</b>'+( hand.learner_habit || "")+'<br />'
+                        +'<b>作物：</b>'+( hand.crop || "")+'<br />'
+                        +'<b>技術：</b>'+( hand.skill || "")+'<br />'
+                        +'<b>可分享：</b>'+( hand.share || "")+'<br />'
+                        +'<b>需要：</b>'+( hand.ask || "")+'<br />'
+                        +'<hr>'
+                        +'<b>自我介紹：</b>'+( hand.note.replace(/\n/g, '<br>')|| "")+'<br />'
+                        +'<hr>'
+                        +'</div>';
+
+
+                        var llC = "" + hand.latlngColumn;
+
+                    if (counter > 0) llC = modifyLatLng(hand.latlngColumn, counter);
+
+                 
+                    var marker = {
+                        lat: parseFloat(llC.split(',')[0]),
+                        lng: parseFloat(llC.split(',')[1]),
+                        message : flag,
+                        focus: false,
+                        icon: ((fbIcon && toIcon(fbIcon)) || local_icons.defaultIcon),
+                    }
+
+                    if (key && key.length > 0 && flag.indexOf(key) == -1) {
+                        console.log('略過關鍵字不符者');
+                        continue;
+                    };
+
+                    if (nameKey && nameKey.length > 0 && hand.name.indexOf(nameKey) == -1) {
+                        console.log('略過人名不符者');
+                        continue;
+                    }
+
+                    if (geoKey && geoKey.length > 0 && hand.address.indexOf(geoKey) == -1) {
+                        console.log('略過地理不符者');
+                        continue;
+                    };
+
+        //            console.log(marker);
+                    ms.push(marker);
+                    
+                };
+                return ms;
+        }
+
+        var toMails = function (list, key, nameKey, geoKey, maybeHideLatLng, expId) {
+
+            return list.map(function(h){
+
+                if (!h.connect_me || h.connect_me.indexOf("@") == -1) {
+                    return "" } else {
+                        return "\"" + h.name +"\"" + "<"
+                             + h.connect_me.replace(" ","")
+                             + ">"}
+                }).join(); 
+
+        }
+
+        var app = angular.module('demoapp', ['leaflet-directive','firebase','ezfb']);
+        app.config(function ($FBProvider) { var myInitFunction = function ($window, $rootScope, $fbInitParams) { $window.FB.    init({ appId: '485195848253155'})
+            }
+
+        }).filter('add', function (){
+            return function(objs, obj) {
+                objs.my = obj;
+                return objs;
+            }
+        }).filter('toMarkers', function(){
+            return toM;
+        }).filter('toMails', function(){
+            return toMails;
+        }).filter('makeHref', function(){
+            return function(str) {
+                if (!str) return "";
+                var ans = "" + str;
+                if (str.indexOf('http://') == -1) {
+                    ans = 'http://' + str;
+                }
+                ans = ans.replace('https://','');
+                return ans;
+            }
+        }).filter('toList' ,function(){
+            return function(obj) {
+                if (!obj) return [];
+                var array = $.map(obj, function(value, index) {
+                    return [value];
+                });
+
+       //         console.log(array);
+
+                return array;
+            }
+        });
+
+        var DemoController = function($scope, $firebase, $filter) {
+
+          $scope.pageUrl = window.location.href;
+          $scope.currentTab = 'Comments'; 
+          $scope.widgetWidth = 440;
+
+            var h = location.hash.replace(/#\/?/,'');
+     //       console.log(h);
+            if (h.length == 3) {
+                $scope.nameKey = h;
+            } else {
+                $scope.key = h;
+            }
+
+
+            $scope.markers = [
+                 {
+                        lat: 23,
+                        lng: 121.5,
+                        focus: false,
+                        icon: 'http://www.coa.gov.tw/graph/coa_fb/coa_pan_20120413094200/coa_pan_20120413094200_general_000001.jpg',
+                 }
+            ];   //補位
+
+//            $scope.markers = autoMirror;
+            $scope.onlines = [];
+            $scope.root = {};
+            
+
+     /*       $scope.scrollFunc = function(e) {
+                    $scope.total--;
+
+                    if ($scope.total <= 1) $scope.total = $scope.base.hands.length;
+
+                $scope.$apply();
+
+            } 
+
+
+            document.getElementById("J").onscroll = $scope.scrollFunc; */
+            
+
+            angular.extend($scope, {
+                center: {
+        //            autoDiscover: true
+			        lat: 23.704894502324912,
+                    lng: 120.89355468749999,
+                    zoom: 10
+                },
+
+                local: {
+                    lat: 23.704894502324912,
+                    lng: 120.89355468749999,
+                    zoom: 10 
+                },
+
+                taiwan: {
+                    lat: 23.704894502324912,
+                    lng: 120.89355468749999,
+                    zoom: 7,
+                }
+
+
+            });
+
+
+            angular.extend($scope, {
+
+                   
+                paths: [ {
+                            color: '#33cc33',
+                            weight: 3,
+                            latlngs: [$scope.taiwan,$scope.local]
+                        } 
+                ]
+
+            });
+
+
+    
+            $scope.askGeo = function(place){
+
+                if (!$scope.center.zoom) {
+                    $scope.center = $scope.local;
+                }
+
+                var add = (place || prompt('您在哪兒呢?','台東'));
+
+                        $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"+ encodeURI(add) +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
+
+                    //        console.log(d);
+                            var lat, lng;
+
+                            try {
+                             lat = d.query.results.Result[0].latitude;
+                             lng = d.query.results.Result[0].longitude;
+                            } catch(err) { console.log(err) }
+
+                            if (!lat || !lng) {                        
+                                try {
+                                 lat = d.query.results.Result.latitude;
+                                 lng = d.query.results.Result.longitude;
+                                } catch(err) { console.log(err) }
+                            }
+
+                            if (lat) $scope.local.lat = parseFloat(lat);
+                            if (lng) $scope.local.lng = parseFloat(lng);
+                            if (lat) $scope.local.zoom = 10;
+            
+                            $scope.$apply();
+
+                        });
+
+            };
+
+            setTimeout(function(){
+                 //   if (!$scope.center.zoom) {
+                        $scope.center = $scope.local;
+                        $scope.askGeo();
+                 //   }
+            }, 2000);  
+
+            $scope.dataRef = new Firebase('https://shackhand-farmer.firebaseio.com/');
+
+
+            $scope.base = $firebase($scope.dataRef);
+
+            $scope.base.$on('change', function(){
+             
+                if (typeof($scope.n) == 'undefined' && typeof($scope.base.hands) != 'undefined') $scope.n = $scope.base.hands.length;
+
+                if (typeof($scope.base.hands) != 'undefined') $scope.total = $scope.base.hands.length;
+                 
+             	if (!$scope.n) console.log('error: wrong n');
+
+                setTimeout(function(){
+                    $scope.markers = $filter('toMarkers')($scope.base.hands,$scope.key,$scope.nameKey,$scope.geoKey);
+
+       //             console.log($filter('toMails')($scope.base.hands,$scope.key,$scope.nameKey,$scope.geoKey));
+
+
+                    $scope.onlines = $filter('toMarkers')($scope.base.onlines,$scope.key,$scope.nameKey,$scope.geoKey);
+
+                                    
+                    $scope.$apply();
+
+                }, 1000); 
+
+
+            }); 
+
+            $scope.focus = function(hand) {
+     //           var hand = $scope.base.hands[n];
+     //           console.log(hand);
+
+      /*          $scope.taiwan.lat = parseFloat(hand.latlngColumn.split(',')[0]);
+                $scope.taiwan.lng = parseFloat(hand.latlngColumn.split(',')[1]);
+                $scope.taiwan.zoom = 12; */
+
+                if (!$scope.center.zoom) {
+                    $scope.center = $scope.local;
+                }
+
+                $scope.local.lat = parseFloat(hand.latlngColumn.split(',')[0]);
+                $scope.local.lng = parseFloat(hand.latlngColumn.split(',')[1]);
+                $scope.local.zoom = 13;
+
+                $scope.key = "";
+                $scope.nameKey = "";
+                $scope.geoKey = "";
+
+                $scope.markers = $filter('toMarkers')($scope.base.hands,$scope.key,$scope.nameKey,$scope.geoKey, hand.latlngColumn, hand.id);
+
+            }
+
+            $scope.checkLatLng = function(add,n) {
+
+        //        console.log(add);
+
+                 $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"+ add +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
+
+           //         console.log(d);
+
+                    var lat, lng;
+
+                    try {
+                     lat = d.query.results.Result[0].latitude;
+                     lng = d.query.results.Result[0].longitude;
+                    } catch(err) { console.log(err) }
+
+                    if (!lat || !lng) {                        
+                        try {
+                         lat = d.query.results.Result.latitude;
+                         lng = d.query.results.Result.longitude;
+                        } catch(err) { console.log(err) }
+                    }
+
+                    $scope.root.latlngColumn = lat+','+lng;
+                    if ($scope.markers[n]) $scope.markers[n].lat = parseFloat(lat);
+                    if ($scope.markers[n]) $scope.markers[n].lng = parseFloat(lng);
+                    $scope.local.lat = parseFloat(lat);
+                    $scope.local.lng = parseFloat(lng);
+
+       /*             $scope.paths = [
+                            { color: '#008800', weight: 3, latlngs: [$scope.markers[n], $scope.taiwan ]}
+
+                   ]; */
+         //           $scope.markers[0].lat = parseFloat(lat);
+         //           $scope.markers[0].lng = parseFloat(lng);
+                });
+            }
+
+            $scope.login = function () {
+
+            	$scope.status = '資料讀取中...請稍候';
+
+            	auth = new FirebaseSimpleLogin($scope.dataRef, function(error, user) {
+					 
+					  if (error) {
+					    // an error occurred while attempting login
+					    console.log(error);
+					  } else if (user) {
+					    // user authenticated with Firebase
+			//		    console.log('User ID: ' + user.id + ', Provider: ' + user.provider);
+
+					    $scope.myName = user.displayName;
+
+					    var data = user.thirdPartyUserData;
+
+			//		    console.log(data); 
+
+                    //      $scope.root.languages = data.languages.join();
+
+                            $scope.root.site = data.link;
+                            $scope.root.note = data.bio;
+                            //////
+
+                            if (data.hometown && data.hometown.name) $scope.root.hometown = data.hometown.name;
+                            $scope.root.id = data.id;
+                            $scope.root.username = data.username;
+
+                            setTimeout(function(){
+                                     if (data.hometown && data.hometown.name) $scope.root.hometown = data.hometown.name;
+                                    $scope.root.id = data.id;
+                                    $scope.root.username = data.username;
+                            },2000);
+
+
+
+                            $scope.status = '讀取完畢!請修改後發佈';
+
+                            if ($scope.root.hometown) $scope.askGeo($scope.root.hometown);
+
+
+                        $.getJSON('http://graph.facebook.com/' + user.id , function(d){
+                            console.log(d);
+                            $scope.ttName = d.name + "";
+                            $scope.root.name = d.name + "";
+
+                           for (var i = 0; i < $scope.base.hands.length; i++) {
+                                
+                                if (!$scope.base.hands[i]) continue;
+                                if ($scope.base.hands[i].id == data.id || ( !$scope.base.hands[i].id && $scope.base.hands[i].name && $scope.base.hands[i].name == $scope.root.name) )  {
+
+
+                                    var usrNameBuf = $scope.root.username +"";   
+                                    var idBuf = $scope.root.id +"";
+                                    var htBuf = $scope.root.hometown +"";
+
+                                    $scope.root = angular.copy($scope.base.hands[i]);
+
+                                    $scope.root.invis = false;
+
+                                    $scope.root.username = usrNameBuf;
+                                    $scope.root.id = idBuf;
+                                    $scope.root.hometown = htBuf;
+
+                                    $scope.n = i;
+                                    $scope.imp = true;
+                                    ////
+
+
+                                    $scope.dataRef.child('hands').child(i).child('online').set(true);                                    
+                                    $scope.dataRef.child('hands').child(i).child('online').onDisconnect().set(false);
+
+                                    $scope.dataRef.child('onlines').child(i).set(angular.copy($scope.base.hands[i]));
+                                    $scope.dataRef.child('onlines').child(i).onDisconnect().set({});
+
+                   
+                                        $scope.$apply();
+                       
+                                }
+                            };     
+    
+                        }); 
+					  } else {
+					  	console.log('user is logged out');
+					  }
+				});
+
+            	auth.login('facebook', {
+				  rememberMe: true,
+				  scope: 'email'
+				});
+            };
+
+            $scope.logout = function (){
+                auth.logout();
+                $scope.root = new Object;
+                $scope.base.$child('onlines').$child($scope.n).$set({});
+                $scope.base.$child('hands').$child($scope.n).$child('online').$set(false);
+
+                $scope.n = $scope.base.hands.length;
+
+            }
+
+
+            $scope.out = function () {
+                if (confirm("確定要移除旗幟??這將會讓許多朋友失去一條找到您的路。")) {
+                        $scope.base.$child('hands').$child(n).$child(invis).$set(true);
+                        $scope.base.hands[n] = angular.copy($scope.root);
+                }
+            }
+
+            $scope.submit = function (verb) {
+
+                $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"+ $scope.root.address +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
+
+          //          console.log(d);
+
+                    var lat;
+                    var lng;
+
+                    try {
+                     lat = d.query.results.Result[0].latitude;
+                     lng = d.query.results.Result[0].longitude;
+                    } catch(err) { console.log(err) }
+
+                    if (!lat || !lng) {                        
+                        try {
+                         lat = d.query.results.Result.latitude;
+                         lng = d.query.results.Result.longitude;
+                        } catch(err) { console.log(err) }
+                    }
+
+                    $scope.root.latlngColumn = lat+','+lng;
+
+                    var n = $scope.n;
+
+                    if (!$scope.base.hands[n] || $scope.base.hands[n].id == $scope.root.id || $scope.base.hands[n].name == $scope.root.name || $scope.base.hands[n].username == $scope.root.username)  {
+                       
+                       if ($scope.root.note && $scope.root.site && $scope.root.share) {
+
+                            if ($scope.root.latlngColumn == "undefined,undefined") {
+                                alert("地址查找不到座標，請調整一下");
+                                return;
+                            }
+
+                            if ($scope.root.learner_role.indexOf('農') == -1) {
+                                alert("角色需包含「農」字");
+                                return;
+                            }
+
+                            if (!$scope.root.site2) $scope.root.site2 = "";
+                            if (!$scope.root.connect_me) $scope.root.connect_me = "";
+                            if (!$scope.root.learner_habit) $scope.root.learner_habit = "";
+                            if (!$scope.root.ask) $scope.root.ask = "";
+                            if (!$scope.root.username || $scope.root.username == 'undefined') $scope.root.username = "";
+
+
+                            $scope.base.$child('hands').$child(n).$set(angular.copy($scope.root));
+                            $scope.base.hands[n] = angular.copy($scope.root);
+
+                            alert(verb+"成功!!\n\n歡迎隨時回來更新!!");
+
+                    
+                        }
+
+                        else {
+                            alert("請多介紹一些再發佈");
+                        }
+
+                    } else {
+                        alert("Sorry! some error happend.");
+                    }
+
+                });
+
+            }
+
+       };
+    </script>
+
+    <style>
+
+        .gi-webrtc {
+            top: 10px;
+            text-align: right;
+        }
+
+        input {
+            width: 100px;
+            margin-right: 7px;
+        }
+
+        .info {
+          float: left;
+        }
+        .map, .join {
+            display: block;
+            /*width: 100%;*/
+            /*height: 450px;*/
+            padding: 3px;
+            overflow: auto;
+        }
+        .join {
+          width: 100%;
+        }
+        .map {
+          height: 450px;
+        }
+
+        .leaflet-marker-icon, img#fb {
+            border-radius: 60px;
+              -moz-border-radius: 60px;
+              -webkit-border-radius: 60px;
+
+                border: 3px white solid;
+        }
+
+
+        img#fb {            
+            width: 60px;
+            height: 60px;
+        }
+   /*     img#fb:hover {            
+            border: 1px gold solid;
+            position: relative;
+            margin-left: -1px;
+            margin-top: 1px;
+        } */
+
+        img.icon {
+            width: 20px;
+            height: 20px;
+        }
+
+
+        a {
+            cursor: pointer;
+        }
+
+        body {
+            font-family: "Open Sans", "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, 'Lucida Grande', 'LiHei Pro', 'Microsoft JhengHei', '微軟正黑體', 'Microsoft YaHei', '微軟雅黑體', sans-serif;
+            padding-top: 50px;
+        }
+        .fb-comments, .fb_iframe_widget span, .fb-comments iframe[style] {width: 100% !important;}
+
+        .navbar-brand {
+          padding: 8px;
+        }
+        .navbar-brand h1 {
+          margin-top: 0px;
+        }
+        .main-container {
+          padding-top: 20px;
+        }
+
+
+    </style>
 </head>
 
 <body>
 
-  <div class="wrapper">
-    <header>
-      <h1 class="title">Farmer</h1>
-    </header>
-    <div id="container">
-      <p class="tagline">農業相關資訊工具</p>
-      <div id="main" role="main">
-        <div class="download-bar">
-        <div class="inner">
-          <a href="https://github.com/g0v/farmer/tarball/master" class="download-button tar"><span>Download</span></a>
-          <a href="https://github.com/g0v/farmer/zipball/master" class="download-button zip"><span>Download</span></a>
-          <a href="https://github.com/g0v/farmer" class="code">View Farmer on GitHub</a>
+  <!-- Facebook API -start- -->
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1&appId=485195848253155";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+  <!-- Facebook API -end- -->
+
+  <!-- ng controller -->
+  <div ng-controller="DemoController" >
+
+  <!-- Navbar -->
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button> -->
+        <div class="navbar-brand">
+          <h1 class="h2"><a href = "https://hackpad.com/2.0-gZL8jQ3iwgI">自學2.0互助支持網<!--<a ng-click = "markers = (base.hands | toMarkers:key:nameKey:geoKey); onlines = (base.onlines | toMarkers); ;" style="cursor:pointer">--> ➭ 朋友就在不遠處</a><!--</a>--></h1>
+
+
         </div>
-        <span class="blc"></span><span class="trc"></span>
+
+        <div class = "navbar-right"><a href = "http://www.alearn.org.tw">by自主學習促進會</a></div>
+      </div>
+      <div class="collapse navbar-collapse">
+        <!-- <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul> -->
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+  <div class="container main-container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="alert alert-info">
+          <form class="form-inline" ng-show = "editS" ng-init = "editS = true">  
+            <input name="iehack" type="hidden" value="&#9760;" />   <!--  for IE  -->
+
+            <h3 >找朋友</h3>
+            <hr>
+            查詢 : <input class="form-control" type="text" step="any" ng-model="key" placeholder = "關鍵字查詢?" ng-change =  "markers = (base.hands | toMarkers:key:nameKey:geoKey); onlines = (base.onlines | toMarkers);" />
+
+            人名 : <input class="form-control" type="text" step="any" ng-model="nameKey" placeholder = "姓名查詢?" ng-change =  "markers = (base.hands | toMarkers:key:nameKey:geoKey);onlines = (base.onlines | toMarkers);" />
+
+            地區 : <input class="form-control" type="text" step="any" ng-model="geoKey"  placeholder = "地區查詢?" ng-change = "markers = (base.hands | toMarkers:key:nameKey:geoKey); onlines = (base.onlines | toMarkers);" />
+          </form>
         </div>
-        <article class="markdown-body">
-          <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-        </article>
+        <hr>
       </div>
     </div>
-    <footer>
-      <div class="owner">
-      <p><a href="https://github.com/g0v" class="avatar"><img src="https://avatars2.githubusercontent.com/u/2668086?s=60" width="48" height="48"/></a> <a href="https://github.com/g0v">g0v</a> maintains <a href="https://github.com/g0v/farmer">Farmer</a></p>
+    <div class="row">
+      <div class="col-md-8">
 
+        <!--    <span ng-hide = "(base.onlines | toList)[0]">
+              <iframe src="https://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fbestian.github.io%2Fshackhand%2Findex.html&amp;width&amp;layout=standard&amp;action=like&amp;show_faces=true&amp;share=true&amp;height=60&amp;appId=485195848253155" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:60px;" allowTransparency="true"></iframe>
+            </span> -->
+
+        <!--
+            <span ng-show = "(base.onlines | toList)[0]"> 此刻在線：
+            	<span ng-repeat = "h in base.onlines | toList">
+
+            		<a href="https://www.facebook.com/messages/{{h.id}}" target="_blank" ng-mouseover = "focus(h)" ng-mouseover = "focus(root)" title="和{{h.name}}來場不期而遇的對話">
+
+                            <img id = "{{ h.id && 'fb' }}" src="{{(h.id && 'http://graph.facebook.com/' + h.id + '/picture') || 'img/marker-icon.png'}}"/>⇄
+                    </a>
+
+        	    </span>
+            </span>
+        -->
+
+        <!--    <input type = "checkbox" ng-model = "editZ" />地圖控制  -->
+
+
+        <div class = "map">
+          <h4 style="display: inline">在地農友</h4>
+          <span ng-show = "center.zoom">
+            <a ng-click = "center.zoom = (center.zoom || 10) -1"> <img class = "icon" src="img/zoom-in.png"> </a>
+            <a ng-click = "center.zoom = (center.zoom || 10) -1" > <img class = "icon" src="img/zoom-out.png"> </a>
+            <a ng-click = "editS = !editS" > <img class = "icon" src="img/find.png"> </a>
+          </span>
+
+          <span ng-hide = "center.zoom">
+            <a ng-click = "askGeo()" > <img class = "icon" src="img/findGeo.png"> </a>
+            <a ng-click = "askGeo()" > <img class = "icon" src="img/findGeo.png"> </a>
+            <a ng-click = "askGeo()" > <img class = "icon" src="img/findGeo.png"> </a>
+            <a ng-click = "askGeo()" > <img class = "icon" src="img/findGeo.png"> </a>
+          </span>
+
+            <a ng-click = "askGeo()"> <img class = "icon" src="img/findGeo.png"> </a>
+
+            <leaflet  center="center || taiwan" markers = "markers" width="100%" height="420"></leaflet> 
+
+              <!-- paths="paths"  -->
+
+        </div>
+
+
+        <div class="map">
+          <h4 style="display: inline-block">全台農友</h4>
+          <a ng-click = "taiwan.zoom = taiwan.zoom+1"> <img class = "icon" src="img/zoom-in.png"> </a>
+          <a ng-click = "taiwan.zoom = taiwan.zoom-1" > <img class = "icon" src="img/zoom-out.png"> </a>
+          <a ng-click = "editS = !editS" > <img class = "icon" src="img/find.png"> </a>
+          <leaflet center="taiwan" markers = "markers" width="100%" height="420"></leaflet>
+                      <!-- paths="paths"  -->
+        </div>
+
+
+       
 
       </div>
-      <div class="creds">
-        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br/>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      <div class="col-md-4">
+        <div class="well">
+          <div id = "J" class="join">
+
+              <br>
+              升起您的農學互助支持旗，助新朋友一臂之力!!
+              <ul>
+                  <li>
+              <a href="http://moztw.org/firefox/" target="_blank">Firefox</a>支援完整地圖
+              
+              
+                  <li>IE不支援
+              </ul>               
+            <br>
+
+
+            <img id = "fb" ng-src="http://graph.facebook.com/{{root.id || root.username}}/picture" ng-show = "root.name"/> {{ttName}}
+
+            <button id = "FBlogin" class="btn btn-primary" ng-click="login()" ng-hide = "root.name">
+                  以Facebook登入
+              </button>
+
+
+              <button id = "FBlogin" ng-click="logout()" ng-show = "root.name">
+                  登出
+              </button>
+
+            <hr>
+
+              <form ng-show = "root.name">請填寫您願意公開的資訊：<br>
+
+            名字：<input ng-model = "root.name"/ ><br>
+            概略地址：<input ng-model = "root.address"/ ng-change = "checkLatLng(root.address,n)" placeholder = "地址愈詳細，別人愈好認識您的所在">
+              <span ng-show = "root.address && root.latlngColumn !== 'undefined,undefined'" ng-bind = "root.latlngColumn"></span>
+              <span ng-show = "root.address && root.latlngColumn == 'undefined,undefined'"><button ng-click = "checkLatLng(root.address,n)">定位!</button></span>
+
+              <br>
+
+              個人網址：<input ng-model = "root.site"/><a ng-show = "root.site" href = "{{root.site | makeHref}}" target = "_blank">測試這個連結</a><br>
+
+              社團網址分享：<input ng-model = "root.site2" placeholder = "產銷班、農會、協會、社群或組織" /><a ng-show = "root.site2" href = "{{root.site2 | makeHref }}" target = "_blank">測試這個連結</a><br>
+
+
+              比較有空的時段：<br><textarea ng-model = "root.freetime" rows = '5' cols = '30' placeholder = '例如：週五下午和週末'></textarea><br>
+
+
+              比較需要人手的時段：<br><textarea ng-model = "root.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'></textarea><br>
+
+              聯絡方式：<br><textarea ng-model = "root.connect_me" rows = '5' cols = '30' placeholder = '可略。如有多行，請在分行處加上<br>記號'></textarea><br>
+
+
+              身份
+              <input ng-model = "root.learner_role" placeholder = "包含「農」字。如農人, 半農半X, 假日農夫, 陽台農夫, 關心農業的使用者, 農學消費者...。" />
+
+              主要的參與型態
+              <select ng-model = "root.learner_type">
+                  <option ng-repeat = "t in ['生產者','推廣者','使用者','參訪者']"
+                      ng-selected = "root.learner_type == t" value="{{t}}">{{t}}</option>
+              </select><br>
+
+                  <span>
+                      您的出生年次，西元：
+                      <input ng-model = 'root.learner_birth' type = 'text' placeholder = '如：2001。交友用'></input>
+                      <br>
+                  </span>
+
+            興趣：<input ng-model = "root.learner_habit" placeholder = '可略'/><br>
+
+            作物：<textarea ng-model = "root.share" rows = '5' cols = '30' placeholder = '例如:稻米,地瓜,蕃茄,紅菜,柳丁,芭樂,瓠瓜'/><br>
+            
+            技術：<input ng-model = "root.share" placeholder = '例如:稻米的自然農法。也可以寫資訊工程、行銷等等。'/><br>
+
+            可分享：<input ng-model = "root.share" placeholder = '例如:自己留種的非基改大豆、自己留種的非基改玉米。也可以寫架網站等等'/><br>
+
+            需要的支持：<input ng-model = "root.ask" placeholder = '讓網友知識可以為你做什麼?'/><br>
+
+            自我介紹：<br><textarea ng-model = "root.note" rows = '5' cols = '30' placeholder = "請自由發揮，介紹自己^_^"></textarea> <br>
+
+
+            <hr>
+
+              <button ng-hide = "imp" ng-click = "submit('登入')">升起旗幟!!</button>
+            <button ng-show = "imp" ng-click = "submit('更新')">更新旗幟!!</button>
+              <button ng-show = "imp" ng-click = "out()">移除旗幟</button>
+
+              </form>
+
+
+              <span ng-hide = "root.name">
+                <span ng-bind = "status">此瀏覽器不支援，請試試看用不同的瀏覽器</span>
+
+                  <br>
+
+        <!--          <input type = "number" ng-model = "total"  ng-show = "n > 0">
+
+                  <br>  -->
+
+                  <span ng-repeat = "k in [3,2,1]" ng-show = "total - k >= 0">
+
+                      <a ng-click = "focus(base.hands[total - k]); ;" style = "cursor:pointer" title="{{base.hands[total - k].name}}">
+
+                      <img id = "{{ base.hands[total - k].id && 'fb' }}" ng-src="{{(base.hands[total - k].id && 'http://graph.facebook.com/' + base.hands[total - k].id + '/picture') || 'img/marker-icon.png'}}"/>
+
+                      <span>第{{total - k + 1}}位農友：{{base.hands[total - k].name }} ( {{base.hands[total - k].address.substr(0,2)}} )</span>
+
+                      </a>
+
+                      <br>
+                      
+                  </span>
+              </span>
+              
+              <span ng-show = "n > 0">
+
+                <hr>
+
+                您是第{{ n + 1}}位農友嗎？
+                <button id = "FBlogin" class="btn btn-primary" ng-click="login()" ng-hide = "root.name">
+                    以Facebook登入
+                </button>
+
+              </span>
+              <br>
+              <br>
+          </div>
+        </div><!-- .well end -->
+          
+         <!--   <iframe ng-hide = "root.name" width="560" height="315" src="http://www.youtube.com/embed/L0zWVmgEPhY" frameborder="0" allowfullscreen></iframe> -->
+        <div>
+
+          <div class="fb-comments" data-href="http://bestian.github.io/shackhand/auto20.html" data-numposts="5" data-width="280px" data-colorscheme="light"></div>
+
+        </div>
+
       </div>
-    </footer>
-  </div>
-  <div class="current-section">
-    <a href="#top">Scroll to top</a>
-    <a href="https://github.com/g0v/farmer/tarball/master" class="tar">tar</a><a href="https://github.com/g0v/farmer/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
-    <p class="name"></p>
+    </div>
+
   </div>
 
-  
 </body>
 </html>
+
+
+ 

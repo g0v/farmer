@@ -831,26 +831,6 @@
     <div class="row">
       <div class="col-md-8">
 
-        <!--    <span ng-hide = "(base.onlines | toList)[0]">
-              <iframe src="https://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fbestian.github.io%2Fshackhand%2Findex.html&amp;width&amp;layout=standard&amp;action=like&amp;show_faces=true&amp;share=true&amp;height=60&amp;appId=485195848253155" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:60px;" allowTransparency="true"></iframe>
-            </span> -->
-
-        <!--
-            <span ng-show = "(base.onlines | toList)[0]"> 此刻在線：
-            	<span ng-repeat = "h in base.onlines | toList">
-
-            		<a href="https://www.facebook.com/messages/{{h.id}}" target="_blank" ng-mouseover = "focus(h)" ng-mouseover = "focus(root)" title="和{{h.name}}來場不期而遇的對話">
-
-                            <img id = "{{ h.id && 'fb' }}" src="{{(h.id && 'http://graph.facebook.com/' + h.id + '/picture') || 'img/marker-icon.png'}}"/>⇄
-                    </a>
-
-        	    </span>
-            </span>
-        -->
-
-        <!--    <input type = "checkbox" ng-model = "editZ" />地圖控制  -->
-
-
         <div class = "map">
           <h4 style="display: inline">在地農友</h4>
           <span ng-show = "center.zoom">
@@ -930,15 +910,6 @@
 
               社團網址分享：<input ng-model = "root.site2" placeholder = "產銷班、農會、協會、社群或組織" /><a ng-show = "root.site2" href = "{{root.site2 | makeHref }}" target = "_blank">測試這個連結</a><br>
 
-
-              比較有空的時段：<br><textarea ng-model = "root.freetime" rows = '5' cols = '30' placeholder = '例如：週五下午和週末'></textarea><br>
-
-
-              比較需要人手的時段：<br><textarea ng-model = "root.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'></textarea><br>
-
-              聯絡方式：<br><textarea ng-model = "root.connect_me" rows = '5' cols = '30' placeholder = '可略。如有多行，請在分行處加上<br>記號'></textarea><br>
-
-
               身份
               <input ng-model = "root.learner_role" placeholder = "包含「農」字。如農人, 半農半X, 假日農夫, 陽台農夫, 關心農業的使用者, 農學消費者...。" />
 
@@ -965,6 +936,13 @@
             需要的支持：<input ng-model = "root.ask" placeholder = '讓網友知識可以為你做什麼?'/><br>
 
             自我介紹：<br><textarea ng-model = "root.note" rows = '5' cols = '30' placeholder = "請自由發揮，介紹自己^_^"></textarea> <br>
+
+            比較有空的時段：<br><input ng-model = "root.freetime" rows = '5' cols = '30' placeholder = '例如：週五下午和週末'></textarea><br>
+
+
+            比較需要人手的時段：<br><input ng-model = "root.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'></textarea><br>
+
+            聯絡方式：<br><textarea ng-model = "root.connect_me" rows = '5' cols = '30' placeholder = '可略。如有多行，請在分行處加上<br>記號'></textarea><br>
 
 
             <hr>

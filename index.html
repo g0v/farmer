@@ -906,7 +906,7 @@
                   登出
               </button>
 
-              <select ng-init = "editNow = 0">
+              <select ng-model = "editNow" ng-init = "editNow = 0" >
               	<option ng-repeat = "j in [0,1,2,3,4,5]" ng-selected = "editNow == j">{{ (j == 0 && '我自己') || (root.friends && root.friends[j] && root.friends.j.name) || '第' + j + '位朋友'}}</option>
               </select>
 
@@ -941,11 +941,12 @@
 
             興趣：<input ng-model = "root.learner_habit" placeholder = '可略'/><br>
 
-            作物：<br><textarea ng-model = "root.crop" rows = '5' cols = '30' placeholder = '例如:稻米,地瓜,蕃茄,紅菜,柳丁,芭樂,瓠瓜,甜菊,迷送香'/></textarea><br>
-            
-            技術：<input ng-model = "root.skill" placeholder = '例如:稻米的自然農法。也可以寫資訊工程、行銷等等。'/><br>
 
-            可分享：<input ng-model = "root.share" placeholder = '例如:自己留種的非基改大豆、自己留種的非基改玉米。也可以寫架網站等等'/><br>
+            作物：<br><textarea ng-model = "root.crop" rows = '4' cols = '30' placeholder = '例如:稻米,地瓜,蕃茄,紅菜,柳丁,芭樂,瓠瓜,甜菊,迷送香'/></textarea><br>
+            
+            技術：<textarea ng-model = "root.skill" rows = '4' cols = '30'placeholder = '例如:稻米的自然農法。也可以寫資訊工程、行銷等等。'/></textarea><br>
+
+            可分享：<textarea ng-model = "root.share" rows = '4' cols = '30' placeholder = '例如:產地直購、非基改大豆、架網站等'/></textarea><br>
 
             需要的支持：<input ng-model = "root.ask" placeholder = '讓網友知識可以為你做什麼?'/><br>
 
@@ -990,11 +991,11 @@
 
             興趣：<input ng-model = "root.friends[k].learner_habit" placeholder = '可略'/><br>
 
-            作物：<br><textarea ng-model = "root.friends[k].crop" rows = '5' cols = '30' placeholder = '例如:稻米,地瓜,蕃茄,紅菜,柳丁,芭樂,瓠瓜,甜菊,迷送香'/></textarea><br>
+            作物：<br><textarea ng-model = "root.friends[k].crop" rows = '4' cols = '30' placeholder = '例如:稻米,地瓜,蕃茄,紅菜,柳丁,芭樂,瓠瓜,甜菊,迷送香'/></textarea><br>
             
-            技術：<input ng-model = "root.friends[k].skill" placeholder = '例如:稻米的自然農法。也可以寫資訊工程、行銷等等。'/><br>
+            技術：<textarea ng-model = "root.friends[k].skill" rows = '4' cols = '30'placeholder = '例如:稻米的自然農法。也可以寫資訊工程、行銷等等。'/></textarea><br>
 
-            可分享：<input ng-model = "root.friends[k].share" placeholder = '例如:產地直購、非基改大豆、架網站等'/><br>
+            可分享：<textarea ng-model = "root.friends[k].share" rows = '4' cols = '30' placeholder = '例如:產地直購、非基改大豆、架網站等'/></textarea><br>
 
             需要的支持：<input ng-model = "root.friends[k].ask" placeholder = '讓網友知識可以為你做什麼?'/><br>
 

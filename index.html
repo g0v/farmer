@@ -527,16 +527,9 @@
 					    // an error occurred while attempting login
 					    console.log(error);
 					  } else if (user) {
-					    // user authenticated with Firebase
-			//		    console.log('User ID: ' + user.id + ', Provider: ' + user.provider);
 
 					    $scope.myName = user.displayName;
-
 					    var data = user.thirdPartyUserData;
-
-			//		    console.log(data); 
-
-                    //      $scope.root.languages = data.languages.join();
 
                             $scope.root.site = data.link;
                             $scope.root.note = data.bio;
@@ -552,22 +545,6 @@
                                     $scope.root.username = data.username;
                             },2000);
 
-
-                            if(!$scope.root.friends) $scope.root.friends = [];
-
-                            for (var i = 0; i <= 5; i++) {
-                                if (!$scope.root.friends[i]) {
-                                        $scope.root.friends[i] = {
-                                            name: '請輸入朋友的名字',   
-                                            address: '請輸入朋友的地址',
-                                            latlngColumn: '',
-                                            learner_role: '',
-                                            learner_birth: '',
-                                            learner_habit: '',
-                                            learner_type: '',
-                                        };
-                                    }
-                            }
 
                             $scope.status = '讀取完畢!請修改後發佈';
 
@@ -601,12 +578,21 @@
                                     $scope.imp = true;
                                     ////
 
+                                    if(!$scope.root.friends) $scope.root.friends = [];
 
-                                    $scope.dataRef.child('hands').child(i).child('online').set(true);                                    
-                                    $scope.dataRef.child('hands').child(i).child('online').onDisconnect().set(false);
-
-                                    $scope.dataRef.child('onlines').child(i).set(angular.copy($scope.base.hands[i]));
-                                    $scope.dataRef.child('onlines').child(i).onDisconnect().set({});
+                                    for (var i = 0; i <= 5; i++) {
+                                        if (!$scope.root.friends[i]) {
+                                                $scope.root.friends[i] = {
+                                                    name: '請輸入朋友的名字',   
+                                                    address: '請輸入朋友的地址',
+                                                    latlngColumn: '',
+                                                    learner_role: '',
+                                                    learner_birth: '',
+                                                    learner_habit: '',
+                                                    learner_type: '',
+                                                };
+                                            }
+                                    }
 
                    
                                         $scope.$apply();

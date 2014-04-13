@@ -961,7 +961,7 @@
               <button ng-show = "imp" ng-click = "out()">移除旗幟</button>
             </form>
 
-            <form ng-init = "k = 1"
+            <form ng-repeat = "k in [1,2,3,4,5]"
             		ng-show = "root.name && editNow == k">請填寫關於您朋友的公開資訊：<br>
 
             名字：<input ng-model = "root.friends[k].name"/ ><br>

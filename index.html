@@ -978,7 +978,7 @@
               <input ng-model = "root.learner_role" placeholder = "包含「農」字。如農人, 半農半X, 假日農夫, 陽台農夫, 關心農業的使用者, 農學消費者...。" />
 
               主要的參與型態
-              <select ng-model = "root.friends[k].learner_type">
+              <select ng-show = "root.name" ng-model = "root.friends[k].learner_type">
                   <option ng-repeat = "t in ['生產者','推廣者','使用者','參訪者']"
                       ng-selected = "root.friends[k].learner_type == t" value="{{t}}">{{t}}</option>
               </select><br>

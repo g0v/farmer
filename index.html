@@ -118,12 +118,6 @@
 
 
         var toM = function (list, key, nameKey, geoKey, maybeHideLatLng, expId) {
-                var ms = [
-                    dummyIcon
-                ];
-                var autos = angular.copy(list);
-                var latlngUsed = [];
-
 
                 var hToM = function(h,i,from,fbid) {
 
@@ -236,6 +230,11 @@
                     ms.push(marker);
 
                 }
+
+
+                var ms = [dummyIcon];
+                var autos = angular.copy(list);
+                var latlngUsed = [];
 
                 for (var i = 0; i < (autos.length || 0); i++) {
                     var h = autos[i];
@@ -974,10 +973,10 @@
             		ng-show = "root.name && editNow == k">請填寫關於您朋友的公開資訊：<br>
 
             名字：<input ng-model = "root.friends[k].name"/ ><br>
-            概略地址：<input ng-model = "root.friends[k].address"/ ng-change = "checkLatLng(root.friends[k].address,n)" placeholder = "地址愈詳細，別人愈好認識您的所在">
+            概略地址：<input ng-model = "root.friends[k].address"/ ng-change = "checkLatLng(root.friends[k].address,k)" placeholder = "地址愈詳細，別人愈好認識您的所在">
 
               <span ng-show = "root.friends[k].address && root.friends[k].latlngColumn !== 'undefined,undefined'" ng-bind = "root.friends[k].latlngColumn"></span>
-              <span ng-show = "root.friends[k].address && root.friends[k].latlngColumn == 'undefined,undefined'"><button ng-click = "checkLatLng(root.address,n)">定位!</button></span>
+              <span ng-show = "root.friends[k].address && root.friends[k].latlngColumn == 'undefined,undefined'"><button ng-click = "checkLatLng(root.address,k)">定位!</button></span>
 
               <br>
 

@@ -127,7 +127,7 @@
 
                 var hToM = function(h,i,from,fbid) {
 
-                	if (!h) { console.log('略過空格'); return; }
+                	if (!h || !h.note) { console.log('略過空格'); return; }
 
                     var hand = h;
                     
@@ -147,7 +147,7 @@
                         if (hand.site2 && hand.site2 == hand.site) hand.site2 = "";
 
                         if (hand.site && hand.site.indexOf('http') == -1 && hand.site.indexOf('@') == -1) hand.site = 'http://' + hand.site;
-                        
+
                         if (hand.site && hand.site.indexOf('@') > -1) { hand.site = '<a href = "mailto:'+hand.site+'?subject=您好&body='+hand.name+'您好：我在自學2.0上看到您的交友旗幟，我是">'+hand.site+'</a>'; } else { hand.site = hand.site.replace(/(.*?)(http.+)\s*/, '$1 <a href = $2> $2 </a>'); }
 
                         if (hand.site2 && hand.site2.indexOf('http') == -1 && hand.site2.indexOf('@') == -1) hand.site2 = 'http://' + hand.site2;

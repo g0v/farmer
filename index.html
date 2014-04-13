@@ -923,9 +923,9 @@
 
             <form ng-show = "root.name && editNow == 0">請填寫您願意公開的資訊：<br>
             名字：<input ng-model = "root.name"/ ><br>
-            概略地址：<input ng-model = "root.address"/ ng-change = "checkLatLng(root.address,n,k)" placeholder = "地址愈詳細，別人愈好認識您的所在">
+            概略地址：<input ng-model = "root.address"/ ng-change = "checkLatLng(root.address,n)" placeholder = "地址愈詳細，別人愈好認識您的所在">
               <span ng-show = "root.address && root.latlngColumn !== 'undefined,undefined'" ng-bind = "root.latlngColumn"></span>
-              <span ng-show = "root.address && root.latlngColumn == 'undefined,undefined'"><button ng-click = "checkLatLng(root.address,n,k)">定位!</button></span>
+              <span ng-show = "root.address && root.latlngColumn == 'undefined,undefined'"><button ng-click = "checkLatLng(root.address,n)">定位!</button></span>
 
               <br>
 
@@ -973,10 +973,10 @@
             		ng-show = "root.name && editNow == k">請填寫關於您朋友的公開資訊：<br>
 
             名字：<input ng-model = "root.friends[k].name"/ ><br>
-            概略地址：<input ng-model = "root.friends[k].address"/ ng-change = "checkLatLng(root.friends[k].address,k)" placeholder = "地址愈詳細，別人愈好認識您的所在">
+            概略地址：<input ng-model = "root.friends[k].address"/ ng-change = "checkLatLng(root.friends[k].address,n,k)" placeholder = "地址愈詳細，別人愈好認識您的所在">
 
               <span ng-show = "root.friends[k].address && root.friends[k].latlngColumn !== 'undefined,undefined'" ng-bind = "root.friends[k].latlngColumn"></span>
-              <span ng-show = "root.friends[k].address && root.friends[k].latlngColumn == 'undefined,undefined'"><button ng-click = "checkLatLng(root.address,k)">定位!</button></span>
+              <span ng-show = "root.friends[k].address && root.friends[k].latlngColumn == 'undefined,undefined'"><button ng-click = "checkLatLng(root.address,n,k)">定位!</button></span>
 
               <br>
 

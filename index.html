@@ -122,26 +122,15 @@
                 var latlngUsed = [];
 
 
-                for (var i = 0; i < (autos.length || 0); i++) {
+                var hToM = function(h) {
 
-                    if (!autos[i]) { console.log('略過空格'); continue }
-
+                    if (!autos[i]) { console.log('略過空格'); return; }
                     var hand;
-                    !autos[i][1] ? hand = autos[i] : hand = autos[i][autos[i].length -1]; // check autos[i] 是不是一個陣列
-
-                    if (!hand.id && !hand.username) {
-                    // console.log('略過未註冊者');
-                    continue }
-
-                    if (!hand.name) { 
-                   	//console.log('略過無名氏');
-                   	 continue }
-
-                    if (hand.invis) { 
-                    	// console.log('略過已移除者');
-                     continue }
-
-                    if (maybeHideLatLng && isClose(hand.latlngColumn,maybeHideLatLng) && hand.id != expId) { console.log('略過同地址'); continue }
+                    
+                    if (!hand.id && !hand.username) return;
+                    if (!hand.name) return;
+                    if (hand.invis) return;
+                    if (maybeHideLatLng && isClose(hand.latlngColumn,maybeHideLatLng) && hand.id != expId) { console.log('略過同地址'); return; }
 
                     var fbIcon;
 
@@ -223,22 +212,31 @@
 
                     if (key && key.length > 0 && flag.indexOf(key) == -1) {
                         console.log('略過關鍵字不符者');
-                        continue;
+                        return;
                     };
 
                     if (nameKey && nameKey.length > 0 && hand.name.indexOf(nameKey) == -1) {
                         console.log('略過人名不符者');
-                        continue;
+                        return;
                     }
 
                     if (geoKey && geoKey.length > 0 && hand.address.indexOf(geoKey) == -1) {
                         console.log('略過地理不符者');
-                        continue;
+                        return;
                     };
-
         //            console.log(marker);
                     ms.push(marker);
-                    
+
+                }
+
+                for (var i = 0; i < (autos.length || 0); i++) {
+                    var h = autos[i];
+                    hToM(h);
+                    if (h.friends) {
+                        for (var j = 0; j < h.friends.length; j++) {
+                            hToM(h.j)   
+                        };              
+                    }      
                 };
                 return ms;
         }
@@ -304,7 +302,6 @@
           $scope.currentTab = 'Comments'; 
           $scope.widgetWidth = 440;
          
-          $scope.myHref = location.href;
 
             var h = location.hash.replace(/#\/?/,'');
      //       console.log(h);
@@ -417,6 +414,8 @@
                  //   }
             }, 2000);  
 
+
+            $scope.myHref = location.href;
             $scope.indexRef = new Firebase('https://mapindex.firebaseio.com/');
             $scope.maps = $firebase($scope.indexRef);
             $scope.maps.$on('change', function(){ $scope.$apply() });
@@ -778,7 +777,7 @@
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
       js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1&appId=697252030337861";
+      js.src = "http://connect.facebook.net/zh_TW/all.js#xfbml=1&appId=697252030337861";
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));</script>
   <!-- Facebook API -end- -->
@@ -868,8 +867,7 @@
                       <!-- paths="paths"  -->
         </div>
 
-
-       
+      
 
       </div>
       <div class="col-md-4">

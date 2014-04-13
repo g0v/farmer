@@ -10,7 +10,6 @@
    <meta property="fb:admins" content="100000207390400" />
    <meta property="fb:app_id" content="697252030337861" />
 
-
     
     <meta property="og:site_name" content="農學互助支持網" />
     <meta property="og:description" content="農學互助支持網 ➭ 上下游互助地圖。" />
@@ -554,6 +553,13 @@
                             },2000);
 
 
+                            if(!$scope.root.friends) $scope.root.friends = [];
+
+                            for (var i = 1; i <= 5; i++) {
+                                {!$scope.root.friends[i]) {
+                                        $scope.root.friends[i] = {};
+                                    }
+                            }
 
                             $scope.status = '讀取完畢!請修改後發佈';
 

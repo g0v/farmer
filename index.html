@@ -147,7 +147,8 @@
                         if (hand.site2 && hand.site2 == hand.site) hand.site2 = "";
 
                         if (hand.site && hand.site.indexOf('http') == -1 && hand.site.indexOf('@') == -1) hand.site = 'http://' + hand.site;
-                        if (hand.site.indexOf('@') > -1) { hand.site = '<a href = "mailto:'+hand.site+'?subject=您好&body='+hand.name+'您好：我在自學2.0上看到您的交友旗幟，我是">'+hand.site+'</a>'; } else { hand.site = hand.site.replace(/(.*?)(http.+)\s*/, '$1 <a href = $2> $2 </a>'); }
+                        
+                        if (hand.site && hand.site.indexOf('@') > -1) { hand.site = '<a href = "mailto:'+hand.site+'?subject=您好&body='+hand.name+'您好：我在自學2.0上看到您的交友旗幟，我是">'+hand.site+'</a>'; } else { hand.site = hand.site.replace(/(.*?)(http.+)\s*/, '$1 <a href = $2> $2 </a>'); }
 
                         if (hand.site2 && hand.site2.indexOf('http') == -1 && hand.site2.indexOf('@') == -1) hand.site2 = 'http://' + hand.site2;
 
@@ -974,6 +975,7 @@
 
             名字：<input ng-model = "root.friends[k].name"/ ><br>
             概略地址：<input ng-model = "root.friends[k].address"/ ng-change = "checkLatLng(root.friends[k].address,n)" placeholder = "地址愈詳細，別人愈好認識您的所在">
+
               <span ng-show = "root.friends[k].address && root.friends[k].latlngColumn !== 'undefined,undefined'" ng-bind = "root.friends[k].latlngColumn"></span>
               <span ng-show = "root.friends[k].address && root.friends[k].latlngColumn == 'undefined,undefined'"><button ng-click = "checkLatLng(root.address,n)">定位!</button></span>
 

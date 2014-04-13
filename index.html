@@ -509,9 +509,9 @@
                         $scope.root.latlngColumn = lat+','+lng;
                     }
 
-                        if ($scope.markers[n]) $scope.markers[n].lat = parseFloat(lat);
-                        if ($scope.markers[n]) $scope.markers[n].lng = parseFloat(lng);
-                    }
+                    if ($scope.markers[n]) $scope.markers[n].lat = parseFloat(lat);
+                    if ($scope.markers[n]) $scope.markers[n].lng = parseFloat(lng);
+                    
 
                     $scope.local.lat = parseFloat(lat);
                     $scope.local.lng = parseFloat(lng);

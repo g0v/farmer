@@ -2,15 +2,13 @@
 <html ng-app="demoapp">
   <head>
 
-    <title>農學互助支持網 ➭ 上下游互助地圖</title>
+    <title>農學地圖 ➭ 上下游互助</title>
 
     <meta charset="UTF-8">
     
-
    <meta property="fb:admins" content="100000207390400" />
    <meta property="fb:app_id" content="697252030337861" />
 
-    
     <meta property="og:site_name" content="農學互助支持網" />
     <meta property="og:description" content="農學互助支持網 ➭ 上下游互助地圖。" />
     <meta property="og:title" content="農學互助支持網" />
@@ -41,17 +39,18 @@
 
 <script src="javascripts/lib/angular-easyfb.min.js"></script>
 
+<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap.js"></script>
+
+<script src='http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.10.0.js'></script>
+
 <script src='javascripts/news.js'></script>
 
-
-<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap.js"></script>
+<script src='http://bestian.github.io/shackhand/module/shackhand.js'></script>
 
 <!-- CSS is optional -->
 
 
 <link rel="stylesheet" href="stylesheets/bootstrap.css" />
-
-
 
 	<script type="text/javascript" src="http://l2.io/ip.js?var=myip"></script>
                                                       <!-- ^^^^ -->
@@ -267,7 +266,7 @@
 
         }
 
-        var app = angular.module('demoapp', ['leaflet-directive','firebase','ezfb']);
+        var app = angular.module('demoapp', ['shackhand']);
         app.config(function ($FBProvider) { var myInitFunction = function ($window, $rootScope, $fbInitParams) { $window.FB.    init({ appId: '485195848253155'})
             }
 
@@ -426,12 +425,6 @@
                         $scope.askGeo();
                  //   }
             }, 2000);  
-
-
-            $scope.myHref = location.href;
-            $scope.indexRef = new Firebase('https://mapindex.firebaseio.com/');
-            $scope.maps = $firebase($scope.indexRef);
-            $scope.maps.$on('change', function(){ $scope.$apply() });
 
 
             $scope.dataRef = new Firebase('https://shackhand-farmer.firebaseio.com/');
@@ -681,12 +674,12 @@
                                 return;
                             }
 
-                            if (!$scope.root.site2) $scope.root.site2 = "";
-                            if (!$scope.root.connect_me) $scope.root.connect_me = "";
-                            if (!$scope.root.learner_habit) $scope.root.learner_habit = "";
-                            if (!$scope.root.ask) $scope.root.ask = "";
-                            if (!$scope.root.username || $scope.root.username == 'undefined') $scope.root.username = "";
+                            var whiteList = ['site2','connect_me','learner_habit','ask','username','crop','plant'];
 
+                            for (var i = 0; i < whiteList.length; i++) {
+                                var w = whiteList[i];
+                                    if (!$scope.root[w] || $scope.root[w] == 'undefined') $scope.root[w] = "";
+                            };
 
                             $scope.base.$child('hands').$child(n).$set(angular.copy($scope.root));
                             $scope.base.hands[n] = angular.copy($scope.root);
@@ -803,35 +796,16 @@
     }(document, 'script', 'facebook-jssdk'));</script>
   <!-- Facebook API -end- -->
 
-  <!-- ng controller -->
-  <div ng-controller="DemoController" >
-
   <!-- Navbar -->
 
-  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-        <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button> -->
-        <div class="navbar-brand">
-          <h1 class="h2"><a href = "https://hackpad.com/2.0-gZL8jQ3iwgI">農學互助支持網<!--<a ng-click = "markers = (base.hands | toMarkers:key:nameKey:geoKey); onlines = (base.onlines | toMarkers); ;" style="cursor:pointer">--> ➭ 上下游互相幫助</a><!--</a>--></h1>
+    <map-index heading = "農學地圖 ➭ 上下游互助"
+               hurl = "https://g0v.hackpad.com/gvkD1y2n6vg"
+               author = "by g0v台灣零時政府"
+               aurl = "http://g0v.tw"
+               indexurl = "https://mapindex.firebaseio.com/"></map-index>
 
-        </div>
-
-        <div class = "navbar-right"><a href = "http://g0v.tw">by g0v零時政府</a></div>
-      </div>
-
-      <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li ng-repeat = "m in maps" ng-class = "(myHref == m.h && 'active') || ''"><a ng-href = "{{m.h}}">{{m.t}}</a></li>
-        </ul>
-      </div><!--/.nav-collapse -->
-    </div>
-  </div>
+  <!-- ng controller -->
+<div ng-controller="DemoController" >
   <div class="container main-container">
     <div class="row">
       <div class="col-md-12">

@@ -10,8 +10,8 @@
    <meta property="fb:app_id" content="697252030337861" />
 
     <meta property="og:site_name" content="農學互助支持網" />
-    <meta property="og:description" content="農學互助支持網 ➭ 上下游互助地圖。" />
-    <meta property="og:title" content="農學互助支持網" />
+    <meta property="og:description" content="農學地圖 ➭ 上下游互助" />
+    <meta property="og:title" content="農學地圖 ➭ 上下游互助" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="http://g0v.github.io/farmer/index.html" />
 
@@ -58,11 +58,22 @@
 
      <script>
 
+     var dummyIcon = {
+                        lat: 50,
+                        lng: 50,
+                        incon: 'http://www.coa.gov.tw/graph/coa_fb/coa_pan_20120413094200/coa_pan_20120413094200_general_000001.jpg'
+                    };
+
+
      SKH.init({
-        fbApp: '485195848253155'
+        fbApp: '485195848253155',
+        at: '台東',
+        checkList: ['learner_role','農','角色需包含「農」字'],
+        whiteList: ['site2','connect_me','learner_habit','ask','username','crop','plant'],
+        dummyIcon: dummyIcon,
+        firebase: 'https://shackhand-farmer.firebaseio.com/'
      });
 
-     var auth;
 
      function toIcon (url, from) {
 		if (!from) {
@@ -144,11 +155,11 @@
 
                         if (hand.site && hand.site.indexOf('http') == -1 && hand.site.indexOf('@') == -1) hand.site = 'http://' + hand.site;
 
-                        if (hand.site && hand.site.indexOf('@') > -1) { hand.site = '<a href = "mailto:'+hand.site+'?subject=您好&body='+hand.name+'您好：我在自學2.0上看到您的交友旗幟，我是">'+hand.site+'</a>'; } else { hand.site = hand.site.replace(/(.*?)(http.+)\s*/, '$1 <a href = $2> $2 </a>'); }
+                        if (hand.site && hand.site.indexOf('@') > -1) { hand.site = '<a href = "mailto:'+hand.site+'?subject=您好&body='+hand.name+'您好：我在農學地圖上看到您的交友旗幟，我是">'+hand.site+'</a>'; } else { hand.site = hand.site.replace(/(.*?)(http.+)\s*/, '$1 <a href = $2> $2 </a>'); }
 
                         if (hand.site2 && hand.site2.indexOf('http') == -1 && hand.site2.indexOf('@') == -1) hand.site2 = 'http://' + hand.site2;
 
-                        if (hand.site2 && hand.site2.indexOf('@') > -1) { hand.site2 = '<a href = "mailto:'+hand.site2+'?subject=您好&body='+hand.name+'您好：我在自學2.0上看到您的交友旗幟，我是">'+hand.site2+'</a>'; } else { hand.site2 = hand.site2 && hand.site2.replace(/(.*?)(http.+)\s*/, '$1 <a href = $2> $2 </a>'); }
+                        if (hand.site2 && hand.site2.indexOf('@') > -1) { hand.site2 = '<a href = "mailto:'+hand.site2+'?subject=您好&body='+hand.name+'您好：我在農學地圖上看到您的交友旗幟，我是">'+hand.site2+'</a>'; } else { hand.site2 = hand.site2 && hand.site2.replace(/(.*?)(http.+)\s*/, '$1 <a href = $2> $2 </a>'); }
 
                     hand.latlngColumn = hand.latlngColumn.replace('(','').replace(')','').replace('附近','');
 
@@ -231,21 +242,22 @@
                     };
         //            console.log(marker);
                     ms.push(marker);
-
                 }
-
 
                 var ms = [dummyIcon];
                 var autos = angular.copy(list);
                 var latlngUsed = [];
 
                 if (autos) {
-
                     for (var i = 0; i < (autos.length || 0); i++) {
                         var h = autos[i];
                         if (!h) { console.log('略過空格'); continue; }
-
                         hToM(h,i);
+                    };
+
+                    for (var i = 0; i < (autos.length || 0); i++) {
+                        var h = autos[i];
+                        if (!h) { console.log('略過空格'); continue; }                        
                         if (h.friends) {
                             for (var j = 0; j < h.friends.length; j++) {
                                 hToM(h.friends[j], i, h.name, h.id);   
@@ -256,452 +268,14 @@
                 return ms;
         }
 
-        var toMails = function (list, key, nameKey, geoKey, maybeHideLatLng, expId) {
-
-            return list.map(function(h){
-
-                if (!h.connect_me || h.connect_me.indexOf("@") == -1) {
-                    return "" } else {
-                        return "\"" + h.name +"\"" + "<"
-                             + h.connect_me.replace(" ","")
-                             + ">"}
-                }).join(); 
-
-        }
 
         var app = angular.module('demoapp', ['shackhand']);
-        app.filter('add', function (){
-            return function(objs, obj) {
-                objs.my = obj;
-                return objs;
-            }
-        }).filter('toMarkers', function(){
+        app.filter('toMarkers', function(){
             return toM;
-        }).filter('toMails', function(){
-            return toMails;
-        }).filter('makeHref', function(){
-            return function(str) {
-                if (!str) return "";
-                var ans = "" + str;
-                if (str.indexOf('http://') == -1) {
-                    ans = 'http://' + str;
-                }
-                ans = ans.replace('https://','');
-                return ans;
-            }
-        }).filter('toList' ,function(){
-            return function(obj) {
-                if (!obj) return [];
-                var array = $.map(obj, function(value, index) {
-                    return [value];
-                });
-
-       //         console.log(array);
-
-                return array;
-            }
         });
 
-        var dummyIcon = {
-                        lat: 50,
-                        lng: 50,
-                        incon: 'http://www.coa.gov.tw/graph/coa_fb/coa_pan_20120413094200/coa_pan_20120413094200_general_000001.jpg'
-                    };
 
-        var DemoController = function($scope, $firebase, $filter) {
 
-          $scope.pageUrl = window.location.href;
-          $scope.currentTab = 'Comments'; 
-          $scope.widgetWidth = 440;
-         
-
-            var h = location.hash.replace(/#\/?/,'');
-     //       console.log(h);
-            if (h.length == 3) {
-                $scope.nameKey = h;
-            } else {
-                $scope.key = h;
-            }
-
-
-            $scope.markers = [                 
-                 dummyIcon
-            ];   //補位
-
-//            $scope.markers = autoMirror;
-            $scope.onlines = [];
-            $scope.root = {};
-            
-
-     /*       $scope.scrollFunc = function(e) {
-                    $scope.total--;
-
-                    if ($scope.total <= 1) $scope.total = $scope.base.hands.length;
-
-                $scope.$apply();
-
-            } 
-
-
-            document.getElementById("J").onscroll = $scope.scrollFunc; */
-            
-
-            angular.extend($scope, {
-                center: {
-        //            autoDiscover: true
-			        lat: 23.704894502324912,
-                    lng: 120.89355468749999,
-                    zoom: 10
-                },
-
-                local: {
-                    lat: 23.704894502324912,
-                    lng: 120.89355468749999,
-                    zoom: 10 
-                },
-
-                taiwan: {
-                    lat: 23.704894502324912,
-                    lng: 120.89355468749999,
-                    zoom: 7,
-                }
-
-
-            });
-
-
-            angular.extend($scope, {
-
-                   
-                paths: [ {
-                            color: '#33cc33',
-                            weight: 3,
-                            latlngs: [$scope.taiwan,$scope.local]
-                        } 
-                ]
-
-            });
-
-
-    
-            $scope.askGeo = function(place){
-
-                if (!$scope.center.zoom) {
-                    $scope.center = $scope.local;
-                }
-
-                var add = (place || prompt('您在哪兒呢?','台東'));
-
-                        $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"+ encodeURI(add) +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
-
-                    //        console.log(d);
-                            var lat, lng;
-
-                            try {
-                             lat = d.query.results.Result[0].latitude;
-                             lng = d.query.results.Result[0].longitude;
-                            } catch(err) { console.log(err) }
-
-                            if (!lat || !lng) {                        
-                                try {
-                                 lat = d.query.results.Result.latitude;
-                                 lng = d.query.results.Result.longitude;
-                                } catch(err) { console.log(err) }
-                            }
-
-                            if (lat) $scope.local.lat = parseFloat(lat);
-                            if (lng) $scope.local.lng = parseFloat(lng);
-                            if (lat) $scope.local.zoom = 10;
-            
-                            $scope.$apply();
-
-                        });
-
-            };
-
-            setTimeout(function(){
-                 //   if (!$scope.center.zoom) {
-                        $scope.center = $scope.local;
-                        $scope.askGeo();
-                 //   }
-            }, 2000);  
-
-
-            $scope.dataRef = new Firebase('https://shackhand-farmer.firebaseio.com/');
-            $scope.base = $firebase($scope.dataRef);
-
-            $scope.base.$on('change', function(){
-             
-                if (typeof($scope.n) == 'undefined' && typeof($scope.base.hands) != 'undefined') $scope.n = $scope.base.hands.length;
-
-                if (typeof($scope.base.hands) != 'undefined') $scope.total = $scope.base.hands.length;
-                 
-             	if (!$scope.n) console.log('error: wrong n');
-
-                setTimeout(function(){
-                    $scope.markers = $filter('toMarkers')($scope.base.hands,$scope.key,$scope.nameKey,$scope.geoKey);
-
-       //             console.log($filter('toMails')($scope.base.hands,$scope.key,$scope.nameKey,$scope.geoKey));
-
-
-                    $scope.onlines = $filter('toMarkers')($scope.base.onlines,$scope.key,$scope.nameKey,$scope.geoKey);
-
-                                    
-                    $scope.$apply();
-
-                }, 1000); 
-
-
-            }); 
-
-            $scope.focus = function(hand) {
-     //           var hand = $scope.base.hands[n];
-     //           console.log(hand);
-
-      /*          $scope.taiwan.lat = parseFloat(hand.latlngColumn.split(',')[0]);
-                $scope.taiwan.lng = parseFloat(hand.latlngColumn.split(',')[1]);
-                $scope.taiwan.zoom = 12; */
-
-                if (!$scope.center.zoom) {
-                    $scope.center = $scope.local;
-                }
-
-                $scope.local.lat = parseFloat(hand.latlngColumn.split(',')[0]);
-                $scope.local.lng = parseFloat(hand.latlngColumn.split(',')[1]);
-                $scope.local.zoom = 13;
-
-                $scope.key = "";
-                $scope.nameKey = "";
-                $scope.geoKey = "";
-
-                $scope.markers = $filter('toMarkers')($scope.base.hands,$scope.key,$scope.nameKey,$scope.geoKey, hand.latlngColumn, hand.id);
-
-            }
-
-            $scope.checkLatLng = function(add,n,k) {
-
-        //        console.log(add);
-
-                 $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"+ add +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
-
-           //         console.log(d);
-
-                    var lat, lng;
-
-                    try {
-                     lat = d.query.results.Result[0].latitude;
-                     lng = d.query.results.Result[0].longitude;
-                    } catch(err) { console.log(err) }
-
-                    if (!lat || !lng) {                        
-                        try {
-                         lat = d.query.results.Result.latitude;
-                         lng = d.query.results.Result.longitude;
-                        } catch(err) { console.log(err) }
-                    }
-
-                    if (k) {
-                        $scope.root.friends[k].latlngColumn = lat+','+lng;
-                    } else {
-                        $scope.root.latlngColumn = lat+','+lng;
-                    }
-
-                    if ($scope.markers[n]) $scope.markers[n].lat = parseFloat(lat);
-                    if ($scope.markers[n]) $scope.markers[n].lng = parseFloat(lng);
-                    
-
-                    $scope.local.lat = parseFloat(lat);
-                    $scope.local.lng = parseFloat(lng);
-
-       /*             $scope.paths = [
-                            { color: '#008800', weight: 3, latlngs: [$scope.markers[n], $scope.taiwan ]}
-
-                   ]; */
-         //           $scope.markers[0].lat = parseFloat(lat);
-         //           $scope.markers[0].lng = parseFloat(lng);
-                });
-            }
-
-            $scope.login = function () {
-
-            	$scope.status = '資料讀取中...請稍候';
-
-            	auth = new FirebaseSimpleLogin($scope.dataRef, function(error, user) {
-					 
-					  if (error) {
-					    // an error occurred while attempting login
-					    console.log(error);
-					  } else if (user) {
-
-					    $scope.myName = user.displayName;
-					    var data = user.thirdPartyUserData;
-
-                            $scope.root.site = data.link;
-                            $scope.root.note = data.bio;
-                            //////
-
-                            if (data.hometown && data.hometown.name) $scope.root.hometown = data.hometown.name;
-                            $scope.root.id = data.id;
-                            $scope.root.username = data.username;
-
-                            setTimeout(function(){
-                                     if (data.hometown && data.hometown.name) $scope.root.hometown = data.hometown.name;
-                                    $scope.root.id = data.id;
-                                    $scope.root.username = data.username;
-                            },2000);
-
-
-                            $scope.status = '讀取完畢!請修改後發佈';
-
-                            if ($scope.root.hometown) $scope.askGeo($scope.root.hometown);
-
-
-                        $.getJSON('http://graph.facebook.com/' + user.id , function(d){
-                            console.log(d);
-                            $scope.ttName = d.name + "";
-                            $scope.root.name = d.name + "";
-
-                           for (var i = 0; i < $scope.base.hands.length; i++) {
-                                
-                                if (!$scope.base.hands[i]) continue;
-                                if ($scope.base.hands[i].id == data.id || ( !$scope.base.hands[i].id && $scope.base.hands[i].name && $scope.base.hands[i].name == $scope.root.name) )  {
-
-
-                                    var usrNameBuf = $scope.root.username +"";   
-                                    var idBuf = $scope.root.id +"";
-                                    var htBuf = $scope.root.hometown +"";
-
-                                    $scope.root = angular.copy($scope.base.hands[i]);
-
-                                    $scope.root.invis = false;
-
-                                    $scope.root.username = usrNameBuf;
-                                    $scope.root.id = idBuf;
-                                    $scope.root.hometown = htBuf;
-
-                                    $scope.n = i;
-                                    $scope.imp = true;
-                                    ////
-
-                                    if(!$scope.root.friends) $scope.root.friends = [];
-
-                                    for (var i = 0; i <= 5; i++) {
-                                        if (!$scope.root.friends[i]) {
-                                                $scope.root.friends[i] = {
-                                                    name: '請輸入朋友的名字',   
-                                                    address: '請輸入朋友的地址',
-                                                    latlngColumn: '',
-                                                    learner_role: '',
-                                                    learner_birth: '',
-                                                    learner_habit: '',
-                                                    learner_type: '',
-                                                };
-                                            }
-                                    }
-
-                   
-                                        $scope.$apply();
-                       
-                                }
-                            };     
-    
-                        }); 
-					  } else {
-					  	console.log('user is logged out');
-					  }
-				});
-
-            	auth.login('facebook', {
-				  rememberMe: true,
-				  scope: 'email'
-				});
-            };
-
-            $scope.logout = function (){
-                auth.logout();
-                $scope.root = new Object;
-                $scope.base.$child('onlines').$child($scope.n).$set({});
-                $scope.base.$child('hands').$child($scope.n).$child('online').$set(false);
-
-                $scope.n = $scope.base.hands.length;
-
-            }
-
-
-            $scope.out = function () {
-                if (confirm("確定要移除旗幟??這將會讓許多朋友失去一條找到您的路。")) {
-                        $scope.base.$child('hands').$child(n).$child(invis).$set(true);
-                        $scope.base.hands[n] = angular.copy($scope.root);
-                }
-            }
-
-            $scope.submit = function (verb) {
-
-                $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"+ $scope.root.address +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
-
-          //          console.log(d);
-
-                    var lat;
-                    var lng;
-
-                    try {
-                     lat = d.query.results.Result[0].latitude;
-                     lng = d.query.results.Result[0].longitude;
-                    } catch(err) { console.log(err) }
-
-                    if (!lat || !lng) {                        
-                        try {
-                         lat = d.query.results.Result.latitude;
-                         lng = d.query.results.Result.longitude;
-                        } catch(err) { console.log(err) }
-                    }
-
-                    $scope.root.latlngColumn = lat+','+lng;
-
-                    var n = $scope.n;
-
-                    if (!$scope.base.hands || !$scope.base.hands[n] || $scope.base.hands[n].id == $scope.root.id || $scope.base.hands[n].name == $scope.root.name || $scope.base.hands[n].username == $scope.root.username)  {
-                       
-                       if ($scope.root.note && $scope.root.site && $scope.root.share) {
-
-                            if ($scope.root.latlngColumn == "undefined,undefined") {
-                                alert("地址查找不到座標，請調整一下");
-                                return;
-                            }
-
-                            if (!$scope.root.learner_role || $scope.root.learner_role.indexOf('農') == -1) {
-                                alert("角色需包含「農」字");
-                                return;
-                            }
-
-                            var whiteList = ['site2','connect_me','learner_habit','ask','username','crop','plant'];
-
-                            for (var i = 0; i < whiteList.length; i++) {
-                                var w = whiteList[i];
-                                    if (!$scope.root[w] || $scope.root[w] == 'undefined') $scope.root[w] = "";
-                            };
-
-                            $scope.base.$child('hands').$child(n).$set(angular.copy($scope.root));
-                            $scope.base.hands[n] = angular.copy($scope.root);
-
-                            alert(verb+"成功!!\n\n歡迎隨時回來更新!!");
-
-                    
-                        }
-
-                        else {
-                            alert("請多介紹一些再發佈");
-                        }
-
-                    } else {
-                        alert("Sorry! some error happend.");
-                    }
-
-                });
-
-            }
-
-       };
     </script>
 
     <style>
@@ -805,7 +379,7 @@
                indexurl = "https://mapindex.firebaseio.com/"></map-index>
 
   <!-- ng controller -->
-<div ng-controller="DemoController" >
+<div ng-controller="Ctrl" >
   <div class="container main-container">
     <div class="row">
       <div class="col-md-12">
@@ -813,7 +387,7 @@
           <form class="form-inline" ng-show = "editS" ng-init = "editS = true">  
             <input name="iehack" type="hidden" value="&#9760;" />   <!--  for IE  -->
 
-            <h3 >找朋友</h3>
+            <h3 >直接跟農夫買、農園參訪、農忙幫工、果樹認養、契作、上下游交友</h3>
 
             <hr>
             查詢 : <input class="form-control" type="text" step="any" ng-model="key" placeholder = "關鍵字查詢?" ng-change =  "markers = (base.hands | toMarkers:key:nameKey:geoKey); onlines = (base.onlines | toMarkers);" />

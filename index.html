@@ -455,6 +455,7 @@
             概略地址：<input ng-model = "root.friends[k].address"/ ng-change = "checkLatLng(root.friends[k].address,n,k)" placeholder = "地址愈詳細，別人愈好認識您的所在">
 
               <span ng-show = "root.friends[k].address && root.friends[k].latlngColumn !== 'undefined,undefined'" ng-bind = "root.friends[k].latlngColumn"></span>
+              
               <span ng-show = "root.friends[k].address && root.friends[k].latlngColumn == 'undefined,undefined'"><button ng-click = "checkLatLng(root.address,n,k)">定位!</button></span>
 
               <br>

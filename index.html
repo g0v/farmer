@@ -73,7 +73,8 @@
         whiteList: ['site2','connect_me','learner_habit','ask','username','crop','plant'],
         dummyIcon: dummyIcon,
         firebase: 'https://shackhand-farmer.firebaseio.com/',
-        lang: 'zhtw'
+        lang: 'zhtw',
+        finger: 5
      });
 
 
@@ -444,6 +445,8 @@
             <button ng-show = "imp" ng-click = "submit('更新')">更新旗幟!!</button>
               <button ng-show = "imp" ng-click = "out()">移除旗幟</button>
             </form>
+
+
 
             <form ng-repeat = "k in [1,2,3,4,5]"
             		ng-show = "root.name && editNow == k">請填寫關於您朋友的公開資訊：<br>

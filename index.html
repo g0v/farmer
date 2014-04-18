@@ -58,7 +58,9 @@
 
      <script>
 
-     SKH.init();
+     SKH.init({
+        fbApp: '485195848253155'
+     });
 
      var auth;
 
@@ -268,10 +270,7 @@
         }
 
         var app = angular.module('demoapp', ['shackhand']);
-        app.config(function ($FBProvider) { var myInitFunction = function ($window, $rootScope, $fbInitParams) { $window.FB.    init({ appId: '485195848253155'})
-            }
-
-        }).filter('add', function (){
+        app.filter('add', function (){
             return function(objs, obj) {
                 objs.my = obj;
                 return objs;

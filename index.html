@@ -245,7 +245,7 @@
                 var latlngUsed = [];
 
                 if (autos) {
-                    (var i = 0; i < (autos.length || 0); i++) {
+                    for (var i = 0; i < (autos.length || 0); i++) {
                         var h = autos[i];
                         if (!h) { console.log('略過空格'); continue; }
                         hToM(h,i);

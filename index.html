@@ -59,78 +59,11 @@
 
      <script>
 
-
-     SKH.init({
-        fbApp: '485195848253155',
-        at: '台東',
-        checkList: ['learner_role','農','角色需包含「農」字'],
-        whiteList: ['site2','connect_me','learner_habit','ask','username','crop','plant'],
-        firebase: 'https://shackhand-farmer.firebaseio.com/',
-        lang: 'zhtw',
-        finger: 5
-     });
-
-
-     function toIcon (url, from) {
-		if (!from) {
-		        return {
-		            iconUrl: url,
-		            iconSize: [60, 60]
-		        }
-		} else {
-		        return {
-		            iconUrl: url,
-		            iconSize: [40, 40]
-		        }
-		}
-    };
-
-
-    function isClose(l1, l2) {
-        return Math.pow(parseFloat(l1.split(',')[0]) - parseFloat(l2.split(',')[0]), 2) + Math.pow(parseFloat(l1.split(',')[0]) - parseFloat(l2.split(',')[0]), 2) < 0.0001;
-    }
-
-    function modifyLatLng (latlngColumn, counter) {   //  "lat,lng"
-        var lat = parseFloat(latlngColumn.split(',')[0]);
-        var lng = parseFloat(latlngColumn.split(',')[1]);
-
-        var r = counter / 1000 * 20;
-        var theta = counter * Math.PI / 12;
-
-        var lngOffSet = r * Math.cos(theta);    // x
-        var latOffSet = r * Math.sin(theta) / 2;    // y
-
-//           console.log(latOffSet + ',' + lngOffSet);
-
-        return ((lat + latOffSet) + ',' + (lng + lngOffSet));
-    }
-
-    function toAge(str) {
-        var age;
-
-        if (str) age = parseInt(makeTimeStamp().split('/')[0]) - parseInt(str.split(',')[0].split('年')[0].split('/')[0].substr(0,4));
-    
-        if (age == 0) age = 1;
-        return age;
-    }
-
-    function has(val) {
-        return (val && val != 'undefined');
-    }
-    
-        var local_icons = {
-            defaultIcon: {
-                    iconUrl: 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/200px-Smiley.svg.png',
-                    iconSize: [40, 40]
-            }
-        }
-
-
-        var toM = function (list, key, nameKey, geoKey, maybeHideLatLng, expId) {
+     var toM = function (list, key, nameKey, geoKey, maybeHideLatLng, expId) {
 
                 var hToM = function(h,i,from,fbid) {
 
-                	if (!h || !h.note) { console.log('略過空格'); return; }
+                  if (!h || !h.note) { console.log('略過空格'); return; }
 
                     var hand = h;
                     
@@ -237,7 +170,7 @@
                         return;
                     };
         //            console.log(marker);
-                    ms.push(marker);
+                    return(marker);
                 }
 
                 var ms = [];
@@ -249,7 +182,7 @@
                     for (var i = 0; i < (autos.length || 0); i++) {
                         var h = autos[i];
                         if (!h) { console.log('略過空格'); continue; }
-                        hToM(h,i);
+                        ms.push(hToM(h,i));
                     };
 
                     for (var i = 0; i < (autos.length || 0); i++) {
@@ -257,7 +190,7 @@
                         if (!h) { console.log('略過空格'); continue; }                        
                         if (h.friends) {
                             for (var j = 0; j < h.friends.length; j++) {
-                                hToM(h.friends[j], i, h.name, h.id);   
+                                ms.push(hToM(h.friends[j], i, h.name, h.id));   
                             };              
                         }       
                     };
@@ -265,11 +198,22 @@
                 return ms;
         }
 
-        var app = angular.module('demoapp', ['shackhand']);
-        app.filter('toMarkers', function(){
-            return toM;
-        });
+     SKH.init({
+        fbApp: '485195848253155',
+        at: '台東',
+        checkList: ['learner_role','農','角色需包含「農」字'],
+        whiteList: ['site2','connect_me','learner_habit','ask','username','crop','plant'],
+        firebase: 'https://shackhand-farmer.firebaseio.com/',
+        lang: 'zhtw',
+        finger: 5,
+        toM: toM 
 
+     });
+
+
+
+
+        var app = angular.module('demoapp', ['shackhand']);
 
     </script>
 

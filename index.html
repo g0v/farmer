@@ -59,49 +59,20 @@
 
      <script>
 
-     var hToM = function(keys,h,i,llC,from,fbid) {
+     var toFlag = function(hand, i, Icon, from) {
+          return '<div class="flag">'
+                        + ((hand.username && '<a href = "http://www.facebook.com/'+hand.username+'" target = "_blank"> <img id = "fb" src="'+ Icon +'" />' ) || '')
 
-                  var key = keys[0];
-                  var nameKey = keys[1];
-                  var geoKey = keys[2];
-
-                  if (!h || !h.note) { console.log('略過空格'); return; }
-
-                    var hand = h;
-                    
-                    if (!hand.id && !hand.username && !from) return;
-                    if (!hand.name) return;
-                    if (hand.invis) return;
-                    
-                    var fbIcon;
-
-                    if (hand.id || fbid) {
-                        fbIcon = "http://graph.facebook.com/" + (hand.id || fbid) + "/picture";
-                    } else {
-                        fbIcon = "";
-                    }
-
-                        if (hand.site2 && hand.site2 == hand.site) hand.site2 = "";
-
-                        if (hand.site && hand.site.indexOf('http') == -1 && hand.site.indexOf('@') == -1) hand.site = 'http://' + hand.site;
-
-                    hand.latlngColumn = hand.latlngColumn.replace('(','').replace(')','').replace('附近','');                  
-
-
-                    var flag = '<div class="flag">'
-
-                        + ((hand.username && '<a href = "http://www.facebook.com/'+hand.username+'" target = "_blank"> <img id = "fb" src="'+ fbIcon +'" />' ) || '')
-
-                        +((!hand.username && hand.id && '<a href = "https://www.facebook.com/profile.php?id='+hand.id+'" target = "_blank"><img id = "fb" src="'+ fbIcon +'" />' ) || '')
+                        +((!hand.username && hand.id && '<a href = "https://www.facebook.com/profile.php?id='+hand.id+'" target = "_blank"><img id = "fb" src="'+ Icon +'" />' ) || '')
 
                         +'<strong>第'+ (i+1) +'位關心農業的朋友'
                         +((from && from + '推薦的朋友') || '')
                         +'：'+ hand.name+'</strong></a><br />'
 
                         +((from && '大約') || '')
-                        +(has(hand.learner_birth) && toAge(hand.learner_birth)+'歲的' || '')
+                        +(SKH.has(hand.learner_birth) && SKH.toAge(hand.learner_birth)+'歲的' || '')
                         +hand.learner_role
-                        +((has(hand.learner_type) && '('+hand.learner_type+')') || '')
+                        +((SKH.has(hand.learner_type) && '('+hand.learner_type+')') || '')
                   
 
                         +'<br>&nbsp;&nbsp;&nbsp;&nbsp;住在&nbsp;&nbsp;'+
@@ -126,33 +97,7 @@
                         +'<b>自我介紹：</b>'+( hand.note.replace(/\n/g, '<br>')|| "")+'<br />'
                         +'<hr>'
                         +'</div>';
-
-                 
-                    var marker = {
-                        lat: parseFloat(llC.split(',')[0]),
-                        lng: parseFloat(llC.split(',')[1]),
-                        message : flag,
-                        focus: false,
-                        icon: ((fbIcon && toIcon(fbIcon, (from || 0))) || local_icons.defaultIcon),
-                    }
-
-                    if (key && key.length > 0 && flag.indexOf(key) == -1) {
-                        console.log('略過關鍵字不符者');
-                        return;
-                    };
-
-                    if (nameKey && nameKey.length > 0 && hand.name.indexOf(nameKey) == -1) {
-                        console.log('略過人名不符者');
-                        return;
-                    }
-
-                    if (geoKey && geoKey.length > 0 && hand.address.indexOf(geoKey) == -1) {
-                        console.log('略過地理不符者');
-                        return;
-                    };
-        //            console.log(marker);
-                    return(marker);
-                }
+     }
 
      
 
@@ -164,8 +109,7 @@
         firebase: 'https://shackhand-farmer.firebaseio.com/',
         lang: 'zhtw',
         finger: 5,
-        hToM: hToM
-
+        toFlag: toFlag
      });
 
 

@@ -53,69 +53,6 @@
 
 <link rel="stylesheet" href="stylesheets/bootstrap.css" />
 
-	<script type="text/javascript" src="http://l2.io/ip.js?var=myip"></script>
-                                                      <!-- ^^^^ -->
-<!--	<script>alert(myip);</script>  -->
-
-     <script>
-
-     var toFlag = function(hand, i, Icon, from) {
-          return '<div class="flag">'
-                        + ((hand.username && '<a href = "http://www.facebook.com/'+hand.username+'" target = "_blank"> <img id = "fb" src="'+ Icon +'" />' ) || '')
-
-                        +((!hand.username && hand.id && '<a href = "https://www.facebook.com/profile.php?id='+hand.id+'" target = "_blank"><img id = "fb" src="'+ Icon +'" />' ) || '')
-
-                        +'<strong>第'+ (i+1) +'位關心農業的朋友'
-                        +((from && from + '推薦的朋友') || '')
-                        +'：'+ hand.name+'</strong></a><br />'
-
-                        +((from && '大約') || '')
-                        +(SKH.has(hand.learner_birth) && SKH.toAge(hand.learner_birth)+'歲的' || '')
-                        +hand.learner_role
-                        +((SKH.has(hand.learner_type) && '('+hand.learner_type+')') || '')
-                  
-
-                        +'<br>&nbsp;&nbsp;&nbsp;&nbsp;住在&nbsp;&nbsp;'+
-                        '<a href = "https://maps.google.com.tw/maps?hl=zh-TW&q='
-                        +hand.address+'" target = "_blank">'+hand.address+'</a>&nbsp;&nbsp;附近<hr>'
-
-                        +'<b>網址： </b>'+hand.site+'<br />'
-
-                        +((hand.site2 && '<b>社群網址: </b><a href = "'+hand.site2+'" target = "_blank">' + hand.site2 +'</a><br />') || "")
-                        +'<b>比較有空的時段：</b>'+( hand.freetime || "")+'<br />'
-                        +'<b>較需人手的時段：</b>'+( hand.buzytime || "")+'<br />'
-                        +'<b>聯絡方式：</b>'+( hand.connect_me || "")+'<br />'
-                        +'<a href="https://www.facebook.com/messages/' + hand.id + 'target="_blank">FB訊息</a><br/>'
-                        +'<hr>'
-                        +'<b>興趣包含：</b>'+( hand.learner_habit || "")+'<br />'
-                        +'<b>日常作物：</b>'+( hand.plant || "")+'<br />'
-                        +'<b>經濟作物：</b>'+( hand.crop || "")+'<br />'
-                        +'<b>技術：</b>'+( hand.skill || "")+'<br />'
-                        +'<b>可分享：</b>'+( hand.share || "")+'<br />'
-                        +'<b>邀請連絡：</b>'+( hand.ask || "")+'<br />'
-                        +'<hr>'
-                        +'<b>自我介紹：</b>'+( hand.note.replace(/\n/g, '<br>')|| "")+'<br />'
-                        +'<hr>'
-                        +'</div>';
-     }
-
-     
-
-     SKH.init({
-        fbApp: '485195848253155',
-        at: '台東',
-        checkList: ['learner_role','農','角色需包含「農」字'],
-        whiteList: ['site2','connect_me','learner_habit','ask','username','crop','plant'],
-        firebase: 'https://shackhand-farmer.firebaseio.com/',
-        lang: 'zhtw',
-        finger: 5,
-        toFlag: toFlag
-     });
-
-
-        var app = angular.module('demoapp', ['shackhand']);
-
-    </script>
 
 </head>
 
@@ -134,9 +71,11 @@
 
   <!-- Navbar -->
 
-    <skh-index heading = "農學地圖 ➭ 上下游互助"
+    <skh-index zhth = "農學地圖 ➭ 上下游互助"
+               en = "farmer map ➭ let stream flow"
                hurl = "https://g0v.hackpad.com/gvkD1y2n6vg"
-               author = "by g0v台灣零時政府"
+               authorzh = "by g0v台灣零時政府"
+               authorzh = "by g0v.tw"
                aurl = "http://g0v.tw"
                indexurl = "https://mapindex.firebaseio.com/"></skh-index>
 
@@ -144,62 +83,12 @@
 <div ng-controller="Ctrl" >
   <div class="container main-container">
     <div class="row">
-      <div class="col-md-12">
-        <div class="alert alert-info">
-          <form class="form-inline" ng-show = "editS" ng-init = "editS = true">  
-            <input name="iehack" type="hidden" value="&#9760;" />   <!--  for IE  -->
-
-            <h3 >直接跟農夫買、農園參訪、農忙幫工、果樹認養、契作、上下游交友、知識分享、種苗交流</h3>
-
-            <hr>
-            查詢 : <input class="form-control" type="text" step="any" ng-model="key" placeholder = "關鍵字查詢?" ng-change =  "markers = (base.hands | toMarkers:key:nameKey:geoKey); onlines = (base.onlines | toMarkers);" />
-
-            人名 : <input class="form-control" type="text" step="any" ng-model="nameKey" placeholder = "姓名查詢?" ng-change =  "markers = (base.hands | toMarkers:key:nameKey:geoKey);onlines = (base.onlines | toMarkers);" />
-
-            地區 : <input class="form-control" type="text" step="any" ng-model="geoKey"  placeholder = "地區查詢?" ng-change = "markers = (base.hands | toMarkers:key:nameKey:geoKey); onlines = (base.onlines | toMarkers);" />
-          </form>
-        </div>
-        <hr>
-      </div>
+      <skh-finder></skh-finder>
     </div>
     <div class="row">
       <div class="col-md-8">
-
-        <div class = "map">
-          <h4 style="display: inline">在地農學朋友</h4>
-          <span ng-show = "center.zoom">
-            <a ng-click = "center.zoom = (center.zoom || 10) -1"> <img class = "icon" src="img/zoom-in.png"> </a>
-            <a ng-click = "center.zoom = (center.zoom || 10) -1" > <img class = "icon" src="img/zoom-out.png"> </a>
-            <a ng-click = "editS = !editS" > <img class = "icon" src="img/find.png"> </a>
-          </span>
-
-          <span ng-hide = "center.zoom">
-            <a ng-click = "askGeo()" > <img class = "icon" src="img/findGeo.png"> </a>
-            <a ng-click = "askGeo()" > <img class = "icon" src="img/findGeo.png"> </a>
-            <a ng-click = "askGeo()" > <img class = "icon" src="img/findGeo.png"> </a>
-            <a ng-click = "askGeo()" > <img class = "icon" src="img/findGeo.png"> </a>
-          </span>
-
-            <a ng-click = "askGeo()"> <img class = "icon" src="img/findGeo.png"> </a>
-
-            <leaflet  center="center || taiwan" markers = "markers" width="100%" height="420"></leaflet> 
-
-              <!-- paths="paths"  -->
-
-        </div>
-
-
-        <div class="map">
-          <h4 style="display: inline-block">全台農學朋友</h4>
-          <a ng-click = "taiwan.zoom = taiwan.zoom+1"> <img class = "icon" src="img/zoom-in.png"> </a>
-          <a ng-click = "taiwan.zoom = taiwan.zoom-1" > <img class = "icon" src="img/zoom-out.png"> </a>
-          <a ng-click = "editS = !editS" > <img class = "icon" src="img/find.png"> </a>
-          <leaflet center="taiwan" markers = "markers" width="100%" height="420"></leaflet>
-                      <!-- paths="paths"  -->
-        </div>
-
-      
-
+        <skh-localmap></skh-localmap>
+        <skh-eaglemap></skh-eaglemap>     
       </div>
       <div class="col-md-4">
         <div class="well">
@@ -218,10 +107,7 @@
 
             <img id = "fb" ng-src="http://graph.facebook.com/{{root.id || root.username}}/picture" ng-show = "root.name"/> {{ttName}}
 
-            <button id = "FBlogin" class="btn btn-primary" ng-click="login()" ng-hide = "root.name">
-                  以Facebook登入
-              </button>
-
+            <skh-fblogin></skh-fblogin>
 
               <button id = "FBlogin" ng-click="logout()" ng-show = "root.name">
                   登出
@@ -372,10 +258,7 @@
 
                 <hr>
 
-                您是第{{ n + 1}}位農學之友嗎？
-                <button id = "FBlogin" class="btn btn-primary" ng-click="login()" ng-hide = "root.name">
-                    以Facebook登入
-                </button>
+                您是第{{ n + 1}}位農學之友嗎？<skh-fblogin></skh-fblogin>
 
               </span>
               <br>
@@ -396,6 +279,76 @@
   </div>
 
 </body>
+<script>
+
+     var toFlag = function(hand, i, Icon, from) {
+          return '<div class="flag">'
+                        + ((hand.username && '<a href = "http://www.facebook.com/'+hand.username+'" target = "_blank"> <img id = "fb" src="'+ Icon +'" />' ) || '')
+
+                        +((!hand.username && hand.id && '<a href = "https://www.facebook.com/profile.php?id='+hand.id+'" target = "_blank"><img id = "fb" src="'+ Icon +'" />' ) || '')
+
+                        +'<strong>第'+ (i+1) +'位關心農業的朋友'
+                        +((from && from + '推薦的朋友') || '')
+                        +'：'+ hand.name+'</strong></a><br />'
+
+                        +((from && '大約') || '')
+                        +(SKH.has(hand.learner_birth) && SKH.toAge(hand.learner_birth)+'歲的' || '')
+                        +hand.learner_role
+                        +((SKH.has(hand.learner_type) && '('+hand.learner_type+')') || '')
+                  
+
+                        +'<br>&nbsp;&nbsp;&nbsp;&nbsp;住在&nbsp;&nbsp;'+
+                        '<a href = "https://maps.google.com.tw/maps?hl=zh-TW&q='
+                        +hand.address+'" target = "_blank">'+hand.address+'</a>&nbsp;&nbsp;附近<hr>'
+
+                        +'<b>網址： </b>'+hand.site+'<br />'
+
+                        +((hand.site2 && '<b>社群網址: </b><a href = "'+hand.site2+'" target = "_blank">' + hand.site2 +'</a><br />') || "")
+                        +'<b>比較有空的時段：</b>'+( hand.freetime || "")+'<br />'
+                        +'<b>較需人手的時段：</b>'+( hand.buzytime || "")+'<br />'
+                        +'<b>聯絡方式：</b>'+( hand.connect_me || "")+'<br />'
+                        +'<a href="https://www.facebook.com/messages/' + hand.id + 'target="_blank">FB訊息</a><br/>'
+                        +'<hr>'
+                        +'<b>興趣包含：</b>'+( hand.learner_habit || "")+'<br />'
+                        +'<b>日常作物：</b>'+( hand.plant || "")+'<br />'
+                        +'<b>經濟作物：</b>'+( hand.crop || "")+'<br />'
+                        +'<b>技術：</b>'+( hand.skill || "")+'<br />'
+                        +'<b>可分享：</b>'+( hand.share || "")+'<br />'
+                        +'<b>邀請連絡：</b>'+( hand.ask || "")+'<br />'
+                        +'<hr>'
+                        +'<b>自我介紹：</b>'+( hand.note.replace(/\n/g, '<br>')|| "")+'<br />'
+                        +'<hr>'
+                        +'</div>';
+     }
+
+     SKH.init({
+        fbApp: '485195848253155',
+        at: {zhtw:'台東',en:'taitung'},
+        eagle: {
+                    lat: 23.704894502324912,
+                    lng: 120.89355468749999,
+                    zoom: 7,
+        },
+        slogen: {zhtw : {
+                    main: '直接跟農夫買、農園參訪、農忙幫工、果樹認養、契作、上下游交友、知識分享、種苗交流',
+                    local: '在地農學朋友',
+                    eagle: '全台農學朋友'
+                },
+                en: {
+
+                }
+        },
+        checkList: ['learner_role','農','角色需包含「農」字'],
+        whiteList: ['site2','connect_me','learner_habit','ask','username','crop','plant'],
+        firebase: 'https://shackhand-farmer.firebaseio.com/',
+        lang: 'zhtw',
+        finger: 5,
+        toFlag: toFlag
+     });
+
+     var app = angular.module('demoapp', ['shackhand']);
+
+    </script>
 </html>
 
 

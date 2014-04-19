@@ -209,7 +209,7 @@
                         +'<b>經濟作物：</b>'+( hand.crop || "")+'<br />'
                         +'<b>技術：</b>'+( hand.skill || "")+'<br />'
                         +'<b>可分享：</b>'+( hand.share || "")+'<br />'
-                        +'<b>需要：</b>'+( hand.ask || "")+'<br />'
+                        +'<b>邀請連絡：</b>'+( hand.ask || "")+'<br />'
                         +'<hr>'
                         +'<b>自我介紹：</b>'+( hand.note.replace(/\n/g, '<br>')|| "")+'<br />'
                         +'<hr>'
@@ -407,14 +407,14 @@
 
               個人網址：<input ng-model = "root.site"/><a ng-show = "root.site" href = "{{root.site | makeHref}}" target = "_blank">測試這個連結</a><br>
 
-              社團網址分享：<input ng-model = "root.site2" placeholder = "產銷班、農會、協會、社群或組織" /><a ng-show = "root.site2" href = "{{root.site2 | makeHref }}" target = "_blank">測試這個連結</a><br>
+              社團網址分享：<input ng-model = "root.site2" placeholder = "社群或組織" /><a ng-show = "root.site2" href = "{{root.site2 | makeHref }}" target = "_blank">測試這個連結</a><br>
 
               身份
               <input ng-model = "root.learner_role" placeholder = "包含「農」字。如農人, 半農半X, 假日農夫, 陽台農夫, 關心農業的使用者, 農學消費者...。" />
 
-              主要的參與型態
+              大約的上下游位置
               <select ng-model = "root.learner_type">
-                  <option ng-repeat = "t in ['生產者','推廣者','使用者','參訪者']"
+                  <option ng-repeat = "t in ['上游(生產為主)','中游(加工再製為主)','下游(購買食用為主)']"
                       ng-selected = "root.learner_type == t" value="{{t}}">{{t}}</option>
               </select><br>
 
@@ -424,28 +424,32 @@
                       <br>
                   </span>
 
-            興趣：<input ng-model = "root.learner_habit" placeholder = '可略'/><br>
-
             日常作物：<br><textarea ng-model = "root.plant" rows = '4' cols = '30' placeholder = '種開心的'/></textarea><br>
             
             經濟作物：<br><textarea ng-model = "root.crop" rows = '4' cols = '30' placeholder = '有種來賣的'/></textarea><br>
+
+            興趣：<input ng-model = "root.learner_habit" placeholder = '個人興趣'/><br>
             
-            技術：<textarea ng-model = "root.skill" rows = '4' cols = '30'placeholder = '例如:稻米的自然農法。也可以寫資訊工程、行銷等等。'/></textarea><br>
+            技術專長：<textarea ng-model = "root.skill" rows = '4' cols = '30'placeholder = '例如:自然農法、機械維修、資訊工程'/></textarea><br>
 
-            可分享：<textarea ng-model = "root.share" rows = '4' cols = '30' placeholder = '例如:產地直購、非基改大豆、架網站等'/></textarea><br>
+            可分享：<textarea ng-model = "root.share" rows = '4' cols = '30' placeholder = '例如:非基改大豆種籽、架網站等'/></textarea><br>
 
-            需要的支持：<input ng-model = "root.ask" placeholder = '讓網友知道可以為你做什麼?'/><br>
+            比較有空的時段：<br><input ng-model = "root.freetime" rows = '5' cols = '30' placeholder = '例如：週五下午和週末'></textarea><br>
+
+            比較需要人手的時段：<br><input ng-model = "root.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'></textarea><br>
 
             自我介紹：<br><textarea ng-model = "root.note" rows = '5' cols = '30' placeholder = "請自由發揮，介紹自己^_^"></textarea> <br>
-            比較有空的時段：<br><input ng-model = "root.freetime" rows = '5' cols = '30' placeholder = '例如：週五下午和週末'></textarea><br>
-            比較需要人手的時段：<br><input ng-model = "root.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'></textarea><br>
+            
+            邀請連絡：<textarea ng-model = "root.ask"  rows = '5' cols = '30' placeholder = '可以怎麼和你連絡?做什麼?如直接跟農夫買、農園參訪、農忙幫工、果樹認養、契作、上下游交友、知識分享、種苗交流?'/><br>
+
             聯絡方式：<br><textarea ng-model = "root.connect_me" rows = '5' cols = '30' placeholder = '可略。如有多行，請在分行處加上<br>記號'></textarea><br>
             <hr>
+
               <button ng-hide = "imp" ng-click = "submit('登入')">升起旗幟!!</button>
             <button ng-show = "imp" ng-click = "submit('更新')">更新旗幟!!</button>
               <button ng-show = "imp" ng-click = "out()">移除旗幟</button>
-            </form>
 
+            </form>
 
 
             <form ng-repeat = "f in root.friends"
@@ -479,21 +483,24 @@
                       <br>
                   </span>
 
-            興趣：<input ng-model = "f.learner_habit" placeholder = '可略'/><br>
-
             日常作物：<br><textarea ng-model = "f.plant" rows = '4' cols = '30' placeholder = '種開心的'/></textarea><br>
             
             經濟作物：<br><textarea ng-model = "f.crop" rows = '4' cols = '30' placeholder = '有種來賣的'/></textarea><br>
             
-            技術：<textarea ng-model = "f.skill" rows = '4' cols = '30'placeholder = '例如:稻米的自然農法。也可以寫資訊工程、行銷等等。'/></textarea><br>
+            興趣：<input ng-model = "f.learner_habit" placeholder = '個人興趣'/><br>
+
+            技術專長：<textarea ng-model = "f.skill" rows = '4' cols = '30'placeholder = '例如:稻米的自然農法。也可以寫資訊工程、行銷等等。'/></textarea><br>
 
             可分享：<textarea ng-model = "f.share" rows = '4' cols = '30' placeholder = '例如:產地直購、非基改大豆、架網站等'/></textarea><br>
 
-            需要的支持：<input ng-model = "f.ask" placeholder = '讓網友知道可以為他做什麼?'/><br>
+            比較有空的時段：<br><input ng-model = "f.freetime" rows = '5' cols = '30' placeholder = '例如：週五下午和週末'></textarea><br>
+
+            比較需要人手的時段：<br><input ng-model = "f.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'></textarea><br>
 
             介紹朋友：<br><textarea ng-model = "f.note" rows = '5' cols = '30' placeholder = "請自由發揮，介紹自己^_^"></textarea> <br>
-            比較有空的時段：<br><input ng-model = "f.freetime" rows = '5' cols = '30' placeholder = '例如：週五下午和週末'></textarea><br>
-            比較需要人手的時段：<br><input ng-model = "f.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'></textarea><br>
+          
+            邀請連絡：<textarea ng-model = "f.ask"  rows = '5' cols = '30' placeholder = '可以怎麼和你連絡?做什麼?如直接跟農夫買、農園參訪、農忙幫工、果樹認養、契作、上下游交友、知識分享、種苗交流?'/><br>
+
             聯絡方式：<br><textarea ng-model = "f.connect_me" rows = '5' cols = '30' placeholder = '可略。如有多行，請在分行處加上<br>記號'></textarea><br>
             <hr>
               <button ng-hide = "imp" ng-click = "submit('登入')">升起推薦朋友的旗幟!!</button>
@@ -508,7 +515,7 @@
 
         <!--          <input type = "number" ng-model = "total"  ng-show = "n > 0">
 
-                  <br>  -->
+                  <br> -->
 
                   <span ng-repeat = "k in [3,2,1]" ng-show = "total - k >= 0">
 
@@ -516,11 +523,10 @@
 
                       <img id = "{{ base.hands[total - k].id && 'fb' }}" ng-src="{{(base.hands[total - k].id && 'http://graph.facebook.com/' + base.hands[total - k].id + '/picture') || 'img/marker-icon.png'}}"/>
 
-                      <span>第{{total - k + 1}}位農學之友：{{base.hands[total - k].name }} ( {{base.hands[total - k].address.substr(0,2)}} )</span>
-
+                      <span>第{{total - k + 1}}位農學之友：{{base.hands[total - k].name }}<br> ( {{base.hands[total - k].address.substr(0,2)}}，尋找{{base.hands[total - k].ask}}中 )</span>
                       </a>
 
-                      <br>
+                      <hr>
                       
                   </span>
               </span>
@@ -529,7 +535,7 @@
 
                 <hr>
 
-                您是第{{ n + 1}}位農友嗎？
+                您是第{{ n + 1}}位農學之友嗎？
                 <button id = "FBlogin" class="btn btn-primary" ng-click="login()" ng-hide = "root.name">
                     以Facebook登入
                 </button>

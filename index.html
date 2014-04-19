@@ -439,8 +439,8 @@
             聯絡方式：<br><textarea ng-model = "root.connect_me" rows = '5' cols = '30' placeholder = '可略。如有多行，請在分行處加上<br>記號'></textarea><br>
             <hr>
 
-              <button ng-hide = "imp" ng-click = "submit('登入')">升起旗幟!!</button>
-            <button ng-show = "imp" ng-click = "submit('更新')">更新旗幟!!</button>
+              <button ng-hide = "imp" ng-click = "submit({zhtw:'登入', en: 'join'})">升起旗幟!!</button>
+              <button ng-show = "imp" ng-click = "submit({zhtw:'更新', en:'update'})">更新旗幟!!</button>
               <button ng-show = "imp" ng-click = "out()">移除旗幟</button>
 
             </form>

@@ -59,9 +59,11 @@
 
      <script>
 
-     var toM = function (list, key, nameKey, geoKey, maybeHideLatLng, expId) {
+     var hToM = function(keys,h,i,llC,from,fbid) {
 
-                var hToM = function(h,i,from,fbid) {
+                  var key = keys[0];
+                  var nameKey = keys[1];
+                  var geoKey = keys[2];
 
                   if (!h || !h.note) { console.log('略過空格'); return; }
 
@@ -70,8 +72,7 @@
                     if (!hand.id && !hand.username && !from) return;
                     if (!hand.name) return;
                     if (hand.invis) return;
-                    if (maybeHideLatLng && isClose(hand.latlngColumn,maybeHideLatLng) && hand.id != expId) { console.log('略過同地址'); return; }
-
+                    
                     var fbIcon;
 
                     if (hand.id || fbid) {
@@ -84,23 +85,8 @@
 
                         if (hand.site && hand.site.indexOf('http') == -1 && hand.site.indexOf('@') == -1) hand.site = 'http://' + hand.site;
 
-                        if (hand.site && hand.site.indexOf('@') > -1) { hand.site = '<a href = "mailto:'+hand.site+'?subject=您好&body='+hand.name+'您好：我在農學地圖上看到您的交友旗幟，我是">'+hand.site+'</a>'; } else { hand.site = hand.site.replace(/(.*?)(http.+)\s*/, '$1 <a href = $2> $2 </a>'); }
+                    hand.latlngColumn = hand.latlngColumn.replace('(','').replace(')','').replace('附近','');                  
 
-                        if (hand.site2 && hand.site2.indexOf('http') == -1 && hand.site2.indexOf('@') == -1) hand.site2 = 'http://' + hand.site2;
-
-                        if (hand.site2 && hand.site2.indexOf('@') > -1) { hand.site2 = '<a href = "mailto:'+hand.site2+'?subject=您好&body='+hand.name+'您好：我在農學地圖上看到您的交友旗幟，我是">'+hand.site2+'</a>'; } else { hand.site2 = hand.site2 && hand.site2.replace(/(.*?)(http.+)\s*/, '$1 <a href = $2> $2 </a>'); }
-
-                    hand.latlngColumn = hand.latlngColumn.replace('(','').replace(')','').replace('附近','');
-
-                     //重覆座標的解決  displacement algorithm
-
-                    var counter = 0;
-                    for (var j = 0; j < latlngUsed.length; j++) {
-                        if (latlngUsed[j] == hand.latlngColumn) counter++ ;
-                    };
-
-                    
-                    latlngUsed.push(hand.latlngColumn);
 
                     var flag = '<div class="flag">'
 
@@ -141,11 +127,6 @@
                         +'<hr>'
                         +'</div>';
 
-
-                        var llC = "" + hand.latlngColumn;
-
-                    if (counter > 0) llC = modifyLatLng(hand.latlngColumn, counter);
-
                  
                     var marker = {
                         lat: parseFloat(llC.split(',')[0]),
@@ -173,30 +154,7 @@
                     return(marker);
                 }
 
-                var ms = [];
-                    
-                var autos = angular.copy(list);
-                var latlngUsed = [];
-
-                if (autos) {
-                    for (var i = 0; i < (autos.length || 0); i++) {
-                        var h = autos[i];
-                        if (!h) { console.log('略過空格'); continue; }
-                        ms.push(hToM(h,i));
-                    };
-
-                    for (var i = 0; i < (autos.length || 0); i++) {
-                        var h = autos[i];
-                        if (!h) { console.log('略過空格'); continue; }                        
-                        if (h.friends) {
-                            for (var j = 0; j < h.friends.length; j++) {
-                                ms.push(hToM(h.friends[j], i, h.name, h.id));   
-                            };              
-                        }       
-                    };
-                }
-                return ms;
-        }
+     
 
      SKH.init({
         fbApp: '485195848253155',
@@ -206,11 +164,9 @@
         firebase: 'https://shackhand-farmer.firebaseio.com/',
         lang: 'zhtw',
         finger: 5,
-        toM: toM 
+        hToM: hToM
 
      });
-
-
 
 
         var app = angular.module('demoapp', ['shackhand']);

@@ -71,7 +71,7 @@
 
   <!-- Navbar -->
 
-    <skh-index zhth = "農學地圖 ➭ 上下游互助"
+    <skh-index zhtw = "農學地圖 ➭ 上下游互助"
                en = "farmer map ➭ let stream flow"
                hurl = "https://g0v.hackpad.com/gvkD1y2n6vg"
                authorzh = "by g0v台灣零時政府"
@@ -88,7 +88,7 @@
     <div class="row">
       <div class="col-md-8">
         <skh-localmap></skh-localmap>
-        <skh-eaglemap></skh-eaglemap>     
+        <skh-eaglemap></skh-eaglemap>
       </div>
       <div class="col-md-4">
         <div class="well">
@@ -274,8 +274,10 @@
         </div>
 
       </div>
+      <div class = "row">
+        <skh-list></skh-list>
+      </div>
     </div>
-
   </div>
 
 </body>
@@ -343,7 +345,8 @@
         firebase: 'https://shackhand-farmer.firebaseio.com/',
         lang: 'zhtw',
         finger: 5,
-        toFlag: toFlag
+        toFlag: toFlag,        
+        listKeys: ['name','address','crop','share','ask','note'] //'connect_me',
      });
 
      var app = angular.module('demoapp', ['shackhand']);

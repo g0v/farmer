@@ -75,9 +75,9 @@
                en = "farmer map ➭ let stream flow"
                hurl = "https://g0v.hackpad.com/gvkD1y2n6vg"
                authorzh = "by g0v台灣零時政府"
-               authorzh = "by g0v.tw"
+               authoren = "by g0v.tw"
                aurl = "http://g0v.tw"
-               indexurl = "https://mapindex.firebaseio.com/"></skh-index>
+               indexurl = "https://mapindex.firebaseio.com/support/"></skh-index>
 
   <!-- ng controller -->
 <div ng-controller="Ctrl" >
@@ -157,7 +157,7 @@
 
             可分享：<textarea ng-model = "root.share" rows = '4' cols = '30' placeholder = '例如:非基改大豆種籽、架網站等'/></textarea><br>
 
-            比較有空的時段：<br><input ng-model = "root.freetime" rows = '5' cols = '30' placeholder = '例如：週五下午和週末'></textarea><br>
+            比較有空的時段：<br><input ng-model = "root.freetime"  placeholder = '例如：週五下午和週末'/><br>
 
             比較需要人手的時段：<br><input ng-model = "root.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'></textarea><br>
 
@@ -165,7 +165,7 @@
             
             邀請連絡：<textarea ng-model = "root.ask"  rows = '5' cols = '30' placeholder = '可以怎麼和你連絡?做什麼?如直接跟農夫買、農園參訪、農忙幫工、果樹認養、契作、上下游交友、知識分享、種苗交流?'/><br>
 
-            聯絡方式：<br><textarea ng-model = "root.connect_me" rows = '5' cols = '30' placeholder = '可略。如有多行，請在分行處加上<br>記號'></textarea><br>
+            聯絡方式：<br><textarea ng-model = "root.connect_me" rows = '5' cols = '30' placeholder = '除了FB之外的聯絡方式'></textarea><br>
             <hr>
 
               <button ng-hide = "imp" ng-click = "submit({zhtw:'登入', en: 'join'})">升起旗幟!!</button>

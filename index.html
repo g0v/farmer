@@ -73,7 +73,7 @@
     <skh-index zhtw = "農學地圖 ➭ 上下游互助"
                en = "farmer map ➭ let stream flow"
                hurl = "https://g0v.hackpad.com/gvkD1y2n6vg"
-               authorzh = "by g0v台灣零時政府"
+               authorzhtw = "by g0v台灣零時政府"
                authoren = "by g0v.tw"
                aurl = "http://g0v.tw"
                indexurl = "https://mapindex.firebaseio.com/support/"></skh-index>
@@ -167,8 +167,8 @@
             聯絡方式：<br><textarea ng-model = "root.connect_me" rows = '5' cols = '30' placeholder = '除了FB之外的聯絡方式'></textarea><br>
             <hr>
 
-              <button ng-hide = "imp" ng-click = "submit({zhtw:'登入', en: 'join'})">升起旗幟!!</button>
-              <button ng-show = "imp" ng-click = "submit({zhtw:'更新', en:'update'})">更新旗幟!!</button>
+              <button ng-hide = "imp" ng-click = "submit({'zh-tw':'登入', en: 'join'})">升起旗幟!!</button>
+              <button ng-show = "imp" ng-click = "submit({'zh-tw':'更新', en:'update'})">更新旗幟!!</button>
               <button ng-show = "imp" ng-click = "out()">移除旗幟</button>
 
             </form>
@@ -324,13 +324,13 @@
 
      SKH.init({
         fbApp: '485195848253155',
-        at: {zhtw:'台東',en:'taitung'},
+        at: {'zh-tw':'台東',en:'taitung'},
         eagle: {
                     lat: 23.704894502324912,
                     lng: 120.89355468749999,
                     zoom: 7,
         },
-        slogen: {zhtw : {
+        slogen: {'zh-tw' : {
                     main: '直接跟農夫買、農園參訪、農忙幫工、果樹認養、契作、上下游交友、知識分享、種苗交流',
                     local: '在地農學朋友',
                     eagle: '全台農學朋友'
@@ -342,7 +342,7 @@
         checkList: ['learner_role','農','角色需包含「農」字'],
         whiteList: ['site2','connect_me','learner_habit','ask','username','crop','plant'],
         firebase: 'https://shackhand-farmer.firebaseio.com/',
-        lang: 'zhtw',
+        lang: 'zh-tw',
         finger: 5,
         toFlag: toFlag,        
         listKeys: ['name','address','crop','share','ask','note'] //'connect_me',

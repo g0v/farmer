@@ -79,7 +79,7 @@
                indexurl = "https://mapindex.firebaseio.com/support/"></skh-index>
 
   <!-- ng controller -->
-<div ng-controller="Ctrl" >
+<div ng-controller="SKH-Ctrl" >
   <div class="container main-container">
     <div class="row">
       <skh-finder></skh-finder>
@@ -339,7 +339,7 @@
 
                 }
         },
-        checkList: ['learner_role','農','角色需包含「農」字'],
+        checkList: [['learner_role','農','角色需包含「農」字']],
         whiteList: ['site2','connect_me','learner_habit','ask','username','crop','plant'],
         firebase: 'https://shackhand-farmer.firebaseio.com/',
         lang: 'zh-tw',

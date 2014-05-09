@@ -170,7 +170,7 @@
                
                   <span class="input-group-addon" ng-show = "root.site2">
                    <a ng-show = "root.site2" href = "{{root.site2 | makeHref }}" target = "_blank">
-                    <img ng-src = "http://www.google.com/s2/favicons?domain={{root.}}">測試這個連結</a><br>
+                    <img ng-src = "http://www.google.com/s2/favicons?domain={{root.site2}}">測試這個連結</a><br>
                   </span>
         </div>
 
@@ -351,6 +351,7 @@
 <script src='module/shackhand-0.0.3.js'></script>
 
 
+
  
     <script>     
 
@@ -394,9 +395,11 @@
 
      }
 
+     
+
      var toFlag = function(hand, i, Icon, from) {
           return '<div class="flag">'
-                        + ((hand.username && '<a href = "http://www.facebook.com/'+hand.username+'" target = "_blank"> <img id = "fb" src="'+ Icon +'" />' ) || '')
+                        + ((hand.id && '<a href = "http://www.facebook.com/'+hand.id+'" target = "_blank"> <img id = "fb" src="'+ Icon +'" />' ) || '')
 
                         +((!hand.username && hand.id && '<a href = "https://www.facebook.com/profile.php?id='+hand.id+'" target = "_blank"><img id = "fb" src="'+ Icon +'" />' ) || '')
 
@@ -414,9 +417,16 @@
                         '<a href = "https://maps.google.com.tw/maps?hl=zh-TW&q='
                         +hand.address+'" target = "_blank">'+hand.address+'</a>&nbsp;&nbsp;附近<hr>'
 
-                        +'<b>網址： </b>'+hand.site+'<br />'
-
-                        +((hand.site2 && '<b>社群網址: </b><a href = "'+hand.site2+'" target = "_blank">' + hand.site2 +'</a><br />') || "")
+                        +((hand.site && '<b>個人網站: </b><a href = "'+SKH.toHref(hand.site)+'" target = "_blank">'
+                          + '<img title = "' + hand.site
+                              +'"src = "http://www.google.com/s2/favicons?domain=' + hand.site +'">'
+                          + '</a>') || "")
+                          
+                        +((hand.site2 && '<b>社群網站: </b><a href = "'+SKH.toHref(hand.site2)+'" target = "_blank">'
+                          + '<img title = "' + hand.site2 
+                              + '" src = "http://www.google.com/s2/favicons?domain=' + hand.site2 +'">'
+                          + '</a>') || "")
+                        
                         +'<b>比較有空的時段：</b>'+( hand.freetime || "")+'<br />'
                         +'<b>較需人手的時段：</b>'+( hand.buzytime || "")+'<br />'
                         +'<b>聯絡方式：</b>'+( hand.connect_me || "")+'<br />'

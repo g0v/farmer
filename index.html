@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="module/src/bootstrap.css" />
   <link rel="stylesheet" href="module/src/bootstrap-theme.min.css" />
   <link rel="stylesheet" href="module/src/bootstrap-select.min.css" />   
-  <link rel="stylesheet" href="module/shackhand-0.0.2.css" />
+  <link rel="stylesheet" href="module/shackhand-0.0.3.css" />
 
 
 </head>
@@ -223,29 +223,30 @@
               <!--  ?????  -->
         </div>
 
-        <div class="input-group" ng-show = "root.learner_role.indexOf('自學家長') > -1">
-              <span class="input-group-addon">孩子的年次</span>
 
-              <!--  ?????  -->
-                  <span>
-                      
-                      <input class = "form-control" ng-model = 'root.child_birth' type = 'text' placeholder = '最大孩子的出生年次，西元'></input>
-                      <br>
+            日常作物：<br><textarea ng-model = "root.plant" rows = '4' cols = '30' placeholder = '種開心的'/></textarea><br>
+            
+            經濟作物：<br><textarea ng-model = "root.crop" rows = '4' cols = '30' placeholder = '有種來賣的'/></textarea><br>
 
-                      <input class = "form-control" ng-model = 'root.child_birth2' type = 'text' placeholder = '最小孩子的出生年次，西元'></input>
-                      <br>
-                  </span>
-        </div>
 
         <div class="input-group">
               <span class="input-group-addon">個人興趣</span>
                 <input class = "form-control" ng-model = "root.learner_habit" placeholder = '個人興趣'/><br>
         </div>
 
+
+            技術專長：<textarea ng-model = "root.skill" rows = '4' cols = '30'placeholder = '例如:自然農法、機械維修、資訊工程'/></textarea><br>
+
+
         <div class="input-group">
               <span class="input-group-addon">可分享</span>
                 <input class = "form-control" ng-model = "root.share" placeholder = '可提供他人的支持分享，請務必填寫'/><br>
         </div>
+        
+            比較有空的時段：<br><input ng-model = "root.freetime"  placeholder = '例如：週五下午和週末'/><br>
+
+            比較需要人手的時段：<br><input ng-model = "root.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'></textarea><br>
+
 
         <div class="input-group">
               <span class="input-group-addon">尋找</span>
@@ -347,13 +348,7 @@
 <script src='module/src/angularfire.min.js'></script>
 <script src='module/src/firebase-simple-login.js'></script>
 <script src="module/src/angular-easyfb.min.js"></script>
-
-<!--
-<script src="module/src/bootstrap.min.js"></script>
-<script src="module/src/bootstrap-select.min.js"></script>
--->
-
-<script src='module/shackhand-0.0.2.js'></script>
+<script src='module/shackhand-0.0.3.js'></script>
 
 
  

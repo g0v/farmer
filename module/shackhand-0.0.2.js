@@ -24,6 +24,10 @@ SKH.toAge = function (str,year) {
     return age;
 }
 
+SKH.toHref = function (str) {
+    return (str.indexOf('http') > -1) ? str : ('http://' + str);
+} 
+
 SKH.init = function(p) {
 
     p.lang = (p.lang || 'en');

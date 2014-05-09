@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html ng-app="demoapp">
+  <head>
+
+    <title>農學地圖 ➭ 上下游互助</title>
+
+    <meta charset="UTF-8">
+    
+   <meta property="fb:admins" content="100000207390400" />
+   <meta property="fb:app_id" content="697252030337861" />
+
+    <meta property="og:site_name" content="農學互助支持網" />
+    <meta property="og:description" content="農學地圖 ➭ 上下游互助" />
+    <meta property="og:title" content="農學地圖 ➭ 上下游互助" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://g0v.github.io/farmer/index.html" />
+    <meta property="og:image" content="http://g0v.github.io/farmer/img/main.jpg" />
+
+<script src="javascripts/lib/jquery-1.10.2.js"></script>
+
+    <script src="javascripts/lib/angularLeaf/bower_components/angular/angular.min.js"></script>
+    <script src="javascripts/lib/angularLeaf/bower_components/angular-route/angular-route.min.js"></script>
+
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js"></script>
+    <script src="javascripts/lib/angularLeaf/dist/angular-leaflet-directive.js"></script>
+
+    <link rel="stylesheet" href="javascripts/lib/angularLeaf/bower_components/leaflet-dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="javascripts/lib/angularLeaf/bower_components/leaflet-dist/leaflet.ie.css" /> 
+
+
+<script src='https://cdn.firebase.com/v0/firebase.js'></script>
+<script src='https://cdn.firebase.com/libs/angularfire/0.5.0/angularfire.min.js'></script>
+
+<script type='text/javascript'
+        src='https://cdn.firebase.com/js/simple-login/1.2.5/firebase-simple-login.js'>
+</script>
+
+<script src="javascripts/lib/angular-easyfb.min.js"></script>
+
+<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap.js"></script>
+
+<script src='http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.10.0.js'></script>
+
+
+<script src='http://bestian.github.io/shackhand/module/shackhand-0.0.1.js'></script>
+<link rel="stylesheet" href="http://bestian.github.io/shackhand/module/shackhand-0.0.1.css" />
+
+<!-- CSS is optional -->
+
+
+<link rel="stylesheet" href="stylesheets/bootstrap.css" />
+
+
+</head>
+
+<body>
+
+  <!-- Facebook API -start- -->
+  <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "http://connect.facebook.net/zh_TW/all.js#xfbml=1&appId=697252030337861";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+  <!-- Facebook API -end- -->
+
+  <!-- Navbar -->
+
+    <skh-index zhtw = "農學地圖 ➭ 上下游互助"
+               en = "farmer map ➭ let stream flow"
+               hurl = "https://g0v.hackpad.com/gvkD1y2n6vg"
+               authorzhtw = "by g0v台灣零時政府"
+               authoren = "by g0v.tw"
+               aurl = "http://g0v.tw"
+               indexurl = "https://mapindex.firebaseio.com/support/"></skh-index>
+
+  <!-- ng controller -->
+<div ng-controller="SKH-Ctrl" >
+  <div class="container main-container">
+    <div class="row">
+      <skh-finder></skh-finder>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <skh-localmap></skh-localmap>
+        <skh-eaglemap></skh-eaglemap>
+      </div>
+      <div class="col-md-4">
+        <div class="well">
+          <div id = "J" class="join">
+
+              <br>
+              升起您的農學互助支持旗，助新朋友一臂之力!!
+              <ul>
+                  <li>
+              <a href="http://moztw.org/firefox/" target="_blank">Firefox</a>, <a href="http://www.google.com/intl/zh-TW/chrome/browser/" target="_blank">Chrome</a>, 或<a href="https://www.apple.com/tw/safari/" target="_blank">Safari</a>支援完整地圖
+              
+                  <li>IE不支援。
+              </ul>         
+            <br>
+
+
+            <img id = "fb" ng-src="http://graph.facebook.com/{{root.id || root.username}}/picture" ng-show = "root.name"/> {{ttName}}
+
+            <skh-fblogin></skh-fblogin>
+
+              <button id = "FBlogin" ng-click="logout()" ng-show = "root.name">
+                  登出
+              </button>
+
+              <select ng-show = "root.name"
+              			ng-model = "editNow" ng-init = "editNow = 0" >
+              	<option ng-repeat = "j in [0,1,2,3,4,5]" ng-selected = "editNow == j" value = "{{j}}">{{ (j == 0 && '我自己') || (root.friends && root.friends[j] && root.friends[j].name) || '第' + j + '位朋友'}}</option>
+              </select>
+
+            <hr>
+
+            <form ng-show = "root.name && editNow == 0">請填寫您願意公開的資訊：<br>
+            名字：<input ng-model = "root.name"/ ><br>
+            概略地址：<input ng-model = "root.address"/ ng-change = "checkLatLng(root.address,n)" placeholder = "地址愈詳細，別人愈好認識您的所在">
+              <span ng-show = "root.address && root.latlngColumn !== 'undefined,undefined'" ng-bind = "root.latlngColumn"></span>
+              <span ng-show = "root.address && root.latlngColumn == 'undefined,undefined'"><button ng-click = "checkLatLng(root.address,n)">定位!</button></span>
+
+              <br>
+
+              個人網址：<input ng-model = "root.site"/><a ng-show = "root.site" href = "{{root.site | makeHref}}" target = "_blank">測試這個連結</a><br>
+
+              社團網址分享：<input ng-model = "root.site2" placeholder = "社群或組織" /><a ng-show = "root.site2" href = "{{root.site2 | makeHref }}" target = "_blank">測試這個連結</a><br>
+
+              身份
+              <input ng-model = "root.learner_role" placeholder = "包含「農」字。如農人, 半農半X, 假日農夫, 陽台農夫, 關心農業的使用者, 農學消費者...。" />
+
+              大約的上下游位置
+              <select ng-model = "root.learner_type">
+                  <option ng-repeat = "t in ['上游-生產為主','中游-加工再製為主','下游-購買食用為主']"
+                      ng-selected = "root.learner_type == t" value="{{t}}">{{t}}</option>
+              </select><br>
+
+                  <span>
+                      您的出生年次，西元：
+                      <input ng-model = 'root.learner_birth' type = 'text' placeholder = '如：2001。交友用'></input>
+                      <br>
+                  </span>
+
+            日常作物：<br><textarea ng-model = "root.plant" rows = '4' cols = '30' placeholder = '種開心的'/></textarea><br>
+            
+            經濟作物：<br><textarea ng-model = "root.crop" rows = '4' cols = '30' placeholder = '有種來賣的'/></textarea><br>
+
+            興趣：<input ng-model = "root.learner_habit" placeholder = '個人興趣'/><br>
+            
+            技術專長：<textarea ng-model = "root.skill" rows = '4' cols = '30'placeholder = '例如:自然農法、機械維修、資訊工程'/></textarea><br>
+
+            可分享：<textarea ng-model = "root.share" rows = '4' cols = '30' placeholder = '例如:非基改大豆種籽、架網站等'/></textarea><br>
+
+            比較有空的時段：<br><input ng-model = "root.freetime"  placeholder = '例如：週五下午和週末'/><br>
+
+            比較需要人手的時段：<br><input ng-model = "root.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'></textarea><br>
+
+            自我介紹：<br><textarea ng-model = "root.note" rows = '5' cols = '30' placeholder = "請自由發揮，介紹自己^_^"></textarea> <br>
+            
+            邀請連絡：<textarea ng-model = "root.ask"  rows = '5' cols = '30' placeholder = '可以怎麼和你連絡?做什麼?'/><br>
+
+            聯絡方式：<br><textarea ng-model = "root.connect_me" rows = '5' cols = '30' placeholder = '除了FB之外的聯絡方式'></textarea><br>
+            <hr>
+
+              <button ng-hide = "imp" ng-click = "submit({'zh-tw':'登入', en: 'join'})">升起旗幟!!</button>
+              <button ng-show = "imp" ng-click = "submit({'zh-tw':'更新', en:'update'})">更新旗幟!!</button>
+              <button ng-show = "imp" ng-click = "out()">移除旗幟</button>
+
+            </form>
+
+
+             <span ng-hide = "root.name">
+                <span ng-bind = "status">此瀏覽器不支援，請試試看用不同的瀏覽器</span>
+
+                  <br>
+
+        <!--          <input type = "number" ng-model = "total"  ng-show = "n > 0">
+
+                  <br> -->
+
+                  <span ng-repeat = "k in [3,2,1]" ng-show = "total - k >= 0">
+
+                      <a ng-click = "focus(base.hands[total - k]); ;" style = "cursor:pointer" title="{{base.hands[total - k].name}}">
+
+                      <img id = "{{ base.hands[total - k].id && 'fb' }}" ng-src="{{(base.hands[total - k].id && 'http://graph.facebook.com/' + base.hands[total - k].id + '/picture') || 'img/marker-icon.png'}}"/>
+
+                      <span>第{{total - k + 1}}位農學之友：{{base.hands[total - k].name }}</span>
+                      </a>
+
+                      <hr>
+                      
+                  </span>
+              </span>
+              
+              <span ng-show = "n > 0">
+
+                <hr>
+
+                您是第{{ n + 1}}位農學之友嗎？<skh-fblogin></skh-fblogin>
+
+              </span>
+              <br>
+              <br>
+          </div>
+        </div><!-- .well end -->
+       
+          <div class="fb-comments" data-href="http://g0v.github.io/farmer/index.html" data-numposts="5" data-width="280px" data-colorscheme="light"></div>
+
+        </div>
+
+      </div>
+      <div class = "row">
+        <skh-list></skh-list>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+
+     var toFlag = function(hand, i, Icon, from) {
+          return '<div class="flag">'
+                        + ((hand.username && '<a href = "http://www.facebook.com/'+hand.username+'" target = "_blank"> <img id = "fb" src="'+ Icon +'" />' ) || '')
+
+                        +((!hand.username && hand.id && '<a href = "https://www.facebook.com/profile.php?id='+hand.id+'" target = "_blank"><img id = "fb" src="'+ Icon +'" />' ) || '')
+
+                        +'<strong>第'+ (i+1) +'位關心農業的朋友'
+                        +((from && from + '推薦的朋友') || '')
+                        +'：'+ hand.name+'</strong></a><br />'
+
+                        +((from && '大約') || '')
+                        +(SKH.has(hand.learner_birth) && SKH.toAge(hand.learner_birth)+'歲的' || '')
+                        +hand.learner_role
+                        +((SKH.has(hand.learner_type) && '('+hand.learner_type+')') || '')
+                  
+
+                        +'<br>&nbsp;&nbsp;&nbsp;&nbsp;住在&nbsp;&nbsp;'+
+                        '<a href = "https://maps.google.com.tw/maps?hl=zh-TW&q='
+                        +hand.address+'" target = "_blank">'+hand.address+'</a>&nbsp;&nbsp;附近<hr>'
+
+                        +'<b>網址： </b>'+hand.site+'<br />'
+
+                        +((hand.site2 && '<b>社群網址: </b><a href = "'+hand.site2+'" target = "_blank">' + hand.site2 +'</a><br />') || "")
+                        +'<b>比較有空的時段：</b>'+( hand.freetime || "")+'<br />'
+                        +'<b>較需人手的時段：</b>'+( hand.buzytime || "")+'<br />'
+                        +'<b>聯絡方式：</b>'+( hand.connect_me || "")+'<br />'
+                        +'<a href="https://www.facebook.com/messages/' + hand.id + 'target="_blank">FB訊息</a><br/>'
+                        +'<hr>'
+                        +'<b>興趣包含：</b>'+( hand.learner_habit || "")+'<br />'
+                        +'<b>日常作物：</b>'+( hand.plant || "")+'<br />'
+                        +'<b>經濟作物：</b>'+( hand.crop || "")+'<br />'
+                        +'<b>技術：</b>'+( hand.skill || "")+'<br />'
+                        +'<b>可分享：</b>'+( hand.share || "")+'<br />'
+                        +'<b>邀請連絡：</b>'+( hand.ask || "")+'<br />'
+                        +'<hr>'
+                        +'<b>自我介紹：</b>'+( hand.note.replace(/\n/g, '<br>')|| "")+'<br />'
+                        +'<hr>'
+                        +'</div>';
+     }
+
+     SKH.init({
+        fbApp: '485195848253155',
+        at: {'zh-tw':'台東',en:'taitung'},
+        eagle: {
+                    lat: 23.704894502324912,
+                    lng: 120.89355468749999,
+                    zoom: 7,
+        },
+        slogen: {'zh-tw' : {
+                    main: '友善土地 ☯ ︎友善農人 ☯ ︎友善加工 ☯ ︎友善小店 ☯ ︎友善市集 ☯ ︎友善餐飲 ☯ ︎友善生活',
+                    local: '在地農學朋友',
+                    eagle: '全台農學朋友'
+                },
+                en: {
+
+                }
+        },
+        checkList: [['learner_role','農','角色需包含「農」字']],
+        whiteList: ['site2','connect_me','learner_habit','ask','username','crop','plant'],
+        firebase: 'https://shackhand-farmer.firebaseio.com/',
+        lang: 'zh-tw',
+ //       finger: 5,
+        toFlag: toFlag,        
+        listKeys: ['name','address','crop','share','ask','note'] //'connect_me',
+     });
+
+     var app = angular.module('demoapp', ['shackhand']);
+
+    </script>
+</html>
+
+
+ 

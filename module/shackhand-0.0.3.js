@@ -322,18 +322,18 @@ SKH.init = function(p) {
                     if (indexurl.search('.json') == -1) indexurl += '.json';
                   
                     var myHref = location.href;
-                //    var indexRef = new Firebase(url);
                                       
                     scope.$watch('loadtext', function(newValue, oldValue){
                         if (newValue !== oldValue){
-                        //    window.alert("watch working");
-                            console.log(newValue);
+                    //        window.alert("watch working");
+                    
+                   //         console.log(newValue);
 
                             var myList = [];
 
                             for (var i = 0; i < newValue.length; i++) {
                                  var m = newValue[i];
-                                 var li = (myHref.indexOF(m.h) > -1) ? '<li class = "active">' : '<li>';
+                                 var li = (myHref.indexOf(m.h) > -1) ? '<li class = "active">' : '<li>';
                                  li += '<a href = "'+m.h+'">'+m[p.lang]+'</a></li>';
                                  myList.push(li);
                              };
@@ -343,6 +343,9 @@ SKH.init = function(p) {
                                       +myList.join('')
                                     +'</ul>'
                               +'</div>';
+
+
+                   //         console.log(htmlText);
 
                             element.html(htmlText);
                         }
@@ -661,8 +664,9 @@ SKH.init = function(p) {
 
 
             //for backend ethercalc using hackfoler format ==> hackmap
-            if (p.ethercalc) {
+            if (p.hackmap) {
 
+                /*  get the .CSV data  ==>  auto complete latlng ==> POST back   */
 
                 function processHackMapData (allText) {
 
@@ -684,6 +688,13 @@ SKH.init = function(p) {
             }
 
 
+            //for backend normal ethercalcs  ==> auto complete latlng
+
+            if (p.ethercalcs) {
+
+                /*  getAll  CSV  datas ==>  auto complete latlng ==> POST back   */
+
+            }
 
 
             //for backend static csvs

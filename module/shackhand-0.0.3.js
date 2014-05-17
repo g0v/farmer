@@ -24,6 +24,11 @@ SKH.toAge = function (str,year) {
     return age;
 }
 
+SKH.toHref = function (str) {
+    return (str.indexOf('http') > -1)? str : 'http://' + str;
+} 
+
+
 SKH.init = function(p) {
 
     p.lang = (p.lang || 'en');
@@ -328,7 +333,7 @@ SKH.init = function(p) {
 
                             for (var i = 0; i < newValue.length; i++) {
                                  var m = newValue[i];
-                                 var li = (myHref.indexOf(m.h) > -1) ? '<li class = "active">' : '<li>';
+                                 var li = (myHref.indexOF(m.h) > -1) ? '<li class = "active">' : '<li>';
                                  li += '<a href = "'+m.h+'">'+m[p.lang]+'</a></li>';
                                  myList.push(li);
                              };
@@ -654,25 +659,39 @@ SKH.init = function(p) {
                 } 
             }
 
-            //for backend static csvs
-            if (p.csvs || p.ethercalc) {
-                var myCsvs = p.csvs;
-                if (p.ethercalc) p.csvs.unshift(p.ethercalc); 
 
-                for (var i = 0; i < p.csvs.length; i++) {      
-                    $.ajax({
-                    type: "GET",
-                    url: p.csvs[i],
-                    dataType: "text",
-                        success: function(data) {
-                          $scope.base.hands = $scope.base.hands.concat($scope.processData(data));
-                          console.log($scope.base.hands);
-                          $scope.makeMarkers();
+            //for backend ethercalc using hackfoler format ==> hackmap
+            if (p.ethercalc) {
+
+
+                function processHackMapData (allText) {
+
+
+                }
+
+
+                function setElem (url,cell,text) {     // "https://ethercalc.org/_/farmer", A1, "mewMew"
+                            $.ajax({
+                                url: url,
+                                type: 'POST',
+                                dataType: 'application/json',
+                                contentType: 'text/plain',
+                                processData: false,
+                                data: ('set ' + cell +' text t ' + text)
+                            });
+
                         }
-                     });
-                };
+            }
 
-                $scope.processData = function(allText) {
+
+
+
+            //for backend static csvs
+            if (p.csvs) {
+                var myCsvs = p.csvs || [];
+           //     if (p.ethercalc) myCsvs.unshift(p.ethercalc); 
+
+                function processCsvData (allText) {
                 //    console.log(allText);
                     var list = [];
                     var allTextLines = allText.split(/\r\n|\n/); 
@@ -693,12 +712,33 @@ SKH.init = function(p) {
                     return list;
                 }
 
+                for (var i = 0; i < myCsvs.length; i++) {      
+                    $.ajax({
+                    type: "GET",
+                    url: myCsvs[i],
+                    dataType: "text",
+                        success: function(data) {
+                          $scope.base.hands = $scope.base.hands.concat(processCsvData(data));
+                          console.log($scope.base.hands);
+                          $scope.makeMarkers();
+                        }
+                     });
+                };               
+
             }
+
+            
+
+
             
             $scope.toggleFollow = function(hand) {
                 if ($scope.n) {
                     var list =  $scope.base.hands[$scope.n].follows || [];
                     list.push($scope.base.hands.indexOf(hand));
+                    var m = p.maxFollow || 10;
+
+                    if(list.length > m) list = list.slice(-m, list.length);
+
                     $scope.base.$child('hands').$child($scope.n).$child('follows').$set(list);
 
                     for (var i = 0; i < $scope.base.hands.length; i++) {
@@ -706,6 +746,7 @@ SKH.init = function(p) {
                         if (testH.id == hand.id) {
                             var list2 =  testH.followBy || [];
                             list2.push($scope.n);
+                            if(list2.length > m) list2 = lis2.slice(-m, lis2.length);
                             $scope.base.$child('hands').$child(i).$child('followBy').$set(list2);
                         }
                     };

@@ -107,10 +107,10 @@ SKH.init = function(p) {
             var label = (p.toLable || function () {return})(hand, i, icon, year, whichLable);
 
             if (key && key.length > 0) {
-                var re = new RegExp(key, "gi");
+                var re = new RegExp(('('+key+')').replace(/\s*(\s|or)\s*/gi, '|'), "gi");
                 if (flag.search(re) == -1) {
                 console.log('略過關鍵字不符者'); return; } else {
-                    flag = flag.replace(re, '<span class = "highlight">'+key+'</span>');
+                    flag = flag.replace(re, '<span class = "highlight">$1</span>');
                 }
             }
             if (nameKey && nameKey.length > 0) {
@@ -172,7 +172,7 @@ SKH.init = function(p) {
         }).filter('filterBy',function(){
             return function(list, key){
                 if (!key) return list;
-                var re = new RegExp(key, "gi");               
+                var re = new RegExp(key.replace(/\s*(\s|or)\s*/gi, '|'), "gi");               
                 var ks = ['name','note'];    //  <=====  to fix
                 return list.filter(function (obj) {
                     for (var i = 0; i < ks.length; i++) {
@@ -744,7 +744,7 @@ SKH.init = function(p) {
             
             $scope.toggleFollow = function(hand) {
                 if ($scope.n) {
-                    var list =  $scope.base.hands[$scope.n].follows || [];
+                    var list = ($scope.base.hands[$scope.n] && $scope.base.hands[$scope.n].follows) || [];
                     list.push($scope.base.hands.indexOf(hand));
                     var m = p.maxFollow || 10;
 

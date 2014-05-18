@@ -103,8 +103,18 @@ SKH.init = function(p) {
             hand.latlngColumn = hand.latlngColumn.replace('(','').replace(')','').replace('附近','').replace(/near\s?/,''); 
 
      
-            var flag = p.toFlag(hand, i, icon, year);
-            var label = (p.toLable || function () {return})(hand, i, icon, year, whichLable);
+            var flag, label;
+            
+            switch (whichGroup) {
+                case 'shacks':
+                    flag = (p.toShackFlag || SKH.toHackMapFlag || p.toFlag || function () {return})(hand, i, icon, year);           
+                    label = (p.toShackLable || SKH.toHackMapLable || p.toLable || function () {return})(hand, i, icon, year, whichLable);
+                    break;
+                default:
+                    flag = p.toFlag(hand, i, icon, year);           
+                    label = (p.toLable || function () {return})(hand, i, icon, year, whichLable);                    
+            }
+
 
             if (key && key.length > 0) {
                 var re = new RegExp(('('+key+')').replace(/\s*(\s|or)\s*/gi, '|'), "gi");
@@ -226,7 +236,7 @@ SKH.init = function(p) {
                     };
 
                     for (var i = 0; i < (autos.length || 0); i++) {
-                        var h = autos[i];
+                        var h = autos[i] || {};
 
                         if (h.friends) {
                             for (var j = 0; j < h.friends.length; j++) {
@@ -567,10 +577,12 @@ SKH.init = function(p) {
                 }
 
                 var showHandList = $filter('hideAncient')($scope.base.hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
+
                 var showShackList = $filter('hideAncient')($scope.base.shacks,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
 
                 $scope.markers = $filter('toMarkers')(showHandList, ks, maybeHideLatLng, 
                                         expHand,$scope.year,$scope.whichLable,'hands')
+
                             .concat($filter('toMarkers')(showShackList, ks, maybeHideLatLng, 
                                         expHand,$scope.year,$scope.whichLable,'shacks')
                                 );
@@ -631,7 +643,7 @@ SKH.init = function(p) {
  
             $scope.askGeo($scope.loc);
             
-            $scope.base = {hands: []};
+            $scope.base = {hands: [], shacks: []};
 
             // for backend firebase
             if (p.firebase) {
@@ -666,17 +678,23 @@ SKH.init = function(p) {
             //for backend ethercalc using hackfoler format ==> hackmap
             if (p.hackmap) {
 
+                var hackmap = p.hackmap;
+
                 /*  get the .CSV data  ==>  auto complete latlng ==> POST back   */
 
                 function processHackMapData (allText) {
 
+                    console.log(allText);
+
 
                 }
+
+                var hackUrl = hackmap.replace(/([^\/])\/([^\/])/, '$1'+ '/_/' +'$2');
 
 
                 function setElem (url,cell,text) {     // "https://ethercalc.org/_/farmer", A1, "mewMew"
                             $.ajax({
-                                url: url,
+                                url: hackUrl,
                                 type: 'POST',
                                 dataType: 'application/json',
                                 contentType: 'text/plain',
@@ -685,6 +703,21 @@ SKH.init = function(p) {
                             });
 
                         }
+
+                $.ajax({
+                    type: "GET",
+                    url: hackmap + '.csv',
+                    dataType: "text",
+                        success: function(data) {
+                          $scope.base.shacks = ($scope.base.shacks || []).concat(processHackMapData(data));
+
+                          console.log($scope.base.shacks);
+
+                          $scope.makeMarkers();
+                        }
+                     });
+
+
             }
 
 

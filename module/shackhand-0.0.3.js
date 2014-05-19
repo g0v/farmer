@@ -28,6 +28,21 @@ SKH.toHref = function (str) {
     return (str.indexOf('http') > -1)? str : 'http://' + str;
 } 
 
+SKH.toHackMapFlag = function(shack, i, Icon, from) {
+    return '<div class="flag">'
+                        +((shack.site && '<a href = "'+SKH.toHref(shack.site)+'" target = "_blank">'
+                          + '<img title = "' + shack.site
+                              +'"src = "http://www.google.com/s2/favicons?domain=' + shack.site +'">' ) || "") 
+
+                        +'<strong>'+ shack.name+'</strong></a><br />'
+
+                          
+                        +'<hr>'
+                        +( shack.note.replace(/\n/g, '<br>')|| "")+'<br />'
+                        +'<hr>'
+                        +'</div>';
+}
+
 
 SKH.init = function(p) {
 
@@ -515,8 +530,8 @@ SKH.init = function(p) {
             angular.extend($scope, {
                 center: {
                     autoDiscover: true,
-                    lat: 23.704894502324912,
-                    lng: 120.89355468749999,
+                    lat: (p.lat || 24.704894502324912),
+                    lng: (p.lng || 121.19355468749999),
                     zoom: ($(window).width() < 480 && 12) || 10
                 },
 
@@ -551,13 +566,13 @@ SKH.init = function(p) {
                         hands: {
                             type: 'group',
                             name: (p.handTitle || 'hands'),
-                            visible: true
+                            visible: (p.showHand || true)
                         },
 
                         shacks: {
                             type: 'group',
                             name: (p.shackTitle || ''),
-                            visible: false
+                            visible: (p.showShack || true)
                         }
                     }
                 },
@@ -679,18 +694,10 @@ SKH.init = function(p) {
             if (p.hackmap) {
 
                 var hackmap = p.hackmap;
-
-                /*  get the .CSV data  ==>  auto complete latlng ==> POST back   */
-
-                function processHackMapData (allText) {
-
-                    console.log(allText);
-
-
-                }
-
                 var hackUrl = hackmap.replace(/([^\/])\/([^\/])/, '$1'+ '/_/' +'$2');
 
+
+                /*  get the .CSV data  ==>  auto complete latlng ==> POST back   */
 
                 function setElem (url,cell,text) {     // "https://ethercalc.org/_/farmer", A1, "mewMew"
                             $.ajax({
@@ -702,7 +709,73 @@ SKH.init = function(p) {
                                 data: ('set ' + cell +' text t ' + text)
                             });
 
+                }
+
+                function processHackMapData (allText) {
+
+                    console.log(allText);
+                    var allTextLines = allText.split(/\r\n|\n/); 
+
+                    var list = [];
+
+                    for (var i=1; i < allTextLines.length; i++) {
+                        var datas = allTextLines[i].split(',');
+
+                        var shack = {
+                                     n: i,
+                                     site: datas[0],
+                                     name: (datas[1] && datas[1].replace(/"/g,'')) || '',
+                                     address: datas[5],
+                                     latlngColumn: (datas[6] && datas[6].replace(/\?\?\s?/,',').replace(/"/g,'')) || '',
+                                     freetime: (datas[7] && datas[7].replace(/"/g,'')) || '',
+                                     note: ((datas[3] && datas[3].split(':')[0].replace(';',':')) || '') +'<hr>'+ datas[4]
+                                 };
+
+
+                        if (shack.address) {
+                                if (!shack.latlngColumn) {
+
+                                    $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"
+                                     + encodeURI(shack.address) +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
+
+                                        var lat, lng;
+
+                                        try {
+                                         lat = d.query.results.Result[0].latitude;
+                                         lng = d.query.results.Result[0].longitude;
+                                        } catch(err) { }
+
+                                        if (!lat || !lng) {                        
+                                            try {
+                                             lat = d.query.results.Result.latitude;
+                                             lng = d.query.results.Result.longitude;
+                                            } catch(err) {  }
+                                        }
+
+                                        if (lat && lng) {
+                                            shack.latlngColumn = parseFloat(lat) + ',' + parseFloat(lng);
+                                            list.push(shack);
+
+                                            var backfire = parseFloat(lat) + '?? ' + parseFloat(lng)
+                                            setElem(hackUrl,['A','B','C','D','E','F','G'][6] + (shack.n + 1) , backfire);
+                                        }
+
+                                });
+
+                                break;
+                            
+                            } else {
+                                list.push(shack);
+                            }
+
                         }
+                        console.log(list);
+                    }
+
+                    return list;
+                }
+
+                    
 
                 $.ajax({
                     type: "GET",
@@ -719,7 +792,6 @@ SKH.init = function(p) {
 
 
             }
-
 
             //for backend normal ethercalcs  ==> auto complete latlng
 
@@ -949,12 +1021,11 @@ SKH.init = function(p) {
                 });
             };
 
-            $scope.logout = function (){
+            $scope.logout = function () {
                 auth.logout();
                 $scope.root = new Object;                
                 $scope.n = $scope.base.hands.length;
             }
-
 
             $scope.out = function () {
                 if (confirm(

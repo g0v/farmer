@@ -44,7 +44,8 @@
 
     <div class="navbar-header pull-left">
               <div class="navbar-brand noPhone">
-                  <h1 class= "h3"><a href = "http://hack.g0v.tw/farmer/">農學地圖 ➭ 上下游互助</a> ➭ <a href = "https://ethercalc.org/farmer">登錄農夫市集</a></h1>
+                  <h1 class= "h3"><a href = "http://hack.g0v.tw/farmer/">農學地圖 ➭ 上下游互助</a> ➭ 
+                    <a href = "https://ethercalc.org/farmer" target = "_blank">登錄農夫市集</a></h1>
               </div>
           <div class = "navbar-left noPhone">
               
@@ -224,7 +225,7 @@
         </div>
 
 
-            日常作物：<br><textarea ng-model = "root.plant" rows = '4' cols = '30' placeholder = '種開心的'/></textarea><br>
+            休閒作物：<br><textarea ng-model = "root.plant" rows = '4' cols = '30' placeholder = '種開心的'/></textarea><br>
             
             經濟作物：<br><textarea ng-model = "root.crop" rows = '4' cols = '30' placeholder = '有種來賣的'/></textarea><br>
 
@@ -360,35 +361,14 @@
 
         var lable = " ";
         
-        switch (whichLable) {
-          case 'freetime':
-              lable += ((hand.freetime && hand.freetime) || "");
-              break;
-          case 'learner_type':
-              lable += ((SKH.has(hand.learner_type) && hand.learner_type) || '');
-              break;
-          case 'learner_habit':
-              lable += ((SKH.has(hand.learner_habit) && hand.learner_habit) || '');
-              break;
-          case 'share':
-              lable += ((SKH.has(hand.share) && hand.share) || '');
-              break;
-          case 'ask':
-              lable += ((SKH.has(hand.ask) && hand.ask) || '');
-              break;
-          case 'age':
-              lable += (SKH.has(hand.learner_birth) && SKH.toAge(hand.learner_birth)+'歲' || '');
-              break;
-          case 'childAge':
-              lable += ((SKH.has(hand.child_birth2) && SKH.toAge(hand.child_birth2) +'歲') || '')
-                        +((SKH.has(hand.child_birth2) && '~') || '')
-                        +((SKH.has(hand.child_birth) && SKH.toAge(hand.child_birth) +'歲') || '');
-              break;
-          default:
-              break;
+        var simpleList = ['freetime','busytime','learner_type','learner_habit','skill','crop','plant','share','ask'];
 
-        }
+        for (var i = 0; i < simpleList.length; i++) {
+          var k = simpleList[i];
+          if (whichLable == k) lable += ((SKH.has(hand[k]) && hand[k]) || "");
+        };
 
+        if (whichLable == 'age') lable += (SKH.has(hand.learner_birth) && SKH.toAge(hand.learner_birth)+'歲' || '');
                      
         if (!lable) lable = ' ';   
         return lable;
@@ -433,7 +413,7 @@
                         +'<a href="https://www.facebook.com/messages/' + hand.id + 'target="_blank">FB訊息</a><br/>'
                         +'<hr>'
                         +'<b>興趣包含：</b>'+( hand.learner_habit || "")+'<br />'
-                        +'<b>日常作物：</b>'+( hand.plant || "")+'<br />'
+                        +'<b>休閒作物：</b>'+( hand.plant || "")+'<br />'
                         +'<b>經濟作物：</b>'+( hand.crop || "")+'<br />'
                         +'<b>技術：</b>'+( hand.skill || "")+'<br />'
                         +'<b>可分享：</b>'+( hand.share || "")+'<br />'
@@ -447,13 +427,7 @@
      SKH.init({
         fbApp: '485195848253155',
         handTitle: '農學朋友',
-        shackTitle: '友善大地',
-  //      at: '台南',
-        eagle: {
-                    lat: 23.704894502324912,
-                    lng: 120.89355468749999,
-                    zoom: 7,
-        },
+        shackTitle: '農夫市集',
         slogen: '友善土地 ☯ ︎友善農人 ☯ ︎友善加工 ☯ ︎友善小店 ☯ ︎友善市集 ☯ ︎友善餐飲 ☯ ︎友善生活',
         selectBar: 
 '<input autofocus type="search" class="form-control noPhone" placeholder="您在哪兒呢?"ng-model="loc" ng-change = "askGeo(loc)"/>'
@@ -463,21 +437,23 @@
                     +'ng-model="whichLable" ng-change = "makeMarkers()">'
                       +'<option value="">-- 選擇顯示標籤 --</option>'
                       +'<option value="age">年齡</option>'
-                      +'<option value="childAge">孩子年紀</option>'
                       +'<option value="freetime">有空時間</option>'
-                      +'<option value="learner_type">共學狀態</option>'
-                      +'<option value="learner_habit">興趣</option>'
+                      +'<option value="busytime">農忙時間</option>'
+                      +'<option value="crop">經濟作物</option>'
+                      +'<option value="plant">休閒作物</option>'
                       +'<option value="share">分享</option>'
                       +'<option value="ask">需要</option>'
                   +'</select>',
         checkList: [[]],
-        whiteList: ['site2','connect_me','learner_habit','ask','username','crop','plant'],
+        whiteList: ['site2','connect_me','skill','ask','username','crop','plant'],
+
         firebase: 'https://shackhand-farmer.firebaseio.com/',
         hackmap: "https://ethercalc.org/farmer",
-        lang:'zh-tw',
+
         toFlag: toFlag,
         toLable: toLable,
-        handsize: 70,
+
+        lang:'zh-tw',
         listKeys: ['name','note','address','share','ask'], //'connect_me',
         listKeyNames: {
           name: {"zh-tw": '名稱', en: 'Name'},

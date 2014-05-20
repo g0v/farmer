@@ -85,7 +85,7 @@ SKH.init = function(p) {
 
     var defaultIcon = {
                 iconUrl: 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/200px-Smiley.svg.png',
-                iconSize: [40, 40]
+                iconSize: [70, 70]
     }
 
     p.hToM = (p.hToM || function(keys,h,i,llC,from,fbid,year,whichLable,whichGroup) {
@@ -172,8 +172,10 @@ SKH.init = function(p) {
             return(marker);
     });
 
-    var shackhand = angular.module("shackhand",['leaflet-directive','firebase','ezfb'])
-        .config(function ($FBProvider) { 
+    var shackhand = angular.module("shackhand",['leaflet-directive']);
+
+
+    shackhand.config(function ($FBProvider) { 
             var myInitFunction = function ($window, $rootScope, $fbInitParams) { 
                 if (p.fbApp) $window.FB.init({ appId: p.fbApp});
             }
@@ -390,24 +392,28 @@ SKH.init = function(p) {
           }).directive('skhLocalmap',function(){
             return {
                 restrict: 'E',
+            //    scope: {top: '=', left: '='},
                 template: '<div class="col-md-12 map" id = "local" fullscreen="isFullscreen" only-watched-property>'
 
              +'<form class="form-inline form-down" role="search">'
               +'<span ng-hide = "center.zoom">'
-                +'<span ng-repeat = "k in [0,1,2,3]">'
+                +'<span ng-repeat = "k in [0,1,2,3]">'           
                     +'<a ng-click = "askGeo(\'?\')" > <img class = "icon" src="module/src/images/findGeo.png"> </a>'
                 +'</span>'
               +'</span>'
-             +'<a ng-hide = "root.name" ng-click = "askGeo(\'?\')"> <img class = "icon center" src="module/src/images/findGeo.png"> </a>'
-             +'<a ng-click = "focus(n)" ng-show = "root.name"  style = "cursor:pointer">'
-                +'<img id = "fb"  class = "center" ng-src="http://graph.facebook.com/{{root.id || root.username}}/picture"/>'
-             +'</a>'
+      //       +'<a ng-hide = "root.name" ng-click = "askGeo(\'?\')"> <img class = "icon center" src="module/src/images/findGeo.png"> </a>'
+      //       +'<a ng-click = "focus(n)" ng-show = "root.name"  style = "cursor:pointer">'
+      //          +'<img id = "fb"  class = "center" ng-src="http://graph.facebook.com/{{root.id || root.username}}/picture"/>'
+      //       +'</a>'
             
              +'<skh-select></skh-select>'
                 + '<a class="btn" ng-click = "isFullscreen = !isFullscreen">'
                     +'<img class = "icon" src = "module/src/images/full-screen.png"></a>'
 
             +'</form>'
+                    +'<div class = "center" ><a ng-click = "askGeo(\'?\')" style = "display:block; overflow:hidden; width:32px; height:32px;">'                
+                    +'<img src="module/src/images/sprite.png" style = "position: relative; top: -{{top}}px; left: -{{left}}px; "> </a> </div>'
+
             +'<leaflet center="center" markers = "markers" layers="layers" width="100%" height="'+($( window ).height()+100)+'"></leaflet>'
         +'</div>'
             }
@@ -483,35 +489,47 @@ SKH.init = function(p) {
             $scope.to = (p.to ||'death');
 
 
-            if (p.movie) {
-                $scope.onTimeout = function(){
-                if (!$scope.pause) $scope.year += $scope.speed;
+            
+            $scope.onTimeout = function(){
+
+                if (p.movie) {
+
+                    if (!$scope.pause) $scope.year += $scope.speed;
                     $scope.makeMarkers();
 
                     $(".leaflet-marker-icon").hover(
                         function(){$(this).css('z-index', 999999)},
                         function(){$(this).css('z-index', 100008)});
-
-                    mytimeout = $timeout($scope.onTimeout,1000);
-                }
-                $scope.keyPress = function(e){
-                    var keycode; 
-                    if (window.event) keycode = window.event.keyCode;
-                    else if (e) keycode = e.which;
-
-                    switch(keycode) {
-                        case 32:
-                            e.preventDefault();
-                            $scope.pause = !$scope.pause;
-                            break;
-                    }
-
                 }
 
-                document.onkeydown = $scope.keyPress;
+                $scope.left = (($scope.left + 32) % 128); 
+                $scope.top = (($scope.top + 32) % 128); 
+                $scope.$apply();
+
+
+                mytimeout = $timeout($scope.onTimeout,1000);
             }
 
-        var mytimeout = $timeout($scope.onTimeout,1000);
+            $scope.keyPress = function(e){
+                var keycode; 
+                if (window.event) keycode = window.event.keyCode;
+                else if (e) keycode = e.which;
+
+                switch(keycode) {
+                    case 32:
+                        if (p.movie) {
+                            e.preventDefault();
+                            $scope.pause = !$scope.pause;
+                        }
+                        break;
+                }
+
+            }
+
+            document.onkeydown = $scope.keyPress;
+            var mytimeout = $timeout($scope.onTimeout,1000);
+
+
 
             $scope.lang = p.lang || navigator.language || navigator.userLanguage || '"zh-tw"';
             $scope.listKeys = p.listKeys;
@@ -735,41 +753,41 @@ SKH.init = function(p) {
                         if (shack.address) {
                                 if (!shack.latlngColumn) {
 
-                                    $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"
-                                     + encodeURI(shack.address) +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
+                                    function backfire(hackUrl, shack) {
+                                                 $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"
+                                         + encodeURI(shack.address) +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
 
-                                        var lat, lng;
+                                            var lat, lng;
 
-                                        try {
-                                         lat = d.query.results.Result[0].latitude;
-                                         lng = d.query.results.Result[0].longitude;
-                                        } catch(err) { }
-
-                                        if (!lat || !lng) {                        
                                             try {
-                                             lat = d.query.results.Result.latitude;
-                                             lng = d.query.results.Result.longitude;
-                                            } catch(err) {  }
-                                        }
+                                             lat = d.query.results.Result[0].latitude;
+                                             lng = d.query.results.Result[0].longitude;
+                                            } catch(err) { }
 
-                                        if (lat && lng) {
-                                            shack.latlngColumn = parseFloat(lat) + ',' + parseFloat(lng);
-                                            list.push(shack);
+                                            if (!lat || !lng) {                        
+                                                try {
+                                                 lat = d.query.results.Result.latitude;
+                                                 lng = d.query.results.Result.longitude;
+                                                } catch(err) {  }
+                                            }
 
-                                            var backfire = parseFloat(lat) + '?? ' + parseFloat(lng)
-                                            setElem(hackUrl,['A','B','C','D','E','F','G'][6] + (shack.n + 1) , backfire);
-                                        }
+                                            if (lat && lng) {
+                                                var backfireData = parseFloat(lat) + '?? ' + parseFloat(lng);
+                                                setElem(hackUrl,['A','B','C','D','E','F','G'][6] + (shack.n + 1) , backfireData); // to Ethercalc
 
-                                });
+                                            }
+                                        });
+                                    }
 
-                                break;
+                                    backfire(hackUrl, shack);
+                                   
                             
                             } else {
                                 list.push(shack);
                             }
 
                         }
-                        console.log(list);
+        //                console.log(list);
                     }
 
                     return list;
@@ -824,7 +842,7 @@ SKH.init = function(p) {
                             list.push(hand);
                         }
                     }
-                    console.log(list);
+          //          console.log(list);
                     return list;
                 }
 
@@ -835,7 +853,7 @@ SKH.init = function(p) {
                     dataType: "text",
                         success: function(data) {
                           $scope.base.hands = $scope.base.hands.concat(processCsvData(data));
-                          console.log($scope.base.hands);
+           //               console.log($scope.base.hands);
                           $scope.makeMarkers();
                         }
                      });
@@ -888,6 +906,11 @@ SKH.init = function(p) {
                 $scope.key = "";
                 $scope.nameKey = "";
                 $scope.geoKey = "";
+
+                $scope.top = 0;
+                $scope.left = 0;
+
+
 
                 var firstMapOffset = $("#local").position().top || $("#eagle").position().top || 0;
                 $("body,html").animate({scrollTop:firstMapOffset}, "slow");

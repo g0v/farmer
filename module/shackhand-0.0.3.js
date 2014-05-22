@@ -30,17 +30,24 @@ SKH.toHref = function (str) {
 
 SKH.toHackMapFlag = function(shack, i, Icon, from) {
     return '<div class="flag">'
-                        +((shack.site && '<a href = "'+SKH.toHref(shack.site)+'" target = "_blank">'
-                          + '<img title = "' + shack.site
-                              +'"src = "http://www.google.com/s2/favicons?domain=' + shack.site +'">' ) || "") 
+                +((shack.site && '<a href = "'+SKH.toHref(shack.site)+'" target = "_blank">'
+                  + '<img title = "' + shack.site
+                      +'"src = "http://www.google.com/s2/favicons?domain=' + shack.site +'">' ) || "") 
 
-                        +'<strong>'+ shack.name+'</strong></a><br />'
+                +'<strong>'+ shack.name+'</strong></a><br />'
 
-                          
-                        +'<hr>'
-                        +( shack.note.replace(/\n/g, '<br>')|| "")+'<br />'
-                        +'<hr>'
-                        +'</div>';
+                  
+                +'<hr>'
+                +( shack.note.replace(/\n/g, '<br>')|| "")+'<br />'
+                +'<hr>'
+
+                +((shack.site && '<a href = "'+SKH.toHref(shack.site)+'" target = "_blank">'
+                  + '<img title = "' + shack.site
+                      +'"src = "http://www.google.com/s2/favicons?domain=' + shack.site +'">' ) || "") 
+
+                +'<strong>'+ shack.name+'</strong></a><br />'
+                        
+            +'</div>';
 }
 
 
@@ -398,8 +405,7 @@ SKH.init = function(p) {
                 restrict: 'E',
                 template: '<div class="col-md-12 map" id = "local" fullscreen="isFullscreen" only-watched-property>'
 
-             +'<form class="form-inline form-down" role="search">{{center.lat}},{{center.lng}}'
-
+             +'<form class="form-inline form-down" role="search">'
               +'<span ng-hide = "center.zoom">'
                 +'<span ng-repeat = "k in [0,1,2,3]">'           
                     +'<a ng-click = "askGeo(\'?\')" > <img class = "icon" src="module/src/images/findGeo.png"> </a>'
@@ -546,7 +552,7 @@ SKH.init = function(p) {
                                         new L.LatLng($scope.center.lat,$scope.center.lng)))
                             )});
 
-                        sorted[0].focus = true; //;!sorted[0].focus;
+                        sorted[0].focus = !sorted[0].focus; // = true;
 
                         break;
 
@@ -566,6 +572,7 @@ SKH.init = function(p) {
                         $scope.focus();
                         break;
                     case 40: // down
+                        e.preventDefault();
                         $('#skh-sprite').css('top', '0px');
                         $scope.focus();
                         break;
@@ -943,6 +950,12 @@ SKH.init = function(p) {
 
                 var firstMapOffset = $("#local").position().top || $("#eagle").position().top || 0;
                 $("body,html").animate({scrollTop:firstMapOffset}, "slow");
+
+
+                //todo: auto enter leaflet map
+
+                $scope.isFullscreen = true;
+                $scope.$apply();
 
                 if (!hand) return;
 

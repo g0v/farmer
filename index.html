@@ -44,7 +44,7 @@
 
     <div class="navbar-header pull-left">
               <div class="navbar-brand noPhone">
-                  <h1 class= "h3"><a href = "http://hack.g0v.tw/farmer/">農學地圖 ➭ 上下游互助</a> ➭ 
+                  <h1 class= "h3"><a href = "https://hackpad.com/2.0-gZL8jQ3iwgI">農學地圖 ➭ 上下游互助</a> ➭ 
                     <a href = "https://ethercalc.org/farmer" target = "_blank">登錄農夫市集</a></h1>
               </div>
           <div class = "navbar-left noPhone">
@@ -113,14 +113,9 @@
               <br>
               <br>
               <br>
-              <h3 ng-bind = "(!imp && '升起您的農學互助支持旗，助新朋友一臂之力!!') || '請填寫您升起的旗幟內容，再按「升起旗幟」'"></h3>
+              <h3 ng-bind = "(!imp && '升起您的農學互助支持旗，') || '請填寫您升起的旗幟內容，再按「升起旗幟」'"></h3>
+              <h3 ng-show = "!imp">一起來友善大地!!</h3>
 
-     <!--         <ul>
-                  <li>
-              <a href="http://moztw.org/firefox/" target="_blank">Firefox</a>, <a href="http://www.google.com/intl/zh-TW/chrome/browser/" target="_blank">Chrome</a>, 或<a href="https://www.apple.com/tw/safari/" target="_blank">Safari</a>支援完整地圖
-              
-                  <li>IE不支援。
-              </ul>          --> 
 
 
             <img id = "fb" ng-show = "root.name" ng-src="http://graph.facebook.com/{{root.id || root.username}}/picture"/>
@@ -135,8 +130,8 @@
  
             <hr>
 
-              <form ng-show = "root.name">
-
+<!--main form -->
+      <form ng-show = "true || root.name">
 
         <div class="input-group">
               <span class="input-group-addon">名字</span>
@@ -193,8 +188,8 @@
               <!--  ?????  -->
 
               <select class = "form-control selectpicker" ng-model = "root.learner_role">
-                  <option value =""> -- 選擇一種自學身份 -- </option>
-                  <option ng-repeat = "t in ['自學生', '自學家長', '獨立教育工作者','自學家長 + 獨立教育工作者', '自學生 + 獨立教育工作者', '自學生 + 自學家長','自學生 + 自學家長 + 獨立教育工作者']"
+                  <option value =""> -- 選擇一種最接近你的農學身份 -- </option>
+                  <option ng-repeat = "t in ['學生', '農夫', '假日農夫','友善加工業者', '友善餐飲界者','友善消費者']"
                       ng-selected = "root.learner_role == t" value="{{t}}">{{t}}</option>
               </select>
         </div>
@@ -202,13 +197,13 @@
 
 
         <div class="input-group">
-              <span class="input-group-addon">主要的自學型態</span>
+              <span class="input-group-addon">主要的工作型態</span>
        
               <!--  ?????  -->
 
               <select class = "form-control selectpicker" ng-model = "root.learner_type">
-                  <option value =""> -- 選擇一種自學型態 -- </option>
-                  <option ng-repeat = "t in ['個人','三五好友','團體共學','類學校機構']"
+                  <option value =""> -- 選擇一種工作型態 -- </option>
+                  <option ng-repeat = "t in ['個人','三五好友','自組織團體','受雇於機構']"
                       ng-selected = "root.learner_type == t" value="{{t}}">{{t}}</option>
               </select>
         </div>
@@ -216,54 +211,72 @@
 
         <div class="input-group">
               <span class="input-group-addon">出生年次(自己)</span>
-                      <input class = "form-control" ng-model = 'root.learner_birth' type = 'text' placeholder = '您自己的年次(不是孩子的喔)，西元'></input>
-                      <br>
-                  </span>
 
-                  
-              <!--  ?????  -->
+                      <input class = "form-control" ng-model = 'root.learner_birth' type = 'text' placeholder = '您自己的年次(西元)'></input>
+
         </div>
 
+        <div class="input-group">
+              <span class="input-group-addon">休閒作物</span>
 
-            休閒作物：<br><textarea ng-model = "root.plant" rows = '4' cols = '30' placeholder = '種開心的'/></textarea><br>
+            <textarea class = "form-control" ng-model = "root.plant" rows = '4' cols = '30' placeholder = '種開心的作物，或是加工製作的私房菜'/></textarea>
+
+        </div>
             
-            經濟作物：<br><textarea ng-model = "root.crop" rows = '4' cols = '30' placeholder = '有種來賣的'/></textarea><br>
+        <div class="input-group">
+              <span class="input-group-addon">經濟作物：</span>
 
+            <textarea class = "form-control" ng-model = "root.crop" rows = '4' cols = '30' placeholder = '種出來有在賣的作物，或是加工製作來賣的食材或料理'/></textarea>
+        </div>
 
         <div class="input-group">
               <span class="input-group-addon">個人興趣</span>
-                <input class = "form-control" ng-model = "root.learner_habit" placeholder = '個人興趣'/><br>
+                <input class = "form-control" ng-model = "root.learner_habit" placeholder = '個人興趣'/>
         </div>
+        
+        <div class="input-group">
 
+            <span class="input-group-addon">技術專長：</span>
+              <textarea class = "form-control" ng-model = "root.skill" rows = '4' cols = '30'placeholder = '例如:自然農法、機械維修、資訊工程'/></textarea>
 
-            技術專長：<textarea ng-model = "root.skill" rows = '4' cols = '30'placeholder = '例如:自然農法、機械維修、資訊工程'/></textarea><br>
-
+        </div>
 
         <div class="input-group">
               <span class="input-group-addon">可分享</span>
-                <input class = "form-control" ng-model = "root.share" placeholder = '可提供他人的支持分享，請務必填寫'/><br>
+                <input class = "form-control" ng-model = "root.share" placeholder = '可提供他人的支持分享，請務必填寫'/>
         </div>
         
-            比較有空的時段：<br><input ng-model = "root.freetime"  placeholder = '例如：週五下午和週末'/><br>
+        <div class="input-group">
+            <span class="input-group-addon">比較有空的時段：</span>
+              <input class = "form-control" ng-model = "root.freetime"  placeholder = '例如：週五下午和週末'/>
+        </div>
+        <div class="input-group">
 
-            比較需要人手的時段：<br><input ng-model = "root.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'></textarea><br>
-
+            <span class="input-group-addon">比較需要人手的時段：</span>
+              <input class = "form-control" ng-model = "root.busytime" rows = '5' cols = '30' placeholder = '例如：七八月'/>
+        </div> 
 
         <div class="input-group">
               <span class="input-group-addon">尋找</span>
-                <input class = "form-control" ng-model = "root.ask" placeholder = '讓人知道可以協助你什麼?'/><br>
+                <input class = "form-control" ng-model = "root.ask" placeholder = '讓人知道可以協助你什麼?'/>
         </div>
 
         <div class="input-group">
               <span class="input-group-addon">自我介紹</span>
-                  <textarea ng-model = "root.note" rows = '5' cols = '30' placeholder = "請自由發揮，介紹自己"></textarea> <br>
+                  <textarea calss = "form-control" ng-model = "root.note" rows = '5' cols = '30' placeholder = "請自由發揮，介紹自己"></textarea>
+
+        </div>
+
+        <div class="input-group">
+              <span class="input-group-addon">
+              <input type = "checkbox" ng-model ="readNote" >
+                 我已閱讀過<a href = "https://hackpad.com/1SMZsYTVlq3" target= "_blank">使用說明</a></span>
 
         </div>
 
             <hr>
 
-
-        <div class="btn-group">
+        <div class="btn-group" ng-show ="readNote">
               <button class = "btn btn-success" ng-hide = "imp" ng-click = "submit({'zh-tw':'登入', en: 'join'})">升起旗幟!!</button>
               <button class = "btn btn-success" ng-show = "imp" ng-click = "submit({'zh-tw':'更新', en:'update'})">更新旗幟!!</button>
               <button class = "btn btn-default" ng-show = "imp" ng-click = "out()">移除旗幟</button>

@@ -160,6 +160,10 @@ SKH.init = function(p) {
                 message : flag,
                 focus: false,
                 draggable: true,
+                hide: true,
+                popupOptions: {
+                    autoPan: false
+                },
                 icon: ((icon && toIcon(icon, (from || 0))) || defaultIcon),
                 label: {
                     message: label,
@@ -172,7 +176,7 @@ SKH.init = function(p) {
             return(marker);
     });
 
-    var shackhand = angular.module("shackhand",['leaflet-directive']);
+    var shackhand = angular.module("shackhand",['leaflet-directive','FBAngular']);
 
 
     shackhand.config(function ($FBProvider) { 
@@ -392,10 +396,10 @@ SKH.init = function(p) {
           }).directive('skhLocalmap',function(){
             return {
                 restrict: 'E',
-            //    scope: {top: '=', left: '='},
                 template: '<div class="col-md-12 map" id = "local" fullscreen="isFullscreen" only-watched-property>'
 
-             +'<form class="form-inline form-down" role="search">'
+             +'<form class="form-inline form-down" role="search">{{center.lat}},{{center.lng}}'
+
               +'<span ng-hide = "center.zoom">'
                 +'<span ng-repeat = "k in [0,1,2,3]">'           
                     +'<a ng-click = "askGeo(\'?\')" > <img class = "icon" src="module/src/images/findGeo.png"> </a>'
@@ -412,7 +416,7 @@ SKH.init = function(p) {
 
             +'</form>'
                     +'<div class = "center" ><a ng-click = "askGeo(\'?\')" style = "display:block; overflow:hidden; width:32px; height:32px;">'                
-                    +'<img src="module/src/images/sprite.png" style = "position: relative; top: -{{top}}px; left: -{{left}}px; "> </a> </div>'
+                    +'<img id = "skh-sprite" src="module/src/images/sprite.png"/> </a> </div>'
 
             +'<leaflet center="center" markers = "markers" layers="layers" width="100%" height="'+($( window ).height()+100)+'"></leaflet>'
         +'</div>'
@@ -502,8 +506,15 @@ SKH.init = function(p) {
                         function(){$(this).css('z-index', 100008)});
                 }
 
-                $scope.left = (($scope.left + 32) % 128); 
-                $scope.top = (($scope.top + 32) % 128); 
+                $scope.left = (($scope.left || 0) - 32) % 128; 
+          //      $scope.top = (($scope.top || 0) - 32) % 128; 
+
+
+         //       $('#skh-sprite').hide();
+        //        $('#skh-sprite').fadeIn();
+
+                $('#skh-sprite').css('left', $scope.left + 'px');
+
                 $scope.$apply();
 
 
@@ -516,11 +527,47 @@ SKH.init = function(p) {
                 else if (e) keycode = e.which;
 
                 switch(keycode) {
-                    case 32:
+                    case 32: // space
+                        e.preventDefault();
                         if (p.movie) {
-                            e.preventDefault();
                             $scope.pause = !$scope.pause;
                         }
+                        
+    console.log(L);
+
+                        var sorted = $scope.markers.filter(function(a){
+                                        return (new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
+                                            new L.LatLng($scope.center.lat,$scope.center.lng)) < 20000 )})
+                        .sort(function(a,b){ 
+                                return ((new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
+                                            new L.LatLng($scope.center.lat,$scope.center.lng)))
+
+                                    - (new L.LatLng(parseFloat(b.lat),parseFloat(b.lng)).distanceTo(
+                                        new L.LatLng($scope.center.lat,$scope.center.lng)))
+                            )});
+
+                        sorted[0].focus = true; //;!sorted[0].focus;
+
+                        break;
+
+                    case 37: // left
+                        e.preventDefault();
+                        $('#skh-sprite').css('top', '-32px');
+                        $scope.focus();
+                        break;
+                    case 39: // right
+                        e.preventDefault();
+                        $('#skh-sprite').css('top', '-64px');
+                        $scope.focus();
+                        break;
+                    case 38: // up
+                        e.preventDefault();
+                        $('#skh-sprite').css('top', '-96px');
+                        $scope.focus();
+                        break;
+                    case 40: // down
+                        $('#skh-sprite').css('top', '0px');
+                        $scope.focus();
                         break;
                 }
 
@@ -894,6 +941,11 @@ SKH.init = function(p) {
 
             $scope.focus = function(hand) {
 
+                var firstMapOffset = $("#local").position().top || $("#eagle").position().top || 0;
+                $("body,html").animate({scrollTop:firstMapOffset}, "slow");
+
+                if (!hand) return;
+
                 $scope.center = $scope.local;
 
                 $scope.local.lat = parseFloat(hand.latlngColumn.split(',')[0]);
@@ -909,11 +961,6 @@ SKH.init = function(p) {
 
                 $scope.top = 0;
                 $scope.left = 0;
-
-
-
-                var firstMapOffset = $("#local").position().top || $("#eagle").position().top || 0;
-                $("body,html").animate({scrollTop:firstMapOffset}, "slow");
 
 
                 if(p.movie) {

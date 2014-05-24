@@ -906,8 +906,6 @@ SKH.init = function(p) {
                          });
 
                 }
-
-
             }
 
             for (var i = 0; i < p.layers.length; i++) {
@@ -917,140 +915,11 @@ SKH.init = function(p) {
 /*    */
 
 
-            // for backend firebase
-            if (p.firebase) {
-                $scope.dataRef = new Firebase(p.firebase);
-                $scope.base = $firebase($scope.dataRef);
-                $scope.base.$on('change', function(){
-                 
-                    if (typeof($scope.n) == 'undefined' && typeof($scope.base.hands) != 'undefined') $scope.n = $scope.base.hands.length;
-                    if (typeof($scope.base.hands) != 'undefined') {
-                        $scope.total = $scope.base.hands.length;
-                    } else {
-                        $scope.base.hands = [];
-                    }
-                    if (!$scope.n) console.log('error: wrong n');
-                    $timeout(function(){
-                        $scope.makeMarkers();
-                    }, 1000); 
-                }); 
-            }
 
 
-            //for backend static jsons
-            if (p.jsons) {
-                for (var i = 0; i < p.jsons.length; i++) {
-                        $.getJSON(p.jsons[i],function(data){
-                                $scope.base.hands = $scope.base.hands.concat(data);
-                        });
-                } 
-            }
+          /******   TODO   *********/
 
 
-          /***************/
-
-
-            //for backend ethercalc using hackfoler format ==> hackmap
-            if (p.hackmap) {
-
-                var hackmap = p.hackmap;
-                var hackUrl = hackmap.replace(/([^\/])\/([^\/])/, '$1'+ '/_/' +'$2');
-
-
-                /*  get the .CSV data  ==>  auto complete latlng ==> POST back   */
-
-                function setElem (url,cell,text) {     // "https://ethercalc.org/_/farmer", A1, "mewMew"
-                            $.ajax({
-                                url: hackUrl,
-                                type: 'POST',
-                                dataType: 'application/json',
-                                contentType: 'text/plain',
-                                processData: false,
-                                data: ('set ' + cell +' text t ' + text)
-                            });
-
-                }
-
-                function processHackMapData (allText) {
-
-            //        console.log(allText);
-                    var allTextLines = allText.split(/\r\n|\n/); 
-
-                    var list = [];
-
-                    for (var i=1; i < allTextLines.length; i++) {
-                        var datas = allTextLines[i].split(',');
-
-                        var shack = {
-                                     n: i,
-                                     site: datas[0],
-                                     name: (datas[1] && datas[1].replace(/"/g,'')) || '',
-                                     address: datas[5],
-                                     latlngColumn: (datas[6] && datas[6].replace(/\?\?\s?/,',').replace(/"/g,'')) || '',
-                                     freetime: (datas[7] && datas[7].replace(/"/g,'')) || '',
-                                     note: ((datas[3] && datas[3].split(':')[0].replace(';',':')) || '') +'<hr>'+ datas[4]
-                                 };
-
-
-                        if (shack.address) {
-                                if (!shack.latlngColumn) {
-
-                                    function backfire(hackUrl, shack) {
-                                                 $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"
-                                         + encodeURI(shack.address) +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
-
-                                            var lat, lng;
-
-                                            try {
-                                             lat = d.query.results.Result[0].latitude;
-                                             lng = d.query.results.Result[0].longitude;
-                                            } catch(err) { }
-
-                                            if (!lat || !lng) {                        
-                                                try {
-                                                 lat = d.query.results.Result.latitude;
-                                                 lng = d.query.results.Result.longitude;
-                                                } catch(err) {  }
-                                            }
-
-                                            if (lat && lng) {
-                                                var backfireData = parseFloat(lat) + '?? ' + parseFloat(lng);
-                                                setElem(hackUrl,['A','B','C','D','E','F','G'][6] + (shack.n + 1) , backfireData); // to Ethercalc
-
-                                            }
-                                        });
-                                    }
-
-                                    backfire(hackUrl, shack);
-                                   
-                            
-                            } else {
-                                list.push(shack);
-                            }
-
-                        }
-        //                console.log(list);
-                    }
-
-                    return list;
-                }
-
-                    
-
-                $.ajax({
-                    type: "GET",
-                    url: hackmap + '.csv',
-                    dataType: "text",
-                        success: function(data) {
-                          $scope.base.shacks = ($scope.base.shacks || []).concat(processHackMapData(data));
-
-            //              console.log($scope.base.shacks);
-
-                          $scope.makeMarkers();
-                        }
-                     });
-
-            }
 
             //for backend normal ethercalcs  ==> auto complete latlng
 

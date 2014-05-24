@@ -116,15 +116,8 @@ SKH.init = function(p) {
      
             var flag, label;
             
-            switch (whichGroup) {
-                case 'shacks':
-                    flag = (p.toShackFlag || SKH.toHackMapFlag || p.toFlag || function () {return})(hand, i, icon, year);           
-                    label = (p.toShackLable || SKH.toHackMapLable || p.toLable || function () {return})(hand, i, icon, year, whichLable);
-                    break;
-                default:
-                    flag = p.toFlag(hand, i, icon, year);           
-                    label = (p.toLable || function () {return})(hand, i, icon, year, whichLable);                    
-            }
+            flag = (p.toFlags[parseInt(whichGroup)] || SKH.toHackMapFlag || p.toFlags[0] || function () {return})(hand, i, icon, year);
+            label = (p.toLabels[parseInt(whichGroup)] || SKH.toHackMapLable || p.toLabels[0] || function () {return})(hand, i, icon, year, whichLable);
 
 
             if (key && key.length > 0) {
@@ -662,7 +655,7 @@ SKH.init = function(p) {
                 for (var i = 0; i < p.layers.length; i++) {
                     if (!$scope.bases[i]) continue;
 
-                    console.log($scope.bases[i]);
+       //             console.log($scope.bases[i]);
 
                     var show = $filter('hideAncient')($scope.bases[i].hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
                     
@@ -749,7 +742,7 @@ SKH.init = function(p) {
                 var url = p.urls[n];
                 var login = p.logins[n];
                 var toFlag = p.toFlags[n];
-                var toLable = p.toLables[n];
+                var toLabel = p.toLabels[n];
                 var visible;  try {visible = p.visibles[n]} catch(err) {};
 
                 $scope.layers.overlays[n] = {
@@ -770,12 +763,12 @@ SKH.init = function(p) {
                      
                         /* ???  */
 
-                        if (typeof($scope.n) == 'undefined' && typeof($scope.base.hands) != 'undefined') $scope.n = $scope.base.hands.length;
+                        if (typeof($scope.n) == 'undefined' && typeof($scope.bases[n].hands) != 'undefined') $scope.n = $scope.bases[n].hands.length;
                        
-                        if (typeof($scope.base.hands) != 'undefined') {
-                            $scope.total = $scope.base.hands.length;
+                        if (typeof($scope.bases[n].hands) != 'undefined') {
+                            $scope.total = $scope.bases[n].hands.length;
                         } else {
-                            $scope.base.hands = [];
+                            $scope.bases[n].hands = [];
                         }
                         if (!$scope.n) console.log('error: wrong n');
 

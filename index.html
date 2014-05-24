@@ -114,19 +114,16 @@
     </div>
 
     <div class="row">
-      <div class="col-md-4 col-md-offset-4">
+      <div class="col-md-8 col-md-offset-2">
         <div class="well noPhone">
 
 <a href="https://github.com/bestian/shackhand/"><img style="position: absolute; top: 0; right: 15px; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
 
           <div id = "J" class="join">
 
-              <br>
-              <br>
-              <br>
-              <h3 ng-bind = "(!imp && '升起您的農學互助支持旗，') || '請填寫您升起的旗幟內容，再按「升起旗幟」'"></h3>
-              <h3 ng-show = "!imp">一起來友善大地!!</h3>
-
+            
+              <h3><span ng-bind = "(!imp && '升起您的農學互助支持旗') || '請填寫您升起的旗幟內容，再按「升起旗幟」'"></span>
+                  <span ng-show = "!imp">，一起來友善大地！</span></h3>
 
 
             <img id = "fb" ng-show = "root.name" ng-src="http://graph.facebook.com/{{root.id || root.username}}/picture"/>
@@ -309,26 +306,25 @@
 
                   <span ng-repeat = "k in [3,2,1]" ng-show = "total - k >= 0">
 
-                      <a ng-click = "focus(base.hands[total - k])" style = "cursor:pointer" title="{{base.hands[total - k].name}}">
+                      <a ng-click = "focus(bases[0].hands[total - k])" style = "cursor:pointer" title="{{bases[0].hands[total - k].name}}">
 
                       <img
-                      id = "{{ base.hands[total - k].id && 'fb' }}"
-                      title = "{{base.hands[total - k].name }}"
-                      ng-src="{{(base.hands[total - k].id && 'http://graph.facebook.com/' + base.hands[total - k].id + '/picture') || 'img/marker-icon.png'}}"/>
+                      id = "{{ bases[0].hands[total - k].id && 'fb' }}"
+                      title = "{{bases[0].hands[total - k].name }}"
+                      ng-src="{{(bases[0].hands[total - k].id && 'http://graph.facebook.com/' + bases[0].hands[total - k].id + '/picture') || 'img/marker-icon.png'}}"/>
 
-                      <span ng-bind = "'第'+ (total - k + 1) + '位支持者：' + (base.hands[total - k].name) + '(' + base.hands[total - k].address.substr(0,2) + ')'"></span>
+                      <span ng-bind = "'第'+ (total - k + 1) + '位支持者：' + (bases[0].hands[total - k].name) + '(' + bases[0].hands[total - k].address.substr(0,2) + ')'"></span>
 
                       </a>
 
                       <br> 
                   </span>
               </span>
+
               <span ng-show = "n > 0">
                 <hr>
                 您是第<span ng-bind = "n + 1"></span>位支持者嗎？<skh-fblogin></skh-fblogin>
               </span>
-              <br>
-              <br>
           </div>
         </div>        
       </div>
@@ -384,22 +380,22 @@
  
     <script>     
 
-     function toLable (hand, i, Icon, year, whichLable) {
+     function toLabel (hand, i, Icon, year, whichLable) {
         if (!whichLable) return hand.name;
 
-        var lable = " ";
+        var label = " ";
         
         var simpleList = ['freetime','busytime','learner_type','learner_habit','skill','crop','plant','share','ask'];
 
         for (var i = 0; i < simpleList.length; i++) {
           var k = simpleList[i];
-          if (whichLable == k) lable += ((SKH.has(hand[k]) && hand[k]) || "");
+          if (whichLable == k) label += ((SKH.has(hand[k]) && hand[k]) || "");
         };
 
-        if (whichLable == 'age') lable += (SKH.has(hand.learner_birth) && SKH.toAge(hand.learner_birth)+'歲' || '');
+        if (whichLable == 'age') label += (SKH.has(hand.learner_birth) && SKH.toAge(hand.learner_birth)+'歲' || '');
                      
-        if (!lable) lable = ' ';   
-        return lable;
+        if (!label) label = ' ';   
+        return label;
 
      }
 
@@ -484,7 +480,7 @@
                 'https://ethercalc.org/farmer'],
         logins: ['facebook'],
         toFlags: [toFlag],
-        toLables: [toLable],
+        toLabels: [toLabel],
 
 /*  */
 
@@ -495,8 +491,8 @@
            //https://ethercalc.org/farmerHandle
           // https://ethercalc.org/farmer
 
-        toFlag: toFlag,
-        toLable: toLable,
+  //      toFlag: toFlag,
+  //      toLabel: toLabel,
 
 
         lang:'zh-tw',

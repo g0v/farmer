@@ -745,6 +745,7 @@ SKH.init = function(p) {
                 var toLabel = p.toLabels[n];
                 var visible;  try {visible = p.visibles[n]} catch(err) {};
 
+                $scope.layers.overlays = $scope.layers.overlays || {};
                 $scope.layers.overlays[n] = {
                             type: 'group',
                             name: (title || 'hands'),

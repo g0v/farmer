@@ -736,6 +736,7 @@ SKH.init = function(p) {
             function makeLayer(n) {
                 var title = p.layers[n];
                 var type = p.types[n];
+                var url = p.urls[n];
                 var login = p.logins[n];
                 var toFlag = p.toFlags[n];
                 var toLable = p.toLables[n];

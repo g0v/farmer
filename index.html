@@ -44,11 +44,11 @@
 
     <div class="navbar-header pull-left">
               <div class="navbar-brand noPhone">
-                  <h1 class= "h3"><a href = "https://hackpad.com/2.0-gZL8jQ3iwgI">農學地圖 ➭ 上下游互助</a> ➭ 
-                    <a href = "https://ethercalc.org/farmer" target = "_blank">登錄農夫市集</a></h1>
+                  <h3 class= "h4"><a href = "https://hackpad.com/2.0-gZL8jQ3iwgI">☯☯☯☯☯☯農學地圖 ➭ 上下游互助☯☯☯☯☯☯</a>
+                  </h3>
               </div>
-          <div class = "navbar-left noPhone">
-              
+
+          <div class = "navbar-left noPhone">              
 
               <a ng-show = "root.name"  ng-click = "focus(n)" style = "cursor:pointer">
                 <img id = "fb" ng-src="http://graph.facebook.com/{{root.id || root.username}}/picture"/>
@@ -99,7 +99,18 @@
   <div class="container main-container">
 
     <div class="row">
-        <skh-slogen></skh-slogen>
+       <div class = "col-md-12">
+          <div class = "alert alert-info">
+            <h3>                    
+                    <a href = "https://ethercalc.org/farmer" target = "_blank">友善農夫</a> ➭
+                    <a href = "https://ethercalc.org/farmer" target = "_blank">農夫市集</a> ➭ 
+                    <a href = "https://ethercalc.org/farmerHandle" target = "_blank">友善加工</a> ➭ 
+                    <a href = "https://ethercalc.org/farmerRetail" target = "_blank">友善零售</a> ➭ 
+                    <a href = "https://ethercalc.org/farmerMeal" target = "_blank">友善餐飲</a> ➭ <skh-fblogin></skh-fblogin>
+             </h3>
+          </div>
+        </div>
+<!--        <skh-slogen></skh-slogen> -->
     </div>
 
     <div class="row">
@@ -443,7 +454,7 @@
 
      SKH.init({
         fbApp: '485195848253155',
-        slogen: '友善土地 ☯ ︎友善農人 ☯ ︎友善加工 ☯ ︎友善小店 ☯ ︎友善市集 ☯ ︎友善餐飲 ☯ ︎友善生活',
+     //   slogen: '友善土地 ☯ ︎友善農夫 ☯ ︎友善加工 ☯ ︎友善小店 ☯ ︎友善市集 ☯ ︎友善餐飲 ☯ ︎友善生活',
         selectBar: 
 '<input autofocus type="search" class="form-control noPhone" placeholder="您在哪兒呢?"ng-model="loc" ng-change = "askGeo(loc)"/>'
 +'<input type="search" class="form-control noPhone" placeholder="輸入關鍵字" ng-model="key" ng-change = "makeMarkers()"/>'
@@ -463,7 +474,7 @@
         whiteList: ['site2','connect_me','skill','ask','username','crop','plant'],
 
 /*  */
-        layers: ['農學朋友','農夫市集','友善加工','友善零售','友善餐飲','友善農夫'],
+        layers: ['農學朋友','友善農夫','農夫市集','友善加工','友善零售','友善餐飲'],
         types: ['firebase', 'hackmap', 'hackmap', 'hackmap', 'hackmap', 'hackmap'],
         urls: ['https://shackhand-farmer.firebaseio.com/',
                'https://ethercalc.org/farmerMarket',
@@ -477,10 +488,10 @@
 
 /*  */
 
-        handTitle: '農學朋友',
-        shackTitle: '農夫市集',
-        firebase: 'https://shackhand-farmer.firebaseio.com/',
-        hackmap: "https://ethercalc.org/farmerMarket",
+   //     handTitle: '農學朋友',
+  //      shackTitle: '農夫市集',
+  //      firebase: 'https://shackhand-farmer.firebaseio.com/',
+  //      hackmap: "https://ethercalc.org/farmerMarket",
            //https://ethercalc.org/farmerHandle
           // https://ethercalc.org/farmer
 

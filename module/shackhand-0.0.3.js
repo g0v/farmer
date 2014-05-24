@@ -152,7 +152,7 @@ SKH.init = function(p) {
             var marker = {
                 lat: parseFloat(llC.split(/,\s*/)[0]),
                 lng: parseFloat(llC.split(/,\s*/)[1]),
-                layer: (whichGroup || 'hands'),
+                layer: whichGroup,
                 message : flag,
                 focus: false,
                 draggable: true,
@@ -298,10 +298,7 @@ SKH.init = function(p) {
                 restrict: 'E',
                 template: '<div class="col-md-12">'
         +'<div class="alert alert-info">'
-          +'<form class="form-inline">'  
-            +'<input name="iehack" type="hidden" value="&#9760;" />'
             +'<h3>'+(p.slogen || '')+'</h3>'
-          +'</form>'
         +'</div>'
         +'<hr>'
       +'</div>'
@@ -626,7 +623,7 @@ SKH.init = function(p) {
                         }
                     },
                     overlays: {
-                        hands: {
+              /*          hands: {
                             type: 'group',
                             name: (p.handTitle || 'hands'),
                             visible: (p.showHand || true)
@@ -636,7 +633,7 @@ SKH.init = function(p) {
                             type: 'group',
                             name: (p.shackTitle || ''),
                             visible: (p.showShack || true)
-                        },
+                        }, */
                     }
                 },
 
@@ -659,11 +656,24 @@ SKH.init = function(p) {
                 /*   */
 
 
+      //          var showList = [];
+                $scope.markers = $scope.markers || [];
+
+                for (var i = 0; i < p.layers.length; i++) {
+                    if (!$scope.bases[i]) continue;
+
+                    console.log($scope.bases[i]);
+
+                    var show = $filter('hideAncient')($scope.bases[i].hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
+                    
+                    $scope.markers = $scope.markers.concat(($filter('toMarkers')(show, ks, maybeHideLatLng, 
+                                        expHand,$scope.year,$scope.whichLable, "" + i)));
+                };
 
 
                 /*   */
-
-                var showHandList = $filter('hideAncient')($scope.base.hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
+/*
+               var showHandList = $filter('hideAncient')($scope.base.hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
                 var showShackList = $filter('hideAncient')($scope.base.shacks,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
 
                 $scope.markers = $filter('toMarkers')(showHandList, ks, maybeHideLatLng, 
@@ -671,7 +681,7 @@ SKH.init = function(p) {
 
                             .concat($filter('toMarkers')(showShackList, ks, maybeHideLatLng, 
                                         expHand,$scope.year,$scope.whichLable,'shacks')
-                                );
+                                );  */
             
                 $scope.$apply();
             };
@@ -747,6 +757,157 @@ SKH.init = function(p) {
                             name: (title || 'hands'),
                             visible: (visible || true)
                         };
+
+                  // for backend firebase
+                if (type == 'firebase') {
+                    $scope.dataRefs = $scope.dataRefs || [];
+                    $scope.dataRefs[n] = new Firebase(url);  
+
+                    $scope.bases = $scope.bases || [];                 
+                    $scope.bases[n] = $firebase($scope.dataRefs[n]);
+
+                    $scope.bases[n].$on('change', function(){
+                     
+                        /* ???  */
+
+                        if (typeof($scope.n) == 'undefined' && typeof($scope.base.hands) != 'undefined') $scope.n = $scope.base.hands.length;
+                       
+                        if (typeof($scope.base.hands) != 'undefined') {
+                            $scope.total = $scope.base.hands.length;
+                        } else {
+                            $scope.base.hands = [];
+                        }
+                        if (!$scope.n) console.log('error: wrong n');
+
+                        /* ???  */
+
+                        $timeout(function(){
+                            $scope.makeMarkers();
+                        }, 1000); 
+                    }); 
+                }
+
+                //for backend static jsons
+                if (type == 'json') {
+                //    for (var i = 0; i < p.jsons.length; i++) {
+                            $.getJSON(url,function(data){
+                                    $scope.bases = $scope.bases || [];                
+                                    $scope.bases[n].hands = data;
+                            });
+               //     } 
+                }
+
+                //for backend ethercalc using hackfoler format ==> hackmap
+                if (type == 'hackmap') {
+                    var hackmap = url;
+                    var hackUrl = hackmap.replace(/([^\/])\/([^\/])/, '$1'+ '/_/' +'$2');
+
+                    /*  get the .CSV data  ==>  auto complete latlng ==> POST back   */
+
+                    function setElem (url,cell,text) {     // "https://ethercalc.org/_/farmer", A1, "mewMew"
+                                $.ajax({
+                                    url: hackUrl,
+                                    type: 'POST',
+                                    dataType: 'application/json',
+                                    contentType: 'text/plain',
+                                    processData: false,
+                                    data: ('set ' + cell +' text t ' + text)
+                                });
+
+                    }
+
+                    function processHackMapData (allText) {
+
+                        console.log(allText);
+                        var allTextLines = allText.split(/\r\n|\n/); 
+
+
+                  /*** TODO:  get header  ***/
+
+
+
+
+                  /***   ****/
+
+
+                        var list = [];
+
+                        for (var i=1; i < allTextLines.length; i++) {
+                            var datas = allTextLines[i].split(',');
+
+                            var shack = {
+                                         n: i,
+                                         site: datas[0],
+                                         name: (datas[1] && datas[1].replace(/"/g,'')) || '',
+                                         address: datas[5],
+                                         latlngColumn: (datas[6] && datas[6].replace(/\?\?\s?/,',').replace(/"/g,'')) || '',
+                                         freetime: (datas[7] && datas[7].replace(/"/g,'')) || '',
+                                         note: ((datas[3] && datas[3].split(':')[0].replace(';',':')) || '') +'<hr>'+ datas[4]
+                                     };
+
+
+                            if (shack.address) {
+                                    if (!shack.latlngColumn) {
+
+                                        function backfire(hackUrl, shack) {
+                                                     $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"
+                                             + encodeURI(shack.address) +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
+
+                                                var lat, lng;
+
+                                                try {
+                                                 lat = d.query.results.Result[0].latitude;
+                                                 lng = d.query.results.Result[0].longitude;
+                                                } catch(err) { }
+
+                                                if (!lat || !lng) {                        
+                                                    try {
+                                                     lat = d.query.results.Result.latitude;
+                                                     lng = d.query.results.Result.longitude;
+                                                    } catch(err) {  }
+                                                }
+
+                                                if (lat && lng) {
+                                                    var backfireData = parseFloat(lat) + '?? ' + parseFloat(lng);
+                                                    setElem(hackUrl,['A','B','C','D','E','F','G'][6] + (shack.n + 1) , backfireData); // to Ethercalc
+
+                                                }
+                                            });
+                                        }
+
+                                        backfire(hackUrl, shack);
+                                       
+                                
+                                } else {
+                                    list.push(shack);
+                                }
+
+                            }
+                            console.log(list);
+                        }
+
+                        return list;
+                    }
+
+                        
+
+                    $.ajax({
+                        type: "GET",
+                        url: hackmap + '.csv',
+                        dataType: "text",
+                            success: function(data) {
+                              $scope.bases = $scope.bases || [];
+                              $scope.bases[n] = {hands: processHackMapData(data)};
+
+                         //     console.log($scope.bases[n]);
+
+                              $scope.makeMarkers();
+                            }
+                         });
+
+                }
+
+
             }
 
             for (var i = 0; i < p.layers.length; i++) {
@@ -784,6 +945,9 @@ SKH.init = function(p) {
                         });
                 } 
             }
+
+
+          /***************/
 
 
             //for backend ethercalc using hackfoler format ==> hackmap
@@ -885,7 +1049,6 @@ SKH.init = function(p) {
                           $scope.makeMarkers();
                         }
                      });
-
 
             }
 
@@ -1043,89 +1206,97 @@ SKH.init = function(p) {
                 });
             }
 
-            $scope.login = function () {
+            $scope.login = function (serviceProvider) {
 
                 $scope.status = 
                     {"zh-tw": '資料讀取中...請稍候', en: 'loading...please wait'}[p.lang];
 
-                auth = new FirebaseSimpleLogin($scope.dataRef, function(error, user) {
-                     
-                      if (error) {
-                        // an error occurred while attempting login
-                        console.log(error);
-                      } else if (user) {
+                for (var i = 0; i < p.layers.length; i++) {
 
-                        var data = user.thirdPartyUserData;
+                    if (p.logins[i] != serviceProvider) continue;
 
-                            $scope.root.site = data.link;
-                            $scope.root.note = data.bio;
-                            //////
+                    if (serviceProvider == 'facebook') {
 
-                            if (data.hometown && data.hometown.name) $scope.root.hometown = data.hometown.name;
-                            $scope.root.id = data.id;
-                            $scope.root.username = data.username;
+                        auth = new FirebaseSimpleLogin($scope.dataRefs[i], function(error, user) {
+                             
+                              if (error) {
+                                // an error occurred while attempting login
+                                console.log(error);
+                              } else if (user) {
 
-                            $timeout(function(){
-                                     if (data.hometown && data.hometown.name) $scope.root.hometown = data.hometown.name;
+                                var data = user.thirdPartyUserData;
+
+                                    $scope.root.site = data.link;
+                                    $scope.root.note = data.bio;
+                                    //////
+
+                                    if (data.hometown && data.hometown.name) $scope.root.hometown = data.hometown.name;
                                     $scope.root.id = data.id;
                                     $scope.root.username = data.username;
-                            },2000);
+
+                                    $timeout(function(){
+                                             if (data.hometown && data.hometown.name) $scope.root.hometown = data.hometown.name;
+                                            $scope.root.id = data.id;
+                                            $scope.root.username = data.username;
+                                    },2000);
 
 
-                            $scope.status = { "zh-tw": '讀取完畢!請修改後發佈', 
-                                              en: 'data loaded! please modify it and submit again'}[p.lang];
-                            
+                                    $scope.status = { "zh-tw": '讀取完畢!請修改後發佈', 
+                                                      en: 'data loaded! please modify it and submit again'}[p.lang];
+                                    
 
-                            if ($scope.root.hometown) $scope.askGeo($scope.root.hometown);
+                                    if ($scope.root.hometown) $scope.askGeo($scope.root.hometown);
 
 
-                        $.getJSON('http://graph.facebook.com/' + user.id , function(d){
-                            console.log(d);
-                            $scope.ttName = d.name + "";
-                            $scope.root.name = d.name + "";
+                                $.getJSON('http://graph.facebook.com/' + user.id , function(d){
+                                    console.log(d);
+                                    $scope.ttName = d.name + "";
+                                    $scope.root.name = d.name + "";
 
-                           for (var i = 0; i < $scope.base.hands.length; i++) {
-                                
-                                if (!$scope.base.hands[i]) continue;
-                                if ($scope.base.hands[i].id == data.id || ( !$scope.base.hands[i].id && $scope.base.hands[i].name && $scope.base.hands[i].name == $scope.root.name) )  {
+                                   for (var i = 0; i < $scope.base.hands.length; i++) {
+                                        
+                                        if (!$scope.base.hands[i]) continue;
+                                        if ($scope.base.hands[i].id == data.id || ( !$scope.base.hands[i].id && $scope.base.hands[i].name && $scope.base.hands[i].name == $scope.root.name) )  {
 
-                                    var usrNameBuf = $scope.root.username +"";   
-                                    var idBuf = $scope.root.id +"";
-                                    var htBuf = $scope.root.hometown +"";
+                                            var usrNameBuf = $scope.root.username +"";   
+                                            var idBuf = $scope.root.id +"";
+                                            var htBuf = $scope.root.hometown +"";
 
-                                    $scope.root = angular.copy($scope.base.hands[i]);
-                                    $scope.root.invis = false;
-                                    $scope.root.username = usrNameBuf;
-                                    $scope.root.id = idBuf;
-                                    $scope.root.hometown = htBuf;
-                                    $scope.n = i;
-                                    $scope.imp = true;
+                                            $scope.root = angular.copy($scope.base.hands[i]);
+                                            $scope.root.invis = false;
+                                            $scope.root.username = usrNameBuf;
+                                            $scope.root.id = idBuf;
+                                            $scope.root.hometown = htBuf;
+                                            $scope.n = i;
+                                            $scope.imp = true;
 
-                                    $scope.loc = angular.copy($scope.root.address);
+                                            $scope.loc = angular.copy($scope.root.address);
 
-                                    if (p.finger) {
-                                        $scope.root.friends = {};
-                                        for (var i = 0; i < p.finger; i++) {
-                                            $scope.root.friends[i] = {}; 
-                                        };          
-                                    }
+                                            if (p.finger) {
+                                                $scope.root.friends = {};
+                                                for (var i = 0; i < p.finger; i++) {
+                                                    $scope.root.friends[i] = {}; 
+                                                };          
+                                            }
 
-                                    $scope.$apply();
-                       
-                                }
-                            }; 
-                        }); 
+                                            $scope.$apply();
+                               
+                                        }
+                                    }; 
+                                }); 
 
-                      } else {
-                        console.log('user is logged out');
-                        // user is logged out
-                      }
-                });
+                              } else {
+                                console.log('user is logged out');
+                                // user is logged out
+                              }
+                        });
 
-                auth.login('facebook', {
-                  rememberMe: true,
-             //     scope: 'email'
-                });
+                        auth.login('facebook', {
+                          rememberMe: true,
+                     //     scope: 'email'
+                        });
+                    }
+                }
             };
 
             $scope.logout = function () {

@@ -300,7 +300,8 @@
 
                       <a ng-click = "focus(base.hands[total - k])" style = "cursor:pointer" title="{{base.hands[total - k].name}}">
 
-                      <img id = "{{ base.hands[total - k].id && 'fb' }}"
+                      <img
+                      id = "{{ base.hands[total - k].id && 'fb' }}"
                       title = "{{base.hands[total - k].name }}"
                       ng-src="{{(base.hands[total - k].id && 'http://graph.facebook.com/' + base.hands[total - k].id + '/picture') || 'img/marker-icon.png'}}"/>
 
@@ -348,16 +349,17 @@
     <script src="module/src/angular.min.js"></script>
     <script src="module/src/angular-route.min.js"></script>
     <script src="module/src/angular-fullscreen.js"></script>
-    <script src="module/src/leaflet.markercluster.js"></script>
 
     <script src="module/src/leaflet-0.7.1.js"></script>
     <script src="module/src/angular-leaflet-directive.js"></script>
+    <script src="module/src/leaflet.markercluster.js"></script>
 
     <link rel="stylesheet" href="module/src/leaflet.css" />    
     <link rel="stylesheet" href="module/src/leaflet.ie.css" /> 
 
     <link rel="stylesheet" href="module/src/leaflet.label.css" />    
     <script src="module/src/leaflet.label.js"></script>
+
 
 
 <script src='module/src/firebase.js'></script>
@@ -441,8 +443,6 @@
 
      SKH.init({
         fbApp: '485195848253155',
-        handTitle: '農學朋友',
-        shackTitle: '農夫市集',
         slogen: '友善土地 ☯ ︎友善農人 ☯ ︎友善加工 ☯ ︎友善小店 ☯ ︎友善市集 ☯ ︎友善餐飲 ☯ ︎友善生活',
         selectBar: 
 '<input autofocus type="search" class="form-control noPhone" placeholder="您在哪兒呢?"ng-model="loc" ng-change = "askGeo(loc)"/>'
@@ -462,20 +462,35 @@
         checkList: [[]],
         whiteList: ['site2','connect_me','skill','ask','username','crop','plant'],
 
+/*  */
+        layers: ['農學朋友','農夫市集','友善加工','友善餐飲'],
+        types: ['firebase', 'hackmap', 'hackmap', 'hackmap'],
+        logins: ['facebook','','',''],
+        toFlags: [toFlag,'','',''],
+        toLables: [toLable,'','',''],
+
+
+/*  */
+
+        handTitle: '農學朋友',
+        shackTitle: '農夫市集',
         firebase: 'https://shackhand-farmer.firebaseio.com/',
-        hackmap: "https://ethercalc.org/farmer",
+        hackmap: "https://ethercalc.org/farmerMarket",
+           //https://ethercalc.org/farmerHandle
+          // https://ethercalc.org/farmer
 
         toFlag: toFlag,
         toLable: toLable,
 
+
         lang:'zh-tw',
         listKeys: ['name','note','address','share','ask'], //'connect_me',
         listKeyNames: {
-          name: {"zh-tw": '名稱', en: 'Name'},
-          address: {"zh-tw": '位於', en: 'Place'},
-          share: {"zh-tw": '分享', en: 'Share'},
-          ask:{"zh-tw": '尋找', en: 'Looking for'},
-          note: {"zh-tw": '自我介紹', en: 'Self Introduction'}          
+          name: '名稱',
+          address:  '位於',
+          share: '分享',
+          ask: '尋找',
+          note: '自我介紹'          
         }
      });        
 

@@ -1,14 +1,3 @@
-// v0.0.1 stable
-// v0.0.2 todo list:
-    // b. activity join & discussion
-    // c. wiki schedule
-    // d. check if root has a hand on map
-    // e. option to lock "remove hand"
-    // f. option to hide all flag from outsider  (rise a flag to see others)
-    // i. side 抽屜
-    // j. match >>  <<     prosonalize
-    // k. same ==          prosonalizech
-    // l. nearFar ~~       prosonalize
 
 var SKH = new Object;
 
@@ -263,6 +252,7 @@ SKH.init = function(p) {
 
                     };
 
+                    // old Friends feature //
                     for (var i = 0; i < (autos.length || 0); i++) {
                         var h = autos[i] || {};
 
@@ -276,7 +266,8 @@ SKH.init = function(p) {
                                 ms.push(p.hToM(keys,f, i, mllC(f), f.name, f.id, year));   
                             };              
                         }       
-                    };
+                    }; 
+                    // old Friends feature End//
                 }
                 return ms;
             };
@@ -451,7 +442,7 @@ SKH.init = function(p) {
                 template : '<div>'
             +'<table class="table table-striped table-hover table-condensed table-responsive">'
               +'<tr>'
-                +'<th ng-repeat = "k in listKeys" class="text-center{{($index > 2 && \' noPhone\') || \'\'}}"> {{listKeyNames[k][lang] || k}} </th>'
+                +'<th ng-repeat = "k in listKeys" class="text-center{{($index > 2 && \' noPhone\') || \'\'}}"> {{listKeyNames[k] || k}} </th>'
               +'</tr>'
               +'<tr ng-repeat = "h in (base.hands | filterBy:key | someFirst:root.follows)" ng-click = "focus(h)">'
                 +'<td ng-repeat = "k in listKeys" class="text-center{{($index > 2 && \' noPhone\') || \'\'}}">'
@@ -645,7 +636,7 @@ SKH.init = function(p) {
                             type: 'group',
                             name: (p.shackTitle || ''),
                             visible: (p.showShack || true)
-                        }
+                        },
                     }
                 },
 
@@ -655,6 +646,8 @@ SKH.init = function(p) {
 
             });
 
+            
+
 
             $scope.makeMarkers = function(maybeHideLatLng, expHand){
                 var ks = {
@@ -663,8 +656,14 @@ SKH.init = function(p) {
                     geoKey: $scope.geoKey
                 }
 
-                var showHandList = $filter('hideAncient')($scope.base.hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
+                /*   */
 
+
+
+
+                /*   */
+
+                var showHandList = $filter('hideAncient')($scope.base.hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
                 var showShackList = $filter('hideAncient')($scope.base.shacks,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
 
                 $scope.markers = $filter('toMarkers')(showHandList, ks, maybeHideLatLng, 
@@ -732,6 +731,30 @@ SKH.init = function(p) {
             
             $scope.base = {hands: [], shacks: []};
 
+/*    */
+
+            function makeLayer(n) {
+                var title = p.layers[n];
+                var type = p.types[n];
+                var login = p.logins[n];
+                var toFlag = p.toFlags[n];
+                var toLable = p.toLables[n];
+                var visible;  try {visible = p.visibles[n]} catch(err) {};
+
+                $scope.layers.overlays[n] = {
+                            type: 'group',
+                            name: (title || 'hands'),
+                            visible: (visible || true)
+                        };
+            }
+
+            for (var i = 0; i < p.layers.length; i++) {
+                makeLayer(i);
+            };
+        
+/*    */
+
+
             // for backend firebase
             if (p.firebase) {
                 $scope.dataRef = new Firebase(p.firebase);
@@ -785,7 +808,7 @@ SKH.init = function(p) {
 
                 function processHackMapData (allText) {
 
-                    console.log(allText);
+            //        console.log(allText);
                     var allTextLines = allText.split(/\r\n|\n/); 
 
                     var list = [];
@@ -856,7 +879,7 @@ SKH.init = function(p) {
                         success: function(data) {
                           $scope.base.shacks = ($scope.base.shacks || []).concat(processHackMapData(data));
 
-                          console.log($scope.base.shacks);
+            //              console.log($scope.base.shacks);
 
                           $scope.makeMarkers();
                         }

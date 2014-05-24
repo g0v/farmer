@@ -314,7 +314,7 @@ SKH.init = function(p) {
         }).directive('skhFblogin', function() {
             return {
                 restrict: 'E',
-                template: '<button id = "FBlogin" class="btn btn-primary" ng-click="login()" ng-hide = "root.name">'
+                template: '<button id = "FBlogin" class="btn btn-primary" ng-click="login(\'facebook\')" ng-hide = "root.name">'
                             +{ "zh-tw":'以Facebook登入',
                                en: 'login with facebook'}[p.lang]
                             +'</button>'
@@ -1071,8 +1071,7 @@ SKH.init = function(p) {
 
             $scope.login = function (serviceProvider) {
 
-                $scope.status = 
-                    {"zh-tw": '資料讀取中...請稍候', en: 'loading...please wait'}[p.lang];
+                $scope.status = '資料讀取中...請稍候';
 
                 for (var i = 0; i < p.layers.length; i++) {
 

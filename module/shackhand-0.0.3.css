@@ -17,6 +17,11 @@
   z-index: 99999;
 }
 
+
+.navbar h3 {
+  margin-top: 0px;
+}
+
 div.flag {
   font-size: 140%;
 }

@@ -464,10 +464,10 @@
      //   slogen: '友善土地 ☯ ︎友善農夫 ☯ ︎友善加工 ☯ ︎友善小店 ☯ ︎友善市集 ☯ ︎友善餐飲 ☯ ︎友善生活',
         selectBar: 
 '<input autofocus type="search" class="form-control noPhone" placeholder="您在哪兒呢?"ng-model="loc" ng-change = "askGeo(loc)"/>'
-+'<input type="search" class="form-control noPhone" placeholder="輸入關鍵字" ng-model="key" ng-change = "makers = []; makeMarkers()"/>'
++'<input type="search" class="form-control noPhone" placeholder="輸入關鍵字" ng-model="key" ng-change = "clearMarker(); makeMarkers()"/>'
 
         +'<select class = "form-control"'
-                    +'ng-model="whichLable" ng-change = "makeMarkers()">'
+                    +'ng-model="whichLable" ng-change = "clearMarker(); makeMarkers()">'
                       +'<option value="">-- 選擇顯示標籤 --</option>'
                       +'<option value="age">年齡</option>'
                       +'<option value="freetime">有空時間</option>'

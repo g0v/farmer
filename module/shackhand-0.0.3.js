@@ -651,7 +651,14 @@ SKH.init = function(p) {
           //      $('.leaflet-marker-shadow').remove();
             }); 
 
+            $scope.clearMarker = function(){
+                $scope.markers = [];
+                $('leaflet-marker-icon').hide();
+            }
+
             $scope.makeMarkers = function(maybeHideLatLng, expHand){
+
+
                 var ks = {
                     key : $scope.key,
                     nameKey: $scope.nameKey,
@@ -659,7 +666,6 @@ SKH.init = function(p) {
                 }
 
                 /*   */
-
 
       //          var showList = [];
                 $scope.markers = $scope.markers || [];
@@ -794,7 +800,7 @@ SKH.init = function(p) {
                         /* ???  */
 
                         $timeout(function(){
-                            $scope.markers = [];
+                            $scope.clearMarker();
                             $scope.makeMarkers();
                         }, 1000); 
                     }); 
@@ -917,7 +923,7 @@ SKH.init = function(p) {
 
                          //     console.log($scope.bases[n]);
 
-                              $scope.markers = [];
+                              $scope.clearMarker();
                               $scope.makeMarkers();
                             }
                          });
@@ -981,7 +987,7 @@ SKH.init = function(p) {
                         success: function(data) {
                           $scope.base.hands = $scope.base.hands.concat(processCsvData(data));
            //               console.log($scope.base.hands);
-                          $scope.markers = [];
+                          $scope.clearMarker();
                           $scope.makeMarkers();
                         }
                      });

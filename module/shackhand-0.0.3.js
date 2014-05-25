@@ -17,30 +17,40 @@ SKH.toHref = function (str) {
     return (str.indexOf('http') > -1)? str : 'http://' + str;
 } 
 
-SKH.toHackMapFlag = function(shack, i, Icon, from) {
-    return '<div class="flag">'
-                +((shack.site && '<a href = "'+SKH.toHref(shack.site)+'" target = "_blank">'
-                  + '<img title = "' + shack.site
-                      +'"src = "http://www.google.com/s2/favicons?domain=' + shack.site +'">' ) || "") 
-
-                +'<strong>'+ shack.name+'</strong></a><br />'
-
-                  
-                +'<hr>'
-                +( shack.note.replace(/\n/g, '<br>')|| "")+'<br />'
-                +'<hr>'
-
-                +((shack.site && '<a href = "'+SKH.toHref(shack.site)+'" target = "_blank">'
-                  + '<img title = "' + shack.site
-                      +'"src = "http://www.google.com/s2/favicons?domain=' + shack.site +'">' ) || "") 
-
-                +'<strong>'+ shack.name+'</strong></a><br />'
-                        
-            +'</div>';
-}
 
 
 SKH.init = function(p) {
+
+    SKH.toHackMapFlag = function(shack, i, Icon, from) {
+
+        var middle = '';
+        for (var i = 0; i < p.headers.length; i++) {
+            if (shack[p.headers[i].n]) middle += '<br>' + p.headers[i].t + '：' + shack[p.headers[i].n] + '<br>'
+        };
+
+        return '<div class="flag">'
+                    +((shack.site && '<a href = "'+SKH.toHref(shack.site)+'" target = "_blank">'
+                      + '<img title = "' + shack.site
+                          +'"src = "http://www.google.com/s2/favicons?domain=' + shack.site +'">' ) || "") 
+
+                    +'<strong>'+ shack.name+'</strong></a><br />'
+
+                    + middle
+
+                      
+                    +'<hr>'
+                    +( shack.note.replace(/\n/g, '<br>')|| "")+'<br />'
+                    +'<hr>'
+
+                    +((shack.site && '<a href = "'+SKH.toHref(shack.site)+'" target = "_blank">'
+                      + '<img title = "' + shack.site
+                          +'"src = "http://www.google.com/s2/favicons?domain=' + shack.site +'">' ) || "") 
+
+                    +'<strong>'+ shack.name+'</strong></a><br />'
+                            
+                +'</div>';
+    }
+
 
     p.lang = (p.lang || 'en');
 
@@ -90,6 +100,8 @@ SKH.init = function(p) {
     }
 
     p.hToM = (p.hToM || function(keys,h,i,llC,from,fbid,year,whichLable,whichGroup,zoomNow) {
+
+
             var key = keys[0];
             var nameKey = keys[1];
             var geoKey = keys[2];
@@ -102,6 +114,8 @@ SKH.init = function(p) {
 
  //           console.log(h);
 
+
+
             var fbIcon,googIcon,gitIcon,twitIcon,personIcon;
 
             if (hand.id || fbid) {
@@ -112,6 +126,8 @@ SKH.init = function(p) {
 
             var icon = (h.img || h.icon || fbIcon || googIcon || gitIcon || twitIcon || personIcon);
 
+
+
 //            if (hand.site2 && hand.site2 == hand.site) hand.site2 = "";
 
             if (hand.site && hand.site.indexOf('http') == -1 && hand.site.indexOf('@') == -1) hand.site = 'http://' + hand.site;
@@ -119,6 +135,7 @@ SKH.init = function(p) {
             hand.latlngColumn = hand.latlngColumn.replace('(','').replace(')','').replace('附近','').replace(/near\s?/,''); 
 
      
+
             var flag, label;
             
             flag = (p.toFlags[parseInt(whichGroup)] || SKH.toHackMapFlag || p.toFlags[0] || function () {return})(hand, i, icon, year);
@@ -132,7 +149,7 @@ SKH.init = function(p) {
                     flag = flag.replace(re, '<span class = "highlight">$1</span>');
                 }
             }
-            if (nameKey && nameKey.length > 0) {
+   /*         if (nameKey && nameKey.length > 0) {
                 var re = new RegExp(nameKey, "gi");
                 if (hand.name.search(re) == -1) {
                 console.log('略過人名不符者'); return; } else {
@@ -145,7 +162,9 @@ SKH.init = function(p) {
                 console.log('略過地理不符者'); return; } else {
                     flag = flag.replace(re, '<span class = "highlight">'+geoKey+'</span>');
                 }
-            }
+            } */
+
+            alert(((icon && toIcon(icon, (from || 0), zoomNow)) || defaultIcon(zoomNow)));
 
             var marker = {
                 lat: parseFloat(llC.split(/,\s*/)[0]),
@@ -221,6 +240,7 @@ SKH.init = function(p) {
                 var ms = [];                    
                 var autos = angular.copy(list);
 
+
 //                console.log(autos);
                 var latlngUsed = [];
 
@@ -245,6 +265,8 @@ SKH.init = function(p) {
                         if (maybeHideLatLng && isClose(h.latlngColumn,maybeHideLatLng) && h.id != expHand.id) { 
                             console.log('略過同地址'); continue; 
                         }
+
+
 
                         ms.push(p.hToM(keys,h,i,mllC(h),0,0,year,whichLable,whichGroup, zoomNow));
 
@@ -646,7 +668,7 @@ SKH.init = function(p) {
             
             $scope.$watch('center', function(newValue, oldValue) {
           //      $('.leaflet-marker-icon').hide();
-                $scope.markers = [];
+                $scope.clearMarker();
                 $scope.makeMarkers();
           //      $('.leaflet-marker-shadow').remove();
             }); 
@@ -671,7 +693,8 @@ SKH.init = function(p) {
                 $scope.markers = $scope.markers || [];
 
                 for (var i = 0; i < p.layers.length; i++) {
-                    if (!$scope.bases[i]) continue;
+
+                    if (!$scope.bases || !$scope.bases[i]) continue;
 
        //             console.log($scope.bases[i]);
 
@@ -905,7 +928,7 @@ SKH.init = function(p) {
                                 }
 
                             }
-                            console.log(list);
+              //              console.log(list);
                         }
 
                         return list;
@@ -934,7 +957,7 @@ SKH.init = function(p) {
             for (var i = 0; i < p.layers.length; i++) {
                 makeLayer(i);
             };
-        
+
 /*    */
 
 

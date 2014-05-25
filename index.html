@@ -89,10 +89,9 @@
                   後台共筆：
                   <ul class="nav navbar-nav">
                     <li><a href = "https://ethercalc.org/farmer" target = "_blank">友善農夫</a></li>
-                     ➭
                     <li><a href = "https://ethercalc.org/farmerMarket" target = "_blank">農夫市集</a></li>
-                     ➭
                     <li><a href = "https://ethercalc.org/farmerHandle" target = "_blank">友善加工</a></li>
+                  </ul>
                 </div>
           </div>
     </div> 
@@ -347,6 +346,7 @@
               <skh-localmap></skh-localmap>
         </div>
 
+       </div>
 
       </div>
 
@@ -372,11 +372,11 @@
     <script src="module/src/leaflet.label.js"></script>
 
 
-<!--
 <script src='module/src/firebase.js'></script>
 <script src='module/src/angularfire.min.js'></script>
 <script src='module/src/firebase-simple-login.js'></script>
-<script src="module/src/angular-easyfb.min.js"></script>  -->
+<script src="module/src/angular-easyfb.min.js"></script>
+
 <script src='module/shackhand-0.0.3.js'></script>
 
 
@@ -389,7 +389,7 @@
 
         var label = " ";
         
-        var simpleList = ['freetime','busytime','learner_type','learner_habit','skill','crop','plant','share','ask'];
+        var simpleList = ['freetime','busytime','learner_type','learner_habit','skill','crop','connect_me','plant','share','ask'];
 
         for (var i = 0; i < simpleList.length; i++) {
           var k = simpleList[i];
@@ -453,7 +453,7 @@
      }
 
      SKH.init({
-        fbApp: '485195848253155',
+     //   fbApp: '485195848253155',
      //   slogen: '友善土地 ☯ ︎友善農夫 ☯ ︎友善加工 ☯ ︎友善小店 ☯ ︎友善市集 ☯ ︎友善餐飲 ☯ ︎友善生活',
         selectBar: 
 '<input autofocus type="search" class="form-control noPhone" placeholder="您在哪兒呢?"ng-model="loc" ng-change = "askGeo(loc)"/>'
@@ -462,18 +462,20 @@
         +'<select class = "form-control"'
                     +'ng-model="whichLable" ng-change = "clearMarker(); makeMarkers()">'
                       +'<option value="">-- 選擇顯示標籤 --</option>'
-                      +'<option value="age">年齡</option>'
-                      +'<option value="freetime">有空時間</option>'
+                //      +'<option value="age">年齡</option>'
+                      +'<option value="freetime">時間</option>'
                       +'<option value="busytime">農忙時間</option>'
-                      +'<option value="crop">經濟作物</option>'
-                      +'<option value="plant">休閒作物</option>'
-                      +'<option value="share">分享</option>'
-                      +'<option value="ask">需要</option>'
+                      +'<option value="connect_me">聯絡方式</option>'
+                      +'<option value="crop">農產品</option>'
+                //      +'<option value="plant">休閒作物</option>'
+                //      +'<option value="share">分享</option>'
+                //      +'<option value="ask">需要</option>'
                   +'</select>',
-        checkList: [[]],
-        whiteList: ['site2','connect_me','skill','ask','username','crop','plant'],
+     //   checkList: [[]],
+    //    whiteList: ['site2','connect_me','skill','ask','username','crop','plant'],
 
 /*  */
+        headers: [{n: 'connect_me', t:'聯絡方式'},{n: 'crop', t: '農產品'}],
         layers: ['友善農夫','農夫市集','友善加工'],
         //'農學朋友', '友善零售','友善餐飲'],
         types: ['hackmap', 'hackmap', 'hackmap'],
@@ -485,7 +487,7 @@
                'https://ethercalc.org/farmerHandle'],
            //    'https://ethercalc.org/farmerRetail',
            //    'https://ethercalc.org/farmerMeal',],
-        logins: ['facebook'],
+        logins: [],
         toFlags: [toFlag],
         toLabels: [toLabel],
 
@@ -513,7 +515,7 @@
         }
      });        
 
-        var app = angular.module('demoapp', ['shackhand']);  //'firebase','ezfb',
+        var app = angular.module('demoapp', ['firebase','ezfb','shackhand']);  //
 
 
     </script>

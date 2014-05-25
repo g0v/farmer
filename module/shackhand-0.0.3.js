@@ -1000,7 +1000,7 @@ SKH.init = function(p) {
 
             
             $scope.toggleFollow = function(hand) {
-                if ($scope.n) {
+                if ($scope.imp) {
                     var list = ($scope.base.hands[$scope.n] && $scope.base.hands[$scope.n].follows) || [];
                     list.push($scope.base.hands.indexOf(hand));
                     var m = p.maxFollow || 10;

@@ -44,7 +44,7 @@
 
     <div class="navbar-header pull-left">
               <div class="navbar-brand noPhone">
-                  <h3 class= "h4"><a href = "https://hackpad.com/2.0-gZL8jQ3iwgI">☯☯☯☯☯☯農學地圖 ➭ 上下游互助☯☯☯☯☯☯</a>
+                  <h3 class= "h3"><a href = "https://hackpad.com/2.0-gZL8jQ3iwgI">農學地圖 ☯ 上下游互助</a>
                   </h3>
               </div>
 
@@ -56,13 +56,13 @@
 
           </div>
 
-          <div class="navbar-left">
+ <!--     <div class="navbar-left">
               <form class="navbar-form" role="search">
 
                  <skh-select></skh-select>
 
               </form>
-          </div>
+          </div>  -->
     </div> 
 
 
@@ -83,6 +83,18 @@
               <img src = "http://g0v.tw/imgs/g0v-horizontal-transparent-darkbackground-m.png">
             </a>
           </div>
+
+          <div class = "navbar-left">
+                <div class="collapse navbar-collapse">
+                  後台共筆：
+                  <ul class="nav navbar-nav">
+                    <li><a href = "https://ethercalc.org/farmer" target = "_blank">友善農夫</a></li>
+                     ➭
+                    <li><a href = "https://ethercalc.org/farmerMarket" target = "_blank">農夫市集</a></li>
+                     ➭
+                    <li><a href = "https://ethercalc.org/farmerHandle" target = "_blank">友善加工</a></li>
+                </div>
+          </div>
     </div> 
 
     <div class="navbar-header pull-right">
@@ -97,7 +109,7 @@
 
 <div>
   <div class="container main-container">
-
+<!--
     <div class="row">
        <div class = "col-md-12">
           <div class = "alert alert-info">
@@ -110,16 +122,17 @@
              </h3>
           </div>
         </div>
-<!--        <skh-slogen></skh-slogen> -->
-    </div>
+        <skh-slogen></skh-slogen>
 
+    </div> -->
+
+   <!--
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
         <div class="well noPhone">
 
 <a href="https://github.com/bestian/shackhand/"><img style="position: absolute; top: 0; right: 15px; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
-
-          <div id = "J" class="join">
+       <div id = "J" class="join">
 
             
               <h3><span ng-bind = "(!imp && '升起您的農學互助支持旗') || '請填寫您升起的旗幟內容，再按「升起旗幟」'"></span>
@@ -137,11 +150,13 @@
             <button class= "btn btn-warning" onclick = "window.open('https://hackpad.com/2.0-gZL8jQ3iwgI')">使用說明</button>
  
             <hr>
+-->
 
 <!--main form -->
+
+<!--
       <form ng-show = "root.name">
 
-<!--      <form ng-show = "true || root.name"> -->
 
         <div class="input-group">
               <span class="input-group-addon">名字</span>
@@ -195,7 +210,6 @@
         <div class="input-group">
               <span class="input-group-addon">您的身份</span>
 
-              <!--  ?????  -->
 
               <select class = "form-control selectpicker" ng-model = "root.learner_role">
                   <option value =""> -- 選擇一種最接近你的農學身份 -- </option>
@@ -209,8 +223,6 @@
         <div class="input-group">
               <span class="input-group-addon">主要的工作型態</span>
        
-              <!--  ?????  -->
-
               <select class = "form-control selectpicker" ng-model = "root.learner_type">
                   <option value =""> -- 選擇一種工作型態 -- </option>
                   <option ng-repeat = "t in ['個人','三五好友','自組織團體','受雇於機構']"
@@ -299,11 +311,9 @@
                 <span ng-bind = "status">此瀏覽器不支援，請試試看用不同的瀏覽器</span>
 
                   <br>
+         <input type = "number" ng-model = "total"  ng-show = "n > 0">
 
-        <!--          <input type = "number" ng-model = "total"  ng-show = "n > 0">
-
-                  <br>  -->
-
+                  <br> 
                   <span ng-repeat = "k in [3,2,1]" ng-show = "total - k >= 0">
 
                       <a ng-click = "focus(bases[0].hands[total - k])" style = "cursor:pointer" title="{{bases[0].hands[total - k].name}}">
@@ -329,6 +339,7 @@
         </div>        
       </div>
 
+-->
 
     <div class="row">
  <!--         <button class="btn btn-info" ng-click="goFullscreen()" style="float:left">全螢幕</button> -->
@@ -453,7 +464,7 @@
      //   slogen: '友善土地 ☯ ︎友善農夫 ☯ ︎友善加工 ☯ ︎友善小店 ☯ ︎友善市集 ☯ ︎友善餐飲 ☯ ︎友善生活',
         selectBar: 
 '<input autofocus type="search" class="form-control noPhone" placeholder="您在哪兒呢?"ng-model="loc" ng-change = "askGeo(loc)"/>'
-+'<input type="search" class="form-control noPhone" placeholder="輸入關鍵字" ng-model="key" ng-change = "makeMarkers()"/>'
++'<input type="search" class="form-control noPhone" placeholder="輸入關鍵字" ng-model="key" ng-change = "makers = []; makeMarkers()"/>'
 
         +'<select class = "form-control"'
                     +'ng-model="whichLable" ng-change = "makeMarkers()">'
@@ -470,10 +481,12 @@
         whiteList: ['site2','connect_me','skill','ask','username','crop','plant'],
 
 /*  */
-        layers: ['農學朋友','友善農夫','農夫市集','友善加工'],
-        //'友善零售','友善餐飲'],
-        types: ['firebase', 'hackmap', 'hackmap', 'hackmap'],
-        urls: ['https://shackhand-farmer.firebaseio.com/',
+        layers: ['友善農夫','農夫市集','友善加工'],
+        //'農學朋友', '友善零售','友善餐飲'],
+        types: ['hackmap', 'hackmap', 'hackmap'],
+        // 'firebase',
+        urls: [
+        //'https://shackhand-farmer.firebaseio.com/'
                'https://ethercalc.org/farmer',
                'https://ethercalc.org/farmerMarket',
                'https://ethercalc.org/farmerHandle'],

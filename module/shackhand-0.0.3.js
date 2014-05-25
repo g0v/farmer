@@ -491,6 +491,8 @@ SKH.init = function(p) {
                 if (p.movie) {
 
                     if (!$scope.pause) $scope.year += $scope.speed;
+
+                    $scope.markers = [];
                     $scope.makeMarkers();
 
                     $(".leaflet-marker-icon").hover(
@@ -643,10 +645,10 @@ SKH.init = function(p) {
 
             
             $scope.$watch('center', function(newValue, oldValue) {
-                $('.leaflet-marker-icon').remove();
+          //      $('.leaflet-marker-icon').hide();
+                $scope.markers = [];
                 $scope.makeMarkers();
-                $('.leaflet-marker-shadow').remove();
-                $scope.$apply();
+          //      $('.leaflet-marker-shadow').remove();
             }); 
 
             $scope.makeMarkers = function(maybeHideLatLng, expHand){
@@ -686,7 +688,7 @@ SKH.init = function(p) {
                                         expHand,$scope.year,$scope.whichLable,'shacks')
                                 );  */
             
-                $scope.$apply();
+ //               $scope.$apply();
             };
     
             $scope.askGeo = function(place){
@@ -763,15 +765,21 @@ SKH.init = function(p) {
                         };
 
                   // for backend firebase
+                  
+                  /* maybe Bug here */
+
                 if (type == 'firebase') {
+
                     $scope.dataRefs = $scope.dataRefs || [];
                     $scope.dataRefs[n] = new Firebase(url);  
 
                     $scope.bases = $scope.bases || [];                 
                     $scope.bases[n] = $firebase($scope.dataRefs[n]);
 
+
                     $scope.bases[n].$on('change', function(){
-                     
+
+
                         /* ???  */
 
                         if (typeof($scope.n) == 'undefined' && typeof($scope.bases[n].hands) != 'undefined') $scope.n = $scope.bases[n].hands.length;
@@ -786,6 +794,7 @@ SKH.init = function(p) {
                         /* ???  */
 
                         $timeout(function(){
+                            $scope.markers = [];
                             $scope.makeMarkers();
                         }, 1000); 
                     }); 
@@ -826,10 +835,9 @@ SKH.init = function(p) {
                         var allTextLines = allText.split(/\r\n|\n/); 
 
 
-                  /*** TODO:  get header  ***/
+                  /***  get header  ***/
 
-
-
+                        var headers = allTextLines[0].split(',');
 
                   /***   ****/
 
@@ -848,6 +856,10 @@ SKH.init = function(p) {
                                          freetime: (datas[7] && datas[7].replace(/"/g,'')) || '',
                                          note: ((datas[3] && datas[3].split(':')[0].replace(';',':')) || '') +'<hr>'+ datas[4]
                                      };
+
+                            for (var k = 0; k < headers.length; k++) {
+                                if (headers[k]) shack[headers[k]] = datas[k];
+                            };
 
 
                             if (shack.address) {
@@ -905,6 +917,7 @@ SKH.init = function(p) {
 
                          //     console.log($scope.bases[n]);
 
+                              $scope.markers = [];
                               $scope.makeMarkers();
                             }
                          });
@@ -968,6 +981,7 @@ SKH.init = function(p) {
                         success: function(data) {
                           $scope.base.hands = $scope.base.hands.concat(processCsvData(data));
            //               console.log($scope.base.hands);
+                          $scope.markers = [];
                           $scope.makeMarkers();
                         }
                      });

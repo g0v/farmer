@@ -392,7 +392,7 @@ SKH.init = function(p) {
                 template: '<div class="col-md-12 map" id = "local" fullscreen="isFullscreen" only-watched-property>'
 
              +'<form class="form-inline form-down" role="search">'
-              +'<span ng-hide = "center.zoom">'
+              +'<span ng-hide = "true">'
                 +'<span ng-repeat = "k in [0,1,2,3]">'           
                     +'<a ng-click = "askGeo(\'?\')" > <img class = "icon" src="module/src/images/findGeo.png"> </a>'
                 +'</span>'

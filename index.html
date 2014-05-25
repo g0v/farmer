@@ -10,9 +10,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    
+<!--    
    <meta property="fb:admins" content="100000207390400" />
-   <meta property="fb:app_id" content="697252030337861" />
+   <meta property="fb:app_id" content="697252030337861" />  -->
 
     <meta property="og:site_name" content="農學互助支持網" />
     <meta property="og:description" content="農學地圖 ➭ 上下游互助" />
@@ -34,7 +34,7 @@
 <body ng-controller="SKH-Ctrl">
 
   <!-- Facebook API  -->
-  <div id="fb-root"></div>
+<!--  <div id="fb-root"></div> -->
 
 
 
@@ -340,23 +340,16 @@
       </div>
 
 -->
-
-    <div class="row">
- <!--         <button class="btn btn-info" ng-click="goFullscreen()" style="float:left">全螢幕</button> -->
-<!--      <skh-eaglemap></skh-eaglemap> -->
-          <skh-localmap></skh-localmap>
-    </div>
+      
+        <div class="row">
+     <!--         <button class="btn btn-info" ng-click="goFullscreen()" style="float:left">全螢幕</button> -->
+    <!--      <skh-eaglemap></skh-eaglemap> -->
+              <skh-localmap></skh-localmap>
+        </div>
 
 
       </div>
-      <div class = "row noPhone">        
-         <skh-list></skh-list>
-      </div>
 
-      <div class = "row text-center noPhone">          
-          <div class="fb-comments" data-href="http://bestian.github.io/shackhand/auto20.html" data-numposts="5" data-width="420px" data-colorscheme="light"></div>
-      </div>
-    </div>
   </div>
 
 </body>
@@ -379,11 +372,11 @@
     <script src="module/src/leaflet.label.js"></script>
 
 
-
+<!--
 <script src='module/src/firebase.js'></script>
 <script src='module/src/angularfire.min.js'></script>
 <script src='module/src/firebase-simple-login.js'></script>
-<script src="module/src/angular-easyfb.min.js"></script>
+<script src="module/src/angular-easyfb.min.js"></script>  -->
 <script src='module/shackhand-0.0.3.js'></script>
 
 
@@ -520,7 +513,7 @@
         }
      });        
 
-        var app = angular.module('demoapp', ['firebase','ezfb','shackhand']);
+        var app = angular.module('demoapp', ['shackhand']);  //'firebase','ezfb',
 
 
     </script>

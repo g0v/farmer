@@ -50,7 +50,7 @@ SKH.init = function(p) {
     						 	'en': 'where are you?'}});
 
     function toIcon (url, from, zoomNow) {
-       zoomNow = zoomNow || 10;
+       zoomNow = zoomNow || 1;
        
        return ((!from && {
                   iconUrl: url,
@@ -82,7 +82,7 @@ SKH.init = function(p) {
 
 
     var defaultIcon = function(zoomNow){
-        zoomNow = zoomNow || 10;
+        zoomNow = zoomNow || 1;
         return {
             iconUrl: 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/200px-Smiley.svg.png',
             iconSize: [70 * zoomNow / 10, 70 * zoomNow / 10]
@@ -643,7 +643,9 @@ SKH.init = function(p) {
 
             
             $scope.$watch('center', function(newValue, oldValue) {
+                $('.leaflet-marker-icon').remove();
                 $scope.makeMarkers();
+                $('.leaflet-marker-shadow').remove();
                 $scope.$apply();
             }); 
 

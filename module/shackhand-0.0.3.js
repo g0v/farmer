@@ -49,10 +49,12 @@ SKH.init = function(p) {
     	{'where are you?': {'zh-tw': '您在哪兒呢?',
     						 	'en': 'where are you?'}});
 
-    function toIcon (url, from) {
+    function toIcon (url, from, zoomNow) {
+       zoomNow = zoomNow || 10;
+       
        return ((!from && {
                   iconUrl: url,
-                  iconSize: [(p.handsize || 70), (p.handsize || 70)]
+                  iconSize: [(p.handsize || 70) * (zoomNow / 10), (p.handsize || 70) * (zoomNow / 10)]
               } ) || {
                   iconUrl: url,
                   iconSize: [(p.fingersize || 50), (p.fingersize || 50)]
@@ -79,12 +81,15 @@ SKH.init = function(p) {
     }    
 
 
-    var defaultIcon = {
-                iconUrl: 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/200px-Smiley.svg.png',
-                iconSize: [70, 70]
+    var defaultIcon = function(zoomNow){
+        zoomNow = zoomNow || 10;
+        return {
+            iconUrl: 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/200px-Smiley.svg.png',
+            iconSize: [70 * zoomNow / 10, 70 * zoomNow / 10]
+        }   
     }
 
-    p.hToM = (p.hToM || function(keys,h,i,llC,from,fbid,year,whichLable,whichGroup) {
+    p.hToM = (p.hToM || function(keys,h,i,llC,from,fbid,year,whichLable,whichGroup,zoomNow) {
             var key = keys[0];
             var nameKey = keys[1];
             var geoKey = keys[2];
@@ -153,7 +158,7 @@ SKH.init = function(p) {
                 popupOptions: {
                     autoPan: false
                 },
-                icon: ((icon && toIcon(icon, (from || 0))) || defaultIcon),
+                icon: ((icon && toIcon(icon, (from || 0), zoomNow)) || defaultIcon(zoomNow)),
                 label: {
                     message: label,
                     options: {
@@ -211,7 +216,7 @@ SKH.init = function(p) {
                 return list;
             }
         }).filter('toMarkers', function(){
-            return function (list, ks, maybeHideLatLng, expHand, year, whichLable, whichGroup) {
+            return function (list, ks, maybeHideLatLng, expHand, year, whichLable, whichGroup, zoomNow) {
                 var keys = [ks.key, ks.nameKey, ks.geoKey];
                 var ms = [];                    
                 var autos = angular.copy(list);
@@ -241,7 +246,7 @@ SKH.init = function(p) {
                             console.log('略過同地址'); continue; 
                         }
 
-                        ms.push(p.hToM(keys,h,i,mllC(h),0,0,year,whichLable,whichGroup));
+                        ms.push(p.hToM(keys,h,i,mllC(h),0,0,year,whichLable,whichGroup, zoomNow));
 
                     };
 
@@ -256,7 +261,7 @@ SKH.init = function(p) {
                                 if (!f) { console.log('略過空格'); continue; }
                                 if (maybeHideLatLng && isClose(f.latlngColumn,maybeHideLatLng) && f.id != expHand.id) { console.log('略過同地址'); continue; }
                             
-                                ms.push(p.hToM(keys,f, i, mllC(f), f.name, f.id, year));   
+                                ms.push(p.hToM(keys,f, i, mllC(f), f.name, f.id, year, whichLable,whichGroup, zoomNow));   
                             };              
                         }       
                     }; 
@@ -637,7 +642,10 @@ SKH.init = function(p) {
             });
 
             
-
+            $scope.$watch('center', function(newValue, oldValue) {
+                $scope.makeMarkers();
+                $scope.$apply();
+            }); 
 
             $scope.makeMarkers = function(maybeHideLatLng, expHand){
                 var ks = {
@@ -660,7 +668,7 @@ SKH.init = function(p) {
                     var show = $filter('hideAncient')($scope.bases[i].hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
                     
                     $scope.markers = $scope.markers.concat(($filter('toMarkers')(show, ks, maybeHideLatLng, 
-                                        expHand,$scope.year,$scope.whichLable, "" + i)));
+                                        expHand,$scope.year,$scope.whichLable, "" + i, $scope.center.zoom)));
                 };
 
 

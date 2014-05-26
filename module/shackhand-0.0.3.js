@@ -433,7 +433,7 @@ SKH.init = function(p) {
                     +'<img class = "icon" src = "module/src/images/full-screen.png"></a>'
 
             +'</form>'
-                    +'<div class = "center" ><a ng-click = "askGeo(\'?\'); isFullscreen = true" style = "display:block; overflow:hidden; width:32px; height:32px;">'                
+                    +'<div class = "center" ><a ng-click = "isFullscreen = true; askGeo(\'?\');" style = "display:block; overflow:hidden; width:32px; height:32px;">'                
                     +'<img id = "skh-sprite" src="module/src/images/sprite.png"/> </a> </div>'
 
             +'<leaflet center="center" markers = "markers" layers="layers" width="100%" height="'+($( window ).height()+100)+'"></leaflet>'

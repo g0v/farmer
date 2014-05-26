@@ -92,10 +92,15 @@ SKH.init = function(p) {
 
 
     var defaultIcon = function(zoomNow){
-        zoomNow = zoomNow || 1;
+   //     alert(zoomNow);
+        zoomNow = parseInt(zoomNow);
+        if (zoomNow <= 1) zoomNow = 10;
+
         return {
             iconUrl: 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/200px-Smiley.svg.png',
-            iconSize: [70 * zoomNow / 10, 70 * zoomNow / 10]
+            iconSize: [70 * zoomNow / 10, 70 * zoomNow / 10],
+            shadowUrl : 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/200px-Smiley.svg.png',
+            shadowSize: [70 * zoomNow / 10, 70 * zoomNow / 10],
         }   
     }
 
@@ -125,7 +130,6 @@ SKH.init = function(p) {
             }
 
             var icon = (h.img || h.icon || fbIcon || googIcon || gitIcon || twitIcon || personIcon);
-
 
 
 //            if (hand.site2 && hand.site2 == hand.site) hand.site2 = "";
@@ -164,7 +168,8 @@ SKH.init = function(p) {
                 }
             } */
 
-            alert(((icon && toIcon(icon, (from || 0), zoomNow)) || defaultIcon(zoomNow)));
+            console.log(zoomNow);
+            console.log(((icon && toIcon(icon, (from || 0), zoomNow)) || defaultIcon(zoomNow || 10)));
 
             var marker = {
                 lat: parseFloat(llC.split(/,\s*/)[0]),
@@ -177,7 +182,7 @@ SKH.init = function(p) {
                 popupOptions: {
                     autoPan: false
                 },
-                icon: ((icon && toIcon(icon, (from || 0), zoomNow)) || defaultIcon(zoomNow)),
+                icon: ((icon && toIcon(icon, (from || 0), zoomNow)) || defaultIcon(zoomNow || 10)),
                 label: {
                     message: label,
                     options: {
@@ -487,6 +492,7 @@ SKH.init = function(p) {
                 $('.leaflet-clickable,.leaflet-label').hover(
                       function(){$(this).css('z-index',900)}
                     , function(){$(this).css('z-index',890)});
+
             }, 3000);
 
             if(navigator.appName == 'Microsoft Internet Explorer') {
@@ -957,6 +963,7 @@ SKH.init = function(p) {
             for (var i = 0; i < p.layers.length; i++) {
                 makeLayer(i);
             };
+
 
 /*    */
 

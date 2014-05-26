@@ -434,7 +434,17 @@ SKH.init = function(p) {
 
             +'</form>'
                     +'<div class = "center" ><a ng-click = "isFullscreen = true; askGeo(\'?\');" style = "display:block; overflow:hidden; width:32px; height:32px;">'                
-                    +'<img id = "skh-sprite" src="module/src/images/sprite.png"/> </a> </div>'
+                    +'<img id = "skh-sprite" src="module/src/images/sprite.png"/> </a>'
+                    +'</div>'
+
+                    +'<div class = "center">'                
+                    +'<span id = "skh-warning" style = "position: relative; top: 32px; right:50px;" ng-hide = "isFullscreen">'
+                        +'<a ng-click = "isFullscreen = true">按此進入RPG模式</a></span>'
+                    +'<span id = "skh-warning" style = "position: relative; top: 32px; right:50px;" ng-show = "isFullscreen && !moving">點擊地圖一下，開始移動<br></span>'
+                    +'<span id = "skh-warning" style = "position: relative; top: 32px; right:50px;" ng-show = "isFullscreen && !moving">上下左右移動，空白鍵對話</span>'
+                    +'</div>'
+
+                    
 
             +'<leaflet center="center" markers = "markers" layers="layers" width="100%" height="'+($( window ).height()+100)+'"></leaflet>'
         +'</div>'
@@ -569,6 +579,7 @@ SKH.init = function(p) {
                             )});
 
                         sorted[0].focus = !sorted[0].focus; // = true;
+                        if (sorted[0]) $scope.moving = true;
 
                         break;
 
@@ -670,15 +681,15 @@ SKH.init = function(p) {
                 }
 
             });
+            
 
             
             $scope.$watch('center', function(newValue, oldValue) {
-          //      $('.leaflet-marker-icon').hide();
           		if (newValue.zoom !== oldValue.zoom) {
 	                $scope.clearMarker();
 	                $scope.makeMarkers();
                 }
-          //      $('.leaflet-marker-shadow').remove();
+
             }); 
 
             $scope.clearMarker = function(){

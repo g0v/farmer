@@ -168,8 +168,8 @@ SKH.init = function(p) {
                 }
             } */
 
-            console.log(zoomNow);
-            console.log(((icon && toIcon(icon, (from || 0), zoomNow)) || defaultIcon(zoomNow || 10)));
+      //      console.log(zoomNow);
+      //      console.log(((icon && toIcon(icon, (from || 0), zoomNow)) || defaultIcon(zoomNow || 10)));
 
             var marker = {
                 lat: parseFloat(llC.split(/,\s*/)[0]),
@@ -416,8 +416,7 @@ SKH.init = function(p) {
           }).directive('skhLocalmap',function(){
             return {
                 restrict: 'E',
-                template: '<div class="col-md-12 map" id = "local" fullscreen="isFullscreen" only-watched-property>'
-
+                template: '<div class="col-md-12" id = "local" fullscreen="isFullscreen" only-watched-property>'
              +'<form class="form-inline form-down" role="search">'
               +'<span ng-hide = "true">'
                 +'<span ng-repeat = "k in [0,1,2,3]">'           
@@ -434,7 +433,7 @@ SKH.init = function(p) {
                     +'<img class = "icon" src = "module/src/images/full-screen.png"></a>'
 
             +'</form>'
-                    +'<div class = "center" ><a ng-click = "askGeo(\'?\')" style = "display:block; overflow:hidden; width:32px; height:32px;">'                
+                    +'<div class = "center" ><a ng-click = "askGeo(\'?\'); isFullscreen = true" style = "display:block; overflow:hidden; width:32px; height:32px;">'                
                     +'<img id = "skh-sprite" src="module/src/images/sprite.png"/> </a> </div>'
 
             +'<leaflet center="center" markers = "markers" layers="layers" width="100%" height="'+($( window ).height()+100)+'"></leaflet>'
@@ -503,6 +502,7 @@ SKH.init = function(p) {
             }
 
 
+
             $scope.markers = [];
             $scope.root = {};
 
@@ -544,6 +544,7 @@ SKH.init = function(p) {
             }
 
             $scope.keyPress = function(e){
+
                 var keycode; 
                 if (window.event) keycode = window.event.keyCode;
                 else if (e) keycode = e.which;
@@ -555,7 +556,6 @@ SKH.init = function(p) {
                             $scope.pause = !$scope.pause;
                         }
                         
-    console.log(L);
 
                         var sorted = $scope.markers.filter(function(a){
                                         return (new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
@@ -686,7 +686,6 @@ SKH.init = function(p) {
 
             $scope.makeMarkers = function(maybeHideLatLng, expHand){
 
-
                 var ks = {
                     key : $scope.key,
                     nameKey: $scope.nameKey,
@@ -711,6 +710,8 @@ SKH.init = function(p) {
                 };
 
 
+
+
                 /*   */
 /*
                var showHandList = $filter('hideAncient')($scope.base.hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
@@ -725,11 +726,12 @@ SKH.init = function(p) {
             
  //               $scope.$apply();
             };
+
     
             $scope.askGeo = function(place){
 
-
                 if (place == '?') place = prompt("您在哪兒呢?", p.at || '');
+
                 if (place) {
                     $scope.local.autoDiscover = false;
                     $scope.loc = place; 

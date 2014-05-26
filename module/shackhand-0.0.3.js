@@ -674,8 +674,10 @@ SKH.init = function(p) {
             
             $scope.$watch('center', function(newValue, oldValue) {
           //      $('.leaflet-marker-icon').hide();
-                $scope.clearMarker();
-                $scope.makeMarkers();
+          		if (newValue.zoom !== oldValue.zoom) {
+	                $scope.clearMarker();
+	                $scope.makeMarkers();
+                }
           //      $('.leaflet-marker-shadow').remove();
             }); 
 

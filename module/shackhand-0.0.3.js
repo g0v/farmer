@@ -575,22 +575,22 @@ SKH.init = function(p) {
                     case 37: // left
                         e.preventDefault();
                         $('#skh-sprite').css('top', '-32px');
-                        $scope.focus();
+                        if (!$scope.isFullscreen) $scope.focus();
                         break;
                     case 39: // right
                         e.preventDefault();
                         $('#skh-sprite').css('top', '-64px');
-                        $scope.focus();
+                        if (!$scope.isFullscreen) $scope.focus();
                         break;
                     case 38: // up
                         e.preventDefault();
                         $('#skh-sprite').css('top', '-96px');
-                        $scope.focus();
+                        if (!$scope.isFullscreen) $scope.focus();
                         break;
                     case 40: // down
                         e.preventDefault();
                         $('#skh-sprite').css('top', '0px');
-                        $scope.focus();
+                        if (!$scope.isFullscreen) $scope.focus();
                         break;
                 }
 

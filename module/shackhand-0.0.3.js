@@ -564,22 +564,11 @@ SKH.init = function(p) {
                         e.preventDefault();
                         if (p.movie) {
                             $scope.pause = !$scope.pause;
-                        }
-                        
+                        }                                                  
 
-                        var sorted = $scope.markers.filter(function(a){
-                                        return (new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
-                                            new L.LatLng($scope.center.lat,$scope.center.lng)) < 20000 )})
-                        .sort(function(a,b){ 
-                                return ((new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
-                                            new L.LatLng($scope.center.lat,$scope.center.lng)))
 
-                                    - (new L.LatLng(parseFloat(b.lat),parseFloat(b.lng)).distanceTo(
-                                        new L.LatLng($scope.center.lat,$scope.center.lng)))
-                            )});
-
-                        sorted[0].focus = !sorted[0].focus; // = true;
-                        if (sorted[0]) $scope.moving = true;
+                        $scope.sorted[0].focus = !$scope.sorted[0].focus; // = true;
+                        if ($scope.sorted[0]) $scope.moving = true;
 
                         break;
 
@@ -687,10 +676,45 @@ SKH.init = function(p) {
             $scope.$watch('center', function(newValue, oldValue) {
           		if (newValue.zoom !== oldValue.zoom) {
 	                $scope.clearMarker();
-	                $scope.makeMarkers();
+	                $scope.makeMarkers(); 
                 }
 
+
+
+                    /* sort by distance */ 
+
+                    $scope.sorted = $scope.markers
+                                //.filter(function(a){
+                                  //  return (new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
+                                   //     new L.LatLng($scope.center.lat,$scope.center.lng)) < 20000 )})
+                    .sort(function(a,b){ 
+                            return ((new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
+                                        new L.LatLng($scope.center.lat,$scope.center.lng)))
+
+                                - (new L.LatLng(parseFloat(b.lat),parseFloat(b.lng)).distanceTo(
+                                    new L.LatLng($scope.center.lat,$scope.center.lng)))
+                    )});
+
+                    /* say hello to user */
+
+                    var zoomNow = newValue.zoom;
+                    $scope.sorted[0].icon.iconSize = [70 * zoomNow / 10, 70 * zoomNow / 10  * 1.618];
+                    $scope.sorted[0].icon.shadowSize = [70 * zoomNow / 10, 70 * zoomNow / 10 * 1.618];
+                    $scope.sorted[0].icon.iconAnchor = [undefined, 70 * zoomNow / 10 * 0.809];
+                    $scope.sorted[0].icon.shadowAnchor = [undefined, 70 * zoomNow / 10 * 0.809];
+
+                    for (var i = 1; i < $scope.sorted.length; i++) { 
+                            
+                            $scope.sorted[i].icon.iconSize = [70 * zoomNow / 10, 70 * zoomNow / 10];
+                            $scope.sorted[i].icon.shadowSize = [70 * zoomNow / 10, 70 * zoomNow / 10];
+                            $scope.sorted[i].icon.iconAnchor = undefined;
+                            $scope.sorted[i].icon.shadowAnchor = undefined;
+                            $scope.sorted[i].focus = false;
+                    };
+
             }); 
+
+
 
             $scope.clearMarker = function(){
                 $scope.markers = [];
@@ -721,7 +745,6 @@ SKH.init = function(p) {
                     $scope.markers = $scope.markers.concat(($filter('toMarkers')(show, ks, maybeHideLatLng, 
                                         expHand,$scope.year,$scope.whichLable, "" + i, $scope.center.zoom)));
                 };
-
 
 
 

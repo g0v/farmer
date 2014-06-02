@@ -512,7 +512,6 @@ SKH.init = function(p) {
             }
 
 
-
             $scope.markers = [];
             $scope.root = {};
 
@@ -553,6 +552,8 @@ SKH.init = function(p) {
                 mytimeout = $timeout($scope.onTimeout,1000);
             }
 
+         //   var mytimeout = $timeout($scope.onTimeout,1000);
+
             $scope.keyPress = function(e){
 
                 var keycode; 
@@ -566,12 +567,29 @@ SKH.init = function(p) {
                             $scope.pause = !$scope.pause;
                         }                                                  
 
+                     
+                            /* sort by distance */ 
 
-                        $scope.sorted[0].focus = !$scope.sorted[0].focus; // = true;
+            
+                            $scope.sorted = $scope.markers
+                                        //.filter(function(a){
+                                          //  return (new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
+                                           //     new L.LatLng($scope.center.lat,$scope.center.lng)) < 20000 )})
+                            .sort(function(a,b){ 
+                                    return ((new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
+                                                new L.LatLng($scope.center.lat,$scope.center.lng)))
+
+                                        - (new L.LatLng(parseFloat(b.lat),parseFloat(b.lng)).distanceTo(
+                                            new L.LatLng($scope.center.lat,$scope.center.lng)))
+                            )});
+
+                            for (var i = 1; i < $scope.sorted.length; i++) {
+                                $scope.sorted[i].focus = false;
+                            };
+
+                        $scope.sorted[0].focus =  true; //!$scope.sorted[0].focus; 
                         if ($scope.sorted[0]) $scope.moving = true;
-
                         break;
-
                     case 37: // left
                         e.preventDefault();
                         $('#skh-sprite').css('top', '-32px');
@@ -597,7 +615,6 @@ SKH.init = function(p) {
             }
 
             document.onkeydown = $scope.keyPress;
-            var mytimeout = $timeout($scope.onTimeout,1000);
 
 
 
@@ -672,46 +689,13 @@ SKH.init = function(p) {
             });
             
 
-            
+                
             $scope.$watch('center', function(newValue, oldValue) {
           		if (newValue.zoom !== oldValue.zoom) {
 	                $scope.clearMarker();
 	                $scope.makeMarkers(); 
                 }
-
-                    /* sort by distance */ 
-
-                    $scope.sorted = $scope.markers
-                                //.filter(function(a){
-                                  //  return (new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
-                                   //     new L.LatLng($scope.center.lat,$scope.center.lng)) < 20000 )})
-                    .sort(function(a,b){ 
-                            return ((new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
-                                        new L.LatLng($scope.center.lat,$scope.center.lng)))
-
-                                - (new L.LatLng(parseFloat(b.lat),parseFloat(b.lng)).distanceTo(
-                                    new L.LatLng($scope.center.lat,$scope.center.lng)))
-                    )});
-
-                    /* say hello to user */
-
-                    if ($scope.sorted && $scope.sorted.length) {
-
-                        var zoomNow = newValue.zoom;
-                        $scope.sorted[0].icon.iconSize = [70 * zoomNow / 10 * 1.2, 70 * zoomNow / 10  * 1.2];
-                        $scope.sorted[0].icon.shadowSize = [70 * zoomNow / 10 * 1.2, 70 * zoomNow / 10 * 1.2];
-                        $scope.sorted[0].icon.iconAnchor = [undefined, 70 * zoomNow / 10];
-                        $scope.sorted[0].icon.shadowAnchor = [undefined, 70 * zoomNow / 10];
-
-                        for (var i = 1; i < $scope.sorted.length; i++) { 
-                                
-                                $scope.sorted[i].icon.iconSize = [70 * zoomNow / 10, 70 * zoomNow / 10];
-                                $scope.sorted[i].icon.shadowSize = [70 * zoomNow / 10, 70 * zoomNow / 10];
-                                $scope.sorted[i].icon.iconAnchor = undefined;
-                                $scope.sorted[i].icon.shadowAnchor = undefined;
-                                $scope.sorted[i].focus = false;
-                        };
-                    }
+                   
 
             }); 
 

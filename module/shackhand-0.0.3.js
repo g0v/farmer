@@ -679,8 +679,6 @@ SKH.init = function(p) {
 	                $scope.makeMarkers(); 
                 }
 
-
-
                     /* sort by distance */ 
 
                     $scope.sorted = $scope.markers
@@ -697,20 +695,23 @@ SKH.init = function(p) {
 
                     /* say hello to user */
 
-                    var zoomNow = newValue.zoom;
-                    $scope.sorted[0].icon.iconSize = [70 * zoomNow / 10 * 1.2, 70 * zoomNow / 10  * 1.2];
-                    $scope.sorted[0].icon.shadowSize = [70 * zoomNow / 10 * 1.2, 70 * zoomNow / 10 * 1.2];
-                    $scope.sorted[0].icon.iconAnchor = [undefined, 70 * zoomNow / 10];
-                    $scope.sorted[0].icon.shadowAnchor = [undefined, 70 * zoomNow / 10];
+                    if ($scope.sorted && $scope.sorted.length) {
 
-                    for (var i = 1; i < $scope.sorted.length; i++) { 
-                            
-                            $scope.sorted[i].icon.iconSize = [70 * zoomNow / 10, 70 * zoomNow / 10];
-                            $scope.sorted[i].icon.shadowSize = [70 * zoomNow / 10, 70 * zoomNow / 10];
-                            $scope.sorted[i].icon.iconAnchor = undefined;
-                            $scope.sorted[i].icon.shadowAnchor = undefined;
-                            $scope.sorted[i].focus = false;
-                    };
+                        var zoomNow = newValue.zoom;
+                        $scope.sorted[0].icon.iconSize = [70 * zoomNow / 10 * 1.2, 70 * zoomNow / 10  * 1.2];
+                        $scope.sorted[0].icon.shadowSize = [70 * zoomNow / 10 * 1.2, 70 * zoomNow / 10 * 1.2];
+                        $scope.sorted[0].icon.iconAnchor = [undefined, 70 * zoomNow / 10];
+                        $scope.sorted[0].icon.shadowAnchor = [undefined, 70 * zoomNow / 10];
+
+                        for (var i = 1; i < $scope.sorted.length; i++) { 
+                                
+                                $scope.sorted[i].icon.iconSize = [70 * zoomNow / 10, 70 * zoomNow / 10];
+                                $scope.sorted[i].icon.shadowSize = [70 * zoomNow / 10, 70 * zoomNow / 10];
+                                $scope.sorted[i].icon.iconAnchor = undefined;
+                                $scope.sorted[i].icon.shadowAnchor = undefined;
+                                $scope.sorted[i].focus = false;
+                        };
+                    }
 
             }); 
 

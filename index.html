@@ -40,7 +40,7 @@
 
   <!-- Navbar -->
 
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default navbar-fixed-top noPhone" role="navigation">
 
     <div class="navbar-header pull-left">
               <div class="navbar-brand noPhone">
@@ -450,7 +450,7 @@
      //   fbApp: '485195848253155',
      //   slogen: '友善土地 ☯ ︎友善農夫 ☯ ︎友善加工 ☯ ︎友善小店 ☯ ︎友善市集 ☯ ︎友善餐飲 ☯ ︎友善生活',
         selectBar: 
-'<input autofocus type="search" class="form-control noPhone" placeholder="您在哪兒呢?"ng-model="loc" ng-change = "askGeo(loc)"/>'
+'<input autofocus type="search" class="noPhone form-control" placeholder="您在哪兒呢?"ng-model="loc" ng-change = "askGeo(loc)"/>'
 +'<input type="search" class="form-control noPhone" placeholder="輸入關鍵字" ng-model="key" ng-change = "clearMarker(); makeMarkers()"/>'
 
         +'<select class = "form-control"'

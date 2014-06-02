@@ -438,7 +438,7 @@ SKH.init = function(p) {
                     +'</div>'
 
                     +'<div class = "center">'                
-                    +'<span id = "skh-warning" style = "position: relative; top: 32px; right:50px;" ng-hide = "isFullscreen">'
+                    +'<span id = "skh-warning" class = "noPhone" style = "position: relative; top: 32px; right:50px;" ng-hide = "isFullscreen">'
                         +'<a ng-click = "isFullscreen = true">按此進入RPG模式</a></span>'
                     +'<span id = "skh-warning" style = "position: relative; top: 32px; right:50px;" ng-show = "isFullscreen && !moving">點擊地圖一下，開始移動<br></span>'
                     +'<span id = "skh-warning" style = "position: relative; top: 32px; right:50px;" ng-show = "isFullscreen && !moving">上下左右移動，空白鍵對話</span>'
@@ -547,7 +547,7 @@ SKH.init = function(p) {
 
                 $('#skh-sprite').css('left', $scope.left + 'px');
 
-                $scope.$apply();
+        //        $scope.$apply();
 
 
                 mytimeout = $timeout($scope.onTimeout,1000);
@@ -698,10 +698,10 @@ SKH.init = function(p) {
                     /* say hello to user */
 
                     var zoomNow = newValue.zoom;
-                    $scope.sorted[0].icon.iconSize = [70 * zoomNow / 10, 70 * zoomNow / 10  * 1.618];
-                    $scope.sorted[0].icon.shadowSize = [70 * zoomNow / 10, 70 * zoomNow / 10 * 1.618];
-                    $scope.sorted[0].icon.iconAnchor = [undefined, 70 * zoomNow / 10 * 0.809];
-                    $scope.sorted[0].icon.shadowAnchor = [undefined, 70 * zoomNow / 10 * 0.809];
+                    $scope.sorted[0].icon.iconSize = [70 * zoomNow / 10 * 1.2, 70 * zoomNow / 10  * 1.2];
+                    $scope.sorted[0].icon.shadowSize = [70 * zoomNow / 10 * 1.2, 70 * zoomNow / 10 * 1.2];
+                    $scope.sorted[0].icon.iconAnchor = [undefined, 70 * zoomNow / 10];
+                    $scope.sorted[0].icon.shadowAnchor = [undefined, 70 * zoomNow / 10];
 
                     for (var i = 1; i < $scope.sorted.length; i++) { 
                             

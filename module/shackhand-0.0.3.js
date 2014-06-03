@@ -526,7 +526,7 @@ SKH.init = function(p) {
                 mytimeout = $timeout($scope.onTimeout,1000);
             }
 
-         //   var mytimeout = $timeout($scope.onTimeout,1000);
+            var mytimeout = $timeout($scope.onTimeout,1000);
 
             $scope.keyPress = function(e){
 
@@ -557,7 +557,7 @@ SKH.init = function(p) {
 
 
                         if ($scope.sorted && $scope.sorted[0]) {
-                            
+
                             for (var i = 1; i < $scope.sorted.length; i++) {
                                 $scope.sorted[i].focus = false;
                             };

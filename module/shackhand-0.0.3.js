@@ -59,16 +59,27 @@ SKH.init = function(p) {
     	{'where are you?': {'zh-tw': '您在哪兒呢?',
     						 	'en': 'where are you?'}});
 
-    function toIcon (url, from, zoomNow) {
-       zoomNow = zoomNow || 1;
+    function toIcon (url, from, zoomNow, whichGroup) {
+
+       zoomNow = parseInt(zoomNow);
+       if (zoomNow <= 1) zoomNow = 10;
+
+       whichGroup = whichGroup || [];
+       var iconSize = p.iconSize || [];
+
+       return { iconUrl: url,
+                iconSize: [(iconSize[whichGroup] || 60) * (zoomNow / 10), (iconSize[whichGroup] || 60) * (zoomNow / 10)],
+                shadowUrl: 'module/src/images/200px-Smiley.svg.png',
+                shadowSize: [(iconSize[whichGroup] || 60) * (zoomNow / 40), (iconSize[whichGroup] || 60) * (zoomNow / 40)]
+              };
        
-       return ((!from && {
+     /*  return ((!from && {
                   iconUrl: url,
-                  iconSize: [(p.handsize || 70) * (zoomNow / 10), (p.handsize || 70) * (zoomNow / 10)]
+                  iconSize: [(p.iconSize[whichGroup] || 60) * (zoomNow / 10), (p.iconSize[whichGroup] || 60) * (zoomNow / 10)]
               } ) || {
                   iconUrl: url,
                   iconSize: [(p.fingersize || 50), (p.fingersize || 50)]
-              });
+              }); */
     };
 
     function isClose(l1, l2) {
@@ -91,57 +102,46 @@ SKH.init = function(p) {
     }    
 
 
-    var defaultIcon = function(zoomNow){
-   //     alert(zoomNow);
+    var defaultIcon = function(zoomNow, whichGroup){
+
         zoomNow = parseInt(zoomNow);
         if (zoomNow <= 1) zoomNow = 10;
 
+        var iconSize = p.iconSize || [];
+
         return {
-            iconUrl: 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/200px-Smiley.svg.png',
-            iconSize: [70 * zoomNow / 10, 70 * zoomNow / 10],
-            shadowUrl : 'http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/200px-Smiley.svg.png',
-            shadowSize: [70 * zoomNow / 10, 70 * zoomNow / 10],
+            iconUrl: 'module/src/images/200px-Smiley.svg.png',
+            iconSize: [(iconSize[whichGroup] || 60) * zoomNow / 10, (iconSize[whichGroup] || 60) * zoomNow / 10],
+            shadowUrl : 'module/src/images/200px-Smiley.svg.png',
+            shadowSize: [(iconSize[whichGroup] || 60) * zoomNow / 10, (iconSize[whichGroup] || 60) * zoomNow / 10],
         }   
     }
 
     p.hToM = (p.hToM || function(keys,h,i,llC,from,fbid,year,whichLable,whichGroup,zoomNow) {
 
-
             var key = keys[0];
             var nameKey = keys[1];
             var geoKey = keys[2];
-
             var hand = h;
 
-//            if (!hand.id && !hand.username && !from) return;
+            var layerIcons = p.layerIcons || [];
+
             if (!h.name) return;
             if (h.invis) return;
 
- //           console.log(h);
-
-
+            if (hand.site && hand.site.indexOf('http') == -1 && hand.site.indexOf('@') == -1) hand.site = 'http://' + hand.site;
+            hand.latlngColumn = hand.latlngColumn.replace('(','').replace(')','').replace('附近','').replace(/near\s?/,''); 
 
             var fbIcon,googIcon,gitIcon,twitIcon,personIcon;
 
             if (hand.id || fbid) {
                 fbIcon = "http://graph.facebook.com/" + (hand.id || fbid) + "/picture";
-            } else {
-                fbIcon = "";
-            }
+            } else {  fbIcon = "";  }
 
-            var icon = (h.img || h.icon || fbIcon || googIcon || gitIcon || twitIcon || personIcon);
-
-
-//            if (hand.site2 && hand.site2 == hand.site) hand.site2 = "";
-
-            if (hand.site && hand.site.indexOf('http') == -1 && hand.site.indexOf('@') == -1) hand.site = 'http://' + hand.site;
-
-            hand.latlngColumn = hand.latlngColumn.replace('(','').replace(')','').replace('附近','').replace(/near\s?/,''); 
+            var icon = (h.img || h.icon || fbIcon || googIcon || gitIcon || twitIcon || personIcon || layerIcons[whichGroup]);
 
      
-
-            var flag, label;
-            
+            var flag, label;            
             flag = (p.toFlags[parseInt(whichGroup)] || SKH.toHackMapFlag || p.toFlags[0] || function () {return})(hand, i, icon, year);
             label = (p.toLabels[parseInt(whichGroup)] || SKH.toHackMapLable || p.toLabels[0] || function () {return})(hand, i, icon, year, whichLable);
 
@@ -153,23 +153,7 @@ SKH.init = function(p) {
                     flag = flag.replace(re, '<span class = "highlight">$1</span>');
                 }
             }
-   /*         if (nameKey && nameKey.length > 0) {
-                var re = new RegExp(nameKey, "gi");
-                if (hand.name.search(re) == -1) {
-                console.log('略過人名不符者'); return; } else {
-                    flag = flag.replace(re, '<span class = "highlight">'+nameKey+'</span>');
-                }
-            }
-            if (geoKey && geoKey.length > 0) {
-                var re = new RegExp(geoKey, "gi");
-                if (hand.address.search(re) == -1) {
-                console.log('略過地理不符者'); return; } else {
-                    flag = flag.replace(re, '<span class = "highlight">'+geoKey+'</span>');
-                }
-            } */
 
-      //      console.log(zoomNow);
-      //      console.log(((icon && toIcon(icon, (from || 0), zoomNow)) || defaultIcon(zoomNow || 10)));
 
             var marker = {
                 lat: parseFloat(llC.split(/,\s*/)[0]),
@@ -182,13 +166,13 @@ SKH.init = function(p) {
                 popupOptions: {
                     autoPan: false
                 },
-                icon: ((icon && toIcon(icon, (from || 0), zoomNow)) || defaultIcon(zoomNow || 10)),
                 label: {
                     message: label,
                     options: {
                         noHide: label
                     }
-                }
+                },
+                icon: ((icon && toIcon(icon, (from || 0), zoomNow,  whichGroup )) || defaultIcon((zoomNow || 10), whichGroup))
             }
 
             return(marker);
@@ -246,7 +230,6 @@ SKH.init = function(p) {
                 var autos = angular.copy(list);
 
 
-//                console.log(autos);
                 var latlngUsed = [];
 
                 var mllC = function(h){
@@ -891,7 +874,7 @@ SKH.init = function(p) {
 
                     function processHackMapData (allText) {
 
-                        console.log(allText);
+                //        console.log(allText);
                         var allTextLines = allText.split(/\r\n|\n/); 
 
 

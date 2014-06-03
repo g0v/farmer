@@ -666,14 +666,13 @@ SKH.init = function(p) {
             
 
                 
-            $scope.$watch('center', function(newValue, oldValue) {
-          		if (newValue.zoom !== oldValue.zoom) {
+            $scope.$watch('center.zoom', function(newValue, oldValue) {
+          		// if (newValue.zoom !== oldValue.zoom) {
 	                $scope.clearMarker();
 	                $scope.makeMarkers(); 
-                }
-                   
+              //  }                  
 
-            }); 
+            });  
 
 
 

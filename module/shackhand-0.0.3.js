@@ -178,7 +178,7 @@ SKH.init = function(p) {
             return(marker);
     });
 
-    var shackhand = angular.module("shackhand",['leaflet-directive','FBAngular']);
+    var shackhand = angular.module("shackhand",['leaflet-directive','FBAngular','firebase','ezfb']);
 
 
     shackhand.config(function ($FBProvider) { 
@@ -1144,7 +1144,6 @@ SKH.init = function(p) {
                 for (var i = 0; i < p.layers.length; i++) {
 
                     if (p.logins[i] != serviceProvider) continue;
-
                     if (serviceProvider == 'facebook') {
 
                         auth = new FirebaseSimpleLogin($scope.dataRefs[i], function(error, user) {

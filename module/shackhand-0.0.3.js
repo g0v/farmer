@@ -588,8 +588,10 @@ SKH.init = function(p) {
                             };
 
                         $scope.sorted[0].focus =  true; //!$scope.sorted[0].focus; 
-                        if ($scope.sorted[0]) $scope.moving = true;
+                        if ($scope.sorted && $scope.sorted[0]) $scope.moving = true;
+                        $scope.$apply();
                         break;
+
                     case 37: // left
                         e.preventDefault();
                         $('#skh-sprite').css('top', '-32px');

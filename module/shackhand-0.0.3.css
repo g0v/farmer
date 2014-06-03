@@ -1,209 +1,4 @@
 
-/************/
-
-.select, .navbar-form {
-  min-width: 300px;
-}
-
-
-.form-inline.form-down {
-	position: absolute;
-	top: 15px;
-  left: 65px;
-	z-index: 9999;
-}
-
-.navbar {
-  z-index: 99999;
-}
-
-
-.navbar h3 {
-  margin-top: 0px;
-}
-
-div.flag {
-  font-size: 140%;
-}
-
-
-div.center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    border-radius: 20px;
-    z-index: 99999;
-}
-
-
-.skh-cell {
-    padding: 5px;
-    height: 150px;
-    text-align: center;
-    vertical-align: middle;
-    overflow: auto;
-}
-
-.table-responsive, .table-bordered  {
-    height: 100%;
-}
-
-
-#skh-sprite {
-  position: relative;
-}
-
-
-
-
-/* Smartphones (portrait) ----------- */
-@media only screen
-and (max-width : 320px) {
-   body {
-      font-size: 150%;
-   }
-   .navbar {
-      display: none;
-      height: 1px;
-   }
-   .noPhone, .noPad {
-      display: none;
-   }
-   .form-inline {
-   	  max-width: 250px;
-   	  text-align: center;
-   	  margin-left: 30px;
-   }
-   .form-control {
-   	  max-width: 150px;
-   	  display: inline-block;
-   }
-}
- 
-
-/* Smartphones (portrait and landscape) ----------- */
-@media only screen
-and (min-width : 320px)
-and (max-width : 480px) {
-   body {
-      font-size: 150%;
-   }
-   .navbar {
-      display: none;
-      height: 1px;
-   }
-   .noPhone, .noPad {
-      display: none;
-   }
-   .form-inline {
-   	  max-width: 250px;
-   	  text-align: center;
-   	  margin-left: 30px;
-   }
-   .form-control {
-   	  max-width: 150px;
-   	  display: inline-block;
-   }
-}
-
-/* Smartphones (landscape) ----------- */
-@media only screen
-and (min-width : 321px) {
-   body {
-      font-size: 150%;
-   }
-   .navbar-left {
-      margin-left: 20%;
-   }
-   .noPhone, noPad {
-    display: none;
-   }
-   th, td {
-      max-width: 100px;
-      min-width: none;
-   }
-}
-
-@media only screen
-and (min-width : 768px) {
-   .noPhone {
-      display: inherit;
-   }
-   .navbar-left {
-      margin-left: 5px;
-   }
-   th, td {      
-      max-width: none;
-      min-width: 100px;
-   }
-   th.noPhone, td.noPhone {
-      display: table-cell;
-
-   }
-}
-
-/* iPads (portrait and landscape) ----------- */
-@media only screen
-and (min-width : 768px)
-and (max-width : 1024px) {
-   
-}
- 
-/* iPads (landscape) ----------- */
-@media only screen
-and (min-width : 768px)
-and (max-width : 1024px)
-and (orientation : landscape) {   
-   
-  
-}
- 
-/* iPads (portrait) ----------- */
-@media only screen
-and (min-width : 768px)
-and (max-width : 1024px)
-and (orientation : portrait) {
-   
-}
- 
-/* Desktops and laptops ----------- */
-@media only screen
-and (min-width : 1224px) {
- 
-}
- 
-/* Large screens ----------- */
-@media only screen
-and (min-width : 1824px) {
-
-   body {
-      font-size: 150%;
-   }
-}
- 
-/* iPhone 4 ----------- */
-
-@media
-only screen and (-webkit-min-device-pixel-ratio : 1.5),
-only screen and (min-device-pixel-ratio : 1.5) {
-   body {
-      font-size: 150%;
-   }
-   .navbar {
-      max-width: 480px;
-   }
-   .navbar-left {
-      margin-left: 100%;
-   }
-   .noPhone, .noPad {
-    display: none;
-   }
-   th, td {
-      max-width: 100px;
-      min-width: 50px;
-   }
-}
-
 
 /********/
 
@@ -297,8 +92,8 @@ th, td {
 }
 
 .row,.col-md-8 {
-	vertical-align: middle;
-	text-align: center;
+  vertical-align: middle;
+  text-align: center;
 }
 
 
@@ -318,5 +113,224 @@ th, td {
     animation-duration: 1s;
     animation-timing-function: linear;
     animation-iteration-count: 1;
+}
+
+
+
+/************/
+
+.select, .navbar-form {
+  min-width: 300px;
+}
+
+
+.form-inline.form-down {
+	position: absolute;
+	top: 15px;
+  left: 65px;
+	z-index: 9999;
+}
+
+.navbar {
+  z-index: 99999;
+}
+
+
+.navbar h3 {
+  margin-top: 0px;
+}
+
+div.flag {
+  font-size: 140%;
+}
+
+
+div.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 20px;
+    z-index: 99999;
+}
+
+
+.skh-cell {
+    padding: 5px;
+    height: 150px;
+    text-align: center;
+    vertical-align: middle;
+    overflow: auto;
+}
+
+.table-responsive, .table-bordered  {
+    height: 100%;
+}
+
+
+#skh-sprite {
+  position: relative;
+}
+
+
+
+
+/* Smartphones (portrait) ----------- */
+@media only screen
+and (max-width : 320px) {
+   body {
+      font-size: 150%;
+   }
+   .navbar {
+      display: none;
+      height: 1px;
+   }
+   .noPhone, .noPad {
+      display: none;
+   }
+   .main-container {
+      padding-top: 0px;
+   }
+   .form-inline {
+   	  max-width: 250px;
+   	  text-align: center;
+   	  margin-left: 30px;
+   }
+   .form-control {
+   	  max-width: 150px;
+   	  display: inline-block;
+   }
+}
+ 
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen
+and (min-width : 320px)
+and (max-width : 480px) {
+   body {
+      font-size: 150%;
+   }
+   .navbar {
+      display: none;
+      height: 1px;
+   }
+   .noPhone, .noPad {
+      display: none;
+   }
+   .main-container {
+    padding-top: 0px;
+   }
+   .form-inline {
+   	  max-width: 250px;
+   	  text-align: center;
+   	  margin-left: 30px;
+   }
+   .form-control {
+   	  max-width: 150px;
+   	  display: inline-block;
+   }
+}
+
+/* Smartphones (landscape) ----------- */
+@media only screen
+and (min-width : 321px) {
+   body {
+      font-size: 150%;
+   }
+   .navbar-left {
+      margin-left: 20%;
+   }
+   .noPhone, noPad {
+    display: none;
+   }
+   .main-container {
+    padding-top: 0px;
+   }
+   th, td {
+      max-width: 100px;
+      min-width: none;
+   }
+}
+
+@media only screen
+and (min-width : 768px) {
+   .noPhone {
+      display: inherit;
+   }
+   .navbar-left {
+      margin-left: 5px;
+   }
+   th, td {      
+      max-width: none;
+      min-width: 100px;
+   }
+   th.noPhone, td.noPhone {
+      display: table-cell;
+
+   }
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen
+and (min-width : 768px)
+and (max-width : 1024px) {
+   
+}
+ 
+/* iPads (landscape) ----------- */
+@media only screen
+and (min-width : 768px)
+and (max-width : 1024px)
+and (orientation : landscape) {   
+   
+  
+}
+ 
+/* iPads (portrait) ----------- */
+@media only screen
+and (min-width : 768px)
+and (max-width : 1024px)
+and (orientation : portrait) {
+   
+}
+ 
+/* Desktops and laptops ----------- */
+@media only screen
+and (min-width : 1224px) {
+ 
+}
+ 
+/* Large screens ----------- */
+@media only screen
+and (min-width : 1824px) {
+
+   body {
+      font-size: 150%;
+   }
+}
+ 
+/* iPhone 4 ----------- */
+
+@media
+only screen and (-webkit-min-device-pixel-ratio : 1.5),
+only screen and (min-device-pixel-ratio : 1.5) {
+   body {
+      font-size: 150%;
+   }
+   .navbar {
+      max-width: 480px;
+   }
+   .navbar-left {
+      margin-left: 100%;
+   }
+   .noPhone, .noPad {
+    display: none;
+   }
+   .main-container {
+    padding-top: 0px;
+   }
+   th, td {
+      max-width: 100px;
+      min-width: 50px;
+   }
 }
 

@@ -540,29 +540,31 @@ SKH.init = function(p) {
                         if (p.movie) {
                             $scope.pause = !$scope.pause;
                         }                                                  
-
                      
-                            /* sort by distance */ 
-
-            
-                            $scope.sorted = $scope.markers
-                                        //.filter(function(a){
-                                          //  return (new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
-                                           //     new L.LatLng($scope.center.lat,$scope.center.lng)) < 20000 )})
-                            .sort(function(a,b){ 
-                                    return ((new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
-                                                new L.LatLng($scope.center.lat,$scope.center.lng)))
-
-                                        - (new L.LatLng(parseFloat(b.lat),parseFloat(b.lng)).distanceTo(
+                        /* sort by distance */ 
+        
+                        $scope.sorted = $scope.markers
+                                    .filter(function(a){
+                                        return (new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
+                                            new L.LatLng($scope.center.lat,$scope.center.lng)) < 50000 )})
+                        .sort(function(a,b){ 
+                                return ((new L.LatLng(parseFloat(a.lat),parseFloat(a.lng)).distanceTo(
                                             new L.LatLng($scope.center.lat,$scope.center.lng)))
-                            )});
 
+                                    - (new L.LatLng(parseFloat(b.lat),parseFloat(b.lng)).distanceTo(
+                                        new L.LatLng($scope.center.lat,$scope.center.lng)))
+                        )});
+
+
+                        if ($scope.sorted && $scope.sorted[0]) {
+                            
                             for (var i = 1; i < $scope.sorted.length; i++) {
                                 $scope.sorted[i].focus = false;
                             };
+                            $scope.sorted[0].focus =  true;
+                            $scope.moving = true;
+                        }
 
-                        $scope.sorted[0].focus =  true; //!$scope.sorted[0].focus; 
-                        if ($scope.sorted && $scope.sorted[0]) $scope.moving = true;
                         $scope.$apply();
                         break;
 

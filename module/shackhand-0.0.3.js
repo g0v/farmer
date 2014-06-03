@@ -521,16 +521,7 @@ SKH.init = function(p) {
                 }
 
                 $scope.left = (($scope.left || 0) - 32) % 128; 
-          //      $scope.top = (($scope.top || 0) - 32) % 128; 
-
-
-         //       $('#skh-sprite').hide();
-        //        $('#skh-sprite').fadeIn();
-
                 $('#skh-sprite').css('left', $scope.left + 'px');
-
-        //        $scope.$apply();
-
 
                 mytimeout = $timeout($scope.onTimeout,1000);
             }

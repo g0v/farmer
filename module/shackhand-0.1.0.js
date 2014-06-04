@@ -404,7 +404,11 @@ SKH.init = function(p) {
           }).directive('skhFrame',function(){
             return {
                 restrict: 'E',
-                template: '<iframe id = "skh-frame1" class = "noPhone" ng-show = "frameUrl"></iframe>'
+                template: 
+                     '<div id = "skh-frame1">'
+                        +'<span ng-show = "frameUrl && !hideFrame">預覽</span><input type = "checkbox" ng-model = "hideFrame"/>'
+                        +'<iframe class = "noPhone" width="100%" height="100%" ng-show = "frameUrl && !hideFrame"></iframe>'
+                    +'</div>'
 
               }
           }).directive('skhLocalmap',function(){
@@ -531,7 +535,7 @@ SKH.init = function(p) {
 
 
                             $scope.frameUrl = $scope.markers[$scope.eventMarkerIndex].site;
-                            $("#skh-frame1").attr("src",$scope.frameUrl);
+                            $("#skh-frame1").children('iframe').attr("src",$scope.frameUrl);
                     }
 
 

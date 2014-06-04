@@ -3,6 +3,40 @@
 /********/
 
 
+#skh-frame1 {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 33%;
+    height: 50%;
+    z-index: 999999;  
+}
+#skh-frame2 {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 33%;
+    height: 50%;
+    z-index: 999999;  
+}
+#skh-frame3 {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    width: 33%;
+    height: 50%;
+    z-index: 999999;  
+}
+#skh-frame4 {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    width: 33%;
+    height: 50%;
+    z-index: 999999;  
+}
+
+
 .leaflet-popup-content-wrapper {
   max-height: 300px;
   overflow: auto;
@@ -16,7 +50,6 @@ div.leaflet-label {
   margin-left: 30px;
   font-size: 140%;
 }
-
 
 .leaflet-marker-icon, img#fb,img#wiki {
     border-radius: 60px;

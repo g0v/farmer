@@ -21,6 +21,13 @@ SKH.toHref = function (str) {
 
 SKH.init = function(p) {
 
+    p = p || {};
+    p.headers = p.headers || ['name','site'];
+    p.lang = (p.lang || 'en');
+    p.l = (p.l || {});
+    p.toFlags = p.toFlags || [];
+    p.toLabels = p.toLabels || [];
+
     SKH.toHackMapFlag = function(shack, i, Icon, from) {
 
         var middle = '';
@@ -52,9 +59,6 @@ SKH.init = function(p) {
     }
 
 
-    p.lang = (p.lang || 'en');
-
-    p.l = (p.l || {});
     angular.extend(p.l, 
     	{'where are you?': {'zh-tw': '您在哪兒呢?',
     						 	'en': 'where are you?'}});
@@ -160,6 +164,7 @@ SKH.init = function(p) {
                 lng: parseFloat(llC.split(/,\s*/)[1]),
                 layer: whichGroup,
                 message : flag,
+                site: h.site,
                 focus: false,
                 draggable: true,
                 hide: true,
@@ -396,6 +401,12 @@ SKH.init = function(p) {
                 restrict: 'E',
                 template: p.selectBar
             }
+          }).directive('skhFrame',function(){
+            return {
+                restrict: 'E',
+                template: '<iframe id = "skh-frame1" class = "noPhone" ng-show = "frameUrl"></iframe>'
+
+              }
           }).directive('skhLocalmap',function(){
             return {
                 restrict: 'E',
@@ -429,7 +440,7 @@ SKH.init = function(p) {
 
                     
 
-            +'<leaflet center="center" markers = "markers" layers="layers" width="100%" height="'+($( window ).height()+100)+'"></leaflet>'
+            +'<leaflet event-broadcast="events" center="center" markers = "markers" layers="layers" width="100%" height="'+($( window ).height()+100)+'"></leaflet>'
         +'</div>'
             }
           }).directive('skhEaglemap',function(){
@@ -447,7 +458,7 @@ SKH.init = function(p) {
             +'</form>'
           
    
-          +'<leaflet center="eagle" markers = "markers" layers="layers" width="100%" height="'+($( window ).height()+100)+'"></leaflet>'
+          +'<leaflet event-broadcast="events" center="eagle" markers = "markers" layers="layers" width="100%" height="'+($( window ).height()+100)+'"></leaflet>'
         +'</div>'
             }
           }).directive('skhList',function(){
@@ -474,7 +485,7 @@ SKH.init = function(p) {
             +'</table>'
           +'</div>'
             }
-          }).controller('SKH-Ctrl', function($scope, $firebase, $filter, $timeout){
+          }).controller('SKH-Ctrl', function($scope, leafletEvents, $firebase, $filter, $timeout){
 
             angular.element(document).ready(function() {
               $('input[autofocus]:visible:first').focus();
@@ -497,6 +508,37 @@ SKH.init = function(p) {
 
             $scope.markers = [];
             $scope.root = {};
+            $scope.events = {
+                markers: {
+                    enable: leafletEvents.getAvailableMarkerEvents(),
+                }
+            };
+
+            $scope.eventDetected = "No events yet...";
+            var markerEvents = leafletEvents.getAvailableMarkerEvents();
+            for (var k in markerEvents){
+                var eventName = 'leafletDirectiveMarker.' + markerEvents[k];
+                $scope.$on(eventName, function(event, args){
+                    console.log(event);
+                    console.log(args);
+                    $scope.eventDetected = event.name;
+                    $scope.eventMarkerIndex = args.markerName;
+
+                    console.log($scope.markers[$scope.eventMarkerIndex]);
+
+                    if ($scope.eventDetected == "leafletDirectiveMarker.mouseover" 
+                        || $scope.eventDetected == "leafletDirectiveMarker.popupopen") { 
+
+
+                            $scope.frameUrl = $scope.markers[$scope.eventMarkerIndex].site;
+                            $("#skh-frame1").attr("src",$scope.frameUrl);
+                    }
+
+
+//                    if ($scope.eventDetected == "leafletDirectiveMarker.popupopen") console.log("beep");
+
+                });
+            }
 
             // for history map
             $scope.year = SKH.year;
@@ -787,9 +829,9 @@ SKH.init = function(p) {
                 var title = p.layers[n];
                 var type = p.types[n];
                 var url = p.urls[n];
-                var login = p.logins[n];
-                var toFlag = p.toFlags[n];
-                var toLabel = p.toLabels[n];
+                var login = (p.logins && p.logins[n]) || undefined;
+                var toFlag = (p.toFalgs && p.toFlags[n]) || undefined;
+                var toLabel = (p.toLables && p.toLables[n]) || undefined;
                 var visible;  try {visible = p.visibles[n]} catch(err) {};
 
                 $scope.layers.overlays = $scope.layers.overlays || {};

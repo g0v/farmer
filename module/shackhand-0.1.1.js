@@ -948,7 +948,7 @@ SKH.init = function(p) {
 
                                         function backfire(hackUrl, shack) {
                                                      $.getJSON("http://query.yahooapis.com/v1/public/yql?q=select+%2A+from+geo.placefinder+where+text%3D%22"
-                                             + encodeURI(shack.address) +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
+                                             + encodeURI(shack.address.replace(/\s/g,'')) +"%22+and+locale%3D%22zh_TW%22&format=json", function( d ) {
 
                                                 var lat, lng;
 

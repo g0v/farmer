@@ -925,7 +925,7 @@ SKH.init = function(p) {
 
                         var list = [];
 
-                        for (var i=1; i < allTextLines.length; i++) {
+                        for (var i=2; i < allTextLines.length; i++) {
                             var datas = allTextLines[i].split(',');
 
                             var shack = {

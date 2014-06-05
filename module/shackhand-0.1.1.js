@@ -926,7 +926,7 @@ SKH.init = function(p) {
                         var list = [];
 
                         for (var i=2; i < allTextLines.length; i++) {
-                            var datas = allTextLines[i].split(',');
+                            var datas = allTextLines[i].replace(/(\d+)\,\s?(\d+)/, '$1?? $2').split(',');
 
                             var shack = {
                                          n: i,
@@ -1041,11 +1041,13 @@ SKH.init = function(p) {
                     var headers = allTextLines[0].split(',');
 
                     for (var i=1; i < allTextLines.length; i++) {
-                        var datas = allTextLines[i].split(',');
+                        var datas = allTextLines[i].replace(/(\d+)\,\s?(\d+)/, '$1?? $2').split(',');
                         if (datas.length == headers.length) {
                             var hand = {};
                             for (var j=0; j < headers.length; j++) {
-                                if (headers[j] == 'latlngColumn') datas[j] = datas[j].replace(/\?\?\s?/,',') .replace(/"/g,''); 
+                                if (headers[j] == 'latlngColumn') {
+                                    datas[j] = datas[j].replace(/\?\?\s?/,',') .replace(/"/g,''); 
+                                }
                                 hand[headers[j]] = datas[j];
                             };
                             list.push(hand);

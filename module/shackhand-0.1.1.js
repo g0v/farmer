@@ -164,7 +164,7 @@ SKH.init = function(p) {
                 lng: parseFloat(llC.split(/,\s*/)[1]),
                 layer: whichGroup,
                 message : flag,
-                site: h.site,
+                h: h,
                 focus: false,
                 draggable: true,
                 hide: true,
@@ -406,8 +406,10 @@ SKH.init = function(p) {
                 restrict: 'E',
                 template: 
                      '<div id = "skh-frame1">'
-                        +'<span ng-show = "frameUrl && !hideFrame">預覽</span><input type = "checkbox" ng-model = "hideFrame"/>'
-                        +'<iframe class = "noPhone" width="100%" height="100%" ng-show = "frameUrl && !hideFrame"></iframe>'
+                        +'<span ng-show = "!hideFrame" ng-bind = "currentMarker.h.name"></span>'
+                        +'<span ng-show = "currentMarker.h.name && !currentMarker.h.site">: 無網站</span>'
+                        +'<input type = "checkbox" ng-model = "hideFrame"/>'
+                        +'<iframe class = "noPhone" width="100%" height="100%" ng-show = "!hideFrame"></iframe>'
                     +'</div>'
 
               }
@@ -534,8 +536,11 @@ SKH.init = function(p) {
                         || $scope.eventDetected == "leafletDirectiveMarker.popupopen") { 
 
 
-                            $scope.frameUrl = $scope.markers[$scope.eventMarkerIndex].site;
-                            $("#skh-frame1").children('iframe').attr("src",$scope.frameUrl);
+                       //     $scope.frameUrl = $scope.markers[$scope.eventMarkerIndex].site;
+                            if ($scope.currentMarker != $scope.markers[$scope.eventMarkerIndex]) {
+                                $scope.currentMarker = $scope.markers[$scope.eventMarkerIndex];
+                                $("#skh-frame1").children('iframe').attr("src",$scope.currentMarker.h.site);
+                            }
                     }
 
 

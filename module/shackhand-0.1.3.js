@@ -121,6 +121,8 @@ SKH.init = function(p) {
         }   
     }
 
+    p.latlngUsed = p.latlngUsed || [];
+
     p.hToM = (p.hToM || function(keys,h,i,llC,from,fbid,year,whichLable,whichGroup,zoomNow) {
 
             var key = keys[0];
@@ -168,9 +170,9 @@ SKH.init = function(p) {
                 focus: false,
                 draggable: true,
                 hide: true,
-                popupOptions: {
-                    autoPan: false
-                },
+        //        popupOptions: {
+        //            autoPan: false
+        //        },
                 label: {
                     message: label,
                     options: {
@@ -183,7 +185,9 @@ SKH.init = function(p) {
             return(marker);
     });
 
+
     var shackhand = angular.module("shackhand",['leaflet-directive','FBAngular','firebase','ezfb']);
+
 
 
     shackhand.config(function ($FBProvider) { 
@@ -233,17 +237,13 @@ SKH.init = function(p) {
                 var keys = [ks.key, ks.nameKey, ks.geoKey];
                 var ms = [];                    
                 var autos = angular.copy(list);
-
-
-                var latlngUsed = [];
-
                 var mllC = function(h){
                   //重覆座標的解決  displacement algorithm
                         var counter = 0;
-                        for (var j = 0; j < latlngUsed.length; j++) {
-                            if (latlngUsed[j] == h.latlngColumn) counter++ ;
+                        for (var j = 0; j < p.latlngUsed.length; j++) {
+                            if (p.latlngUsed[j] == h.latlngColumn) counter++ ;
                         };
-                        latlngUsed.push(h.latlngColumn);
+                        p.latlngUsed.push(h.latlngColumn);
                         var llC = "" + h.latlngColumn;
                         if (counter > 0) llC = modifyLatLng(h.latlngColumn, counter);
                         return llC;
@@ -407,9 +407,12 @@ SKH.init = function(p) {
                 template: 
                      '<div id = "skh-frame1">'
                         +'<span ng-show = "!hideFrame" ng-bind = "currentMarker.h.name"></span>'
-                        +'<span ng-show = "currentMarker.h.name && !currentMarker.h.site">: 無網站</span>'
+                       //    +'<span ng-show = "!hideFrame && currentMarker" ng-bind = "currentMarker.lat"></span>'
+                      //     +'<span ng-show = "!hideFrame && currentMarker" ng-bind = "\',\'"></span>'
+                     //      +'<span ng-show = "!hideFrame && currentMarker" ng-bind = "currentMarker.lng"></span>'
+                    //    +'<span ng-show = "currentMarker.h.name && !currentMarker.h.site">: 無網站</span>'
                         +'<input type = "checkbox" ng-model = "hideFrame"/>'
-                        +'<iframe class = "noPhone" width="100%" height="100%" ng-show = "!hideFrame"></iframe>'
+                        +'<iframe class = "noPhone" width="100%" height="100%" ng-show = "!hideFrame" ng-src = "{{frames[0]}}"></iframe>'
                     +'</div>'
 
               }
@@ -438,8 +441,8 @@ SKH.init = function(p) {
                     +'</div>'
 
                     +'<div class = "center">'                
-                    +'<span id = "skh-warning" class = "noPhone" style = "position: relative; top: 32px; right:50px;" ng-hide = "isFullscreen">'
-                        +'<a ng-click = "isFullscreen = true">按此進入RPG模式</a></span>'
+            //        +'<span id = "skh-warning" class = "noPhone" style = "position: relative; top: 32px; right:50px;" ng-hide = "isFullscreen">'
+            //            +'<a ng-click = "isFullscreen = true">按此進入RPG模式</a></span>'
                     +'<span id = "skh-warning" style = "position: relative; top: 32px; right:50px;" ng-show = "isFullscreen && !moving">點擊地圖一下，開始移動<br></span>'
                     +'<span id = "skh-warning" style = "position: relative; top: 32px; right:50px;" ng-show = "isFullscreen && !moving">上下左右移動，空白鍵對話</span>'
                     +'</div>'
@@ -475,7 +478,7 @@ SKH.init = function(p) {
               +'<tr>'
                 +'<th ng-repeat = "k in listKeys" class="text-center{{($index > 2 && \' noPhone\') || \'\'}}"> {{listKeyNames[k] || k}} </th>'
               +'</tr>'
-              +'<tr ng-repeat = "h in (base.hands | filterBy:key | someFirst:root.follows)" ng-click = "focus(h)">'
+              +'<tr ng-repeat = "h in (bases[0].hands | filterBy:key | someFirst:root.follows)" ng-click = "focus(h)">'
                 +'<td ng-repeat = "k in listKeys" class="text-center{{($index > 2 && \' noPhone\') || \'\'}}">'
                   
                   +'<div class = "skh-cell">'
@@ -511,6 +514,7 @@ SKH.init = function(p) {
                 }
             }
 
+            $scope.frames = p.frames || [];
 
             $scope.markers = [];
             $scope.root = {};
@@ -535,11 +539,11 @@ SKH.init = function(p) {
                     if ($scope.eventDetected == "leafletDirectiveMarker.mouseover" 
                         || $scope.eventDetected == "leafletDirectiveMarker.popupopen") { 
 
-
-                       //     $scope.frameUrl = $scope.markers[$scope.eventMarkerIndex].site;
+                       //     $scope.frameUrl = $scope.markers[$scope.eventMarkerIndex].site;                            
                             if ($scope.currentMarker != $scope.markers[$scope.eventMarkerIndex]) {
                                 $scope.currentMarker = $scope.markers[$scope.eventMarkerIndex];
-                                $("#skh-frame1").children('iframe').attr("src",$scope.currentMarker.h.site);
+
+                                $("#skh-frame1").children('iframe').attr("src",$scope.currentMarker.h.site || p.frames[1]);
                             }
                     }
 
@@ -666,14 +670,14 @@ SKH.init = function(p) {
                     autoDiscover: true,
                     lat: (p.lat || 24.704894502324912),
                     lng: (p.lng || 121.19355468749999),
-                    zoom: ($(window).width() < 480 && 12) || 10
+                    zoom: p.zoom || ($(window).width() < 480 && 12) || 10
                 },
 
                 local: {
           //          autoDiscover: true,
                     lat: 23.704894502324912,
                     lng: 120.89355468749999,
-                    zoom: ($(window).width() < 480 && 12) || 10
+                    zoom: p.zoom || ($(window).width() < 480 && 12) || 10
                 },
 
                 taiwan: {
@@ -720,18 +724,32 @@ SKH.init = function(p) {
 
                 
             $scope.$watch('center.zoom', function(newValue, oldValue) {
-          		// if (newValue.zoom !== oldValue.zoom) {
+          		 if (newValue != oldValue) {
 	                $scope.clearMarker();
 	                $scope.makeMarkers(); 
-              //  }                  
+     //                   $scope.shiftMarkers();
+                 }                  
 
             });  
 
+            $scope.shiftMarkers = function(){
 
+                for (var i = 0; i < $scope.markers.length; i++) {
+                    $scope.markers[i].icon.iconSize = $scope.markers[i].icon.iconSize;
+                };
+                /**** ****/
+
+                /*   re filter agian for each $scope.markers     */
+
+                /*    maybe  $scope.$apply()     */
+
+                /**** ****/
+            }
 
             $scope.clearMarker = function(){
                 $scope.markers = [];
                 $('leaflet-marker-icon').hide();
+                p.latlngUsed = [];
             }
 
             $scope.makeMarkers = function(maybeHideLatLng, expHand){
@@ -751,7 +769,7 @@ SKH.init = function(p) {
 
                     if (!$scope.bases || !$scope.bases[i]) continue;
 
-       //             console.log($scope.bases[i]);
+                    console.log($scope.bases[i]);
 
                     var show = $filter('hideAncient')($scope.bases[i].hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
                     
@@ -763,7 +781,7 @@ SKH.init = function(p) {
 
                 /*   */
 /*
-               var showHandList = $filter('hideAncient')($scope.base.hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
+               var showHandList = $filter('hideAncient')($scope.bases[0].hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
                 var showShackList = $filter('hideAncient')($scope.base.shacks,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
 
                 $scope.markers = $filter('toMarkers')(showHandList, ks, maybeHideLatLng, 
@@ -809,7 +827,7 @@ SKH.init = function(p) {
 
                             if (lat) $scope.local.lat = parseFloat(lat);
                             if (lng) $scope.local.lng = parseFloat(lng);
-                            if (lat) $scope.local.zoom = 10;
+                            if (lat) $scope.local.zoom = p.zoom || 10;
             
                             $scope.$apply();
                         });
@@ -933,13 +951,14 @@ SKH.init = function(p) {
                         for (var i=2; i < allTextLines.length; i++) {
                             var datas = allTextLines[i].replace(/(\d+)\,\s?(\d+)/, '$1?? $2').split(',');
 
+
                             var shack = {
                                          n: i,
                                          site: datas[0],
                                          name: (datas[1] && datas[1].replace(/"/g,'')) || '',
                                          address: datas[5],
                                          latlngColumn: (datas[6] && datas[6].replace(/\?\?\s?/,',').replace(/"/g,'')) || '',
-                                         freetime: (datas[7] && datas[7].replace(/"/g,'')) || '',
+                                         freetime: datas[7] || '',
                                          note: ((datas[3] && datas[3].split(':')[0].replace(';',':')) || '') +'<hr>'+ datas[4]
                                      };
 
@@ -1050,9 +1069,7 @@ SKH.init = function(p) {
                         if (datas.length == headers.length) {
                             var hand = {};
                             for (var j=0; j < headers.length; j++) {
-                                if (headers[j] == 'latlngColumn') {
-                                    datas[j] = datas[j].replace(/\?\?\s?/,',') .replace(/"/g,''); 
-                                }
+                                if (headers[j] == 'latlngColumn') datas[j] = datas[j].replace(/\?\?\s?/,',') .replace(/"/g,''); 
                                 hand[headers[j]] = datas[j];
                             };
                             list.push(hand);
@@ -1068,8 +1085,8 @@ SKH.init = function(p) {
                     url: myCsvs[i],
                     dataType: "text",
                         success: function(data) {
-                          $scope.base.hands = $scope.base.hands.concat(processCsvData(data));
-           //               console.log($scope.base.hands);
+                          $scope.bases[0].hands = $scope.bases[0].hands.concat(processCsvData(data));
+           //               console.log($scope.bases[0].hands);
                           $scope.clearMarker();
                           $scope.makeMarkers();
                         }
@@ -1084,16 +1101,16 @@ SKH.init = function(p) {
             
             $scope.toggleFollow = function(hand) {
                 if ($scope.imp) {
-                    var list = ($scope.base.hands[$scope.n] && $scope.base.hands[$scope.n].follows) || [];
-                    list.push($scope.base.hands.indexOf(hand));
+                    var list = ($scope.bases[0].hands[$scope.n] && $scope.bases[0].hands[$scope.n].follows) || [];
+                    list.push($scope.bases[0].hands.indexOf(hand));
                     var m = p.maxFollow || 10;
 
                     if(list.length > m) list = list.slice(-m, list.length);
 
                     $scope.base.$child('hands').$child($scope.n).$child('follows').$set(list);
 
-                    for (var i = 0; i < $scope.base.hands.length; i++) {
-                        var testH = $scope.base.hands[i];
+                    for (var i = 0; i < $scope.bases[0].hands.length; i++) {
+                        var testH = $scope.bases[0].hands[i];
                         if (testH.id == hand.id) {
                             var list2 =  testH.followBy || [];
                             list2.push($scope.n);
@@ -1114,11 +1131,9 @@ SKH.init = function(p) {
                 var firstMapOffset = $("#local").position().top || $("#eagle").position().top || 0;
                 $("body,html").animate({scrollTop:firstMapOffset}, "slow");
 
-
-                //todo: auto enter leaflet map
-
-                $scope.isFullscreen = true;
-                $scope.$apply();
+            
+            //    $scope.isFullscreen = true;
+            //    $scope.$apply();
 
                 if (!hand) return;
 
@@ -1227,16 +1242,16 @@ SKH.init = function(p) {
                                     $scope.ttName = d.name + "";
                                     $scope.root.name = d.name + "";
 
-                                   for (var i = 0; i < $scope.base.hands.length; i++) {
+                                   for (var i = 0; i < $scope.bases[0].hands.length; i++) {
                                         
-                                        if (!$scope.base.hands[i]) continue;
-                                        if ($scope.base.hands[i].id == data.id || ( !$scope.base.hands[i].id && $scope.base.hands[i].name && $scope.base.hands[i].name == $scope.root.name) )  {
+                                        if (!$scope.bases[0].hands[i]) continue;
+                                        if ($scope.bases[0].hands[i].id == data.id || ( !$scope.bases[0].hands[i].id && $scope.bases[0].hands[i].name && $scope.bases[0].hands[i].name == $scope.root.name) )  {
 
                                             var usrNameBuf = $scope.root.username +"";   
                                             var idBuf = $scope.root.id +"";
                                             var htBuf = $scope.root.hometown +"";
 
-                                            $scope.root = angular.copy($scope.base.hands[i]);
+                                            $scope.root = angular.copy($scope.bases[0].hands[i]);
                                             $scope.root.invis = false;
                                             $scope.root.username = usrNameBuf;
                                             $scope.root.id = idBuf;
@@ -1276,7 +1291,7 @@ SKH.init = function(p) {
             $scope.logout = function () {
                 auth.logout();
                 $scope.root = new Object;                
-                $scope.n = $scope.base.hands.length;
+                $scope.n = $scope.bases[0].hands.length;
             }
 
             $scope.out = function () {
@@ -1288,11 +1303,11 @@ SKH.init = function(p) {
 //                  $scope.base.$child('hands').$child($scope.n).$child('invis').$set(true);
                     $scope.base.$child('hands').$child($scope.n).$remove();
 
-                    for (var i = $scope.n; i < $scope.base.hands.length - 1; i++) {
-                        $scope.base.$child('hands').$child(i).$set(angular.copy($scope.base.hands[i+1]));
+                    for (var i = $scope.n; i < $scope.bases[0].hands.length - 1; i++) {
+                        $scope.base.$child('hands').$child(i).$set(angular.copy($scope.bases[0].hands[i+1]));
                     };
 
-                    $scope.base.$child('hands').$child($scope.base.hands.length - 1).$remove();
+                    $scope.base.$child('hands').$child($scope.bases[0].hands.length - 1).$remove();
 
                     $scope.root = new Object;
                     $scope.status = "";

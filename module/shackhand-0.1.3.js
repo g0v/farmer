@@ -950,7 +950,6 @@ SKH.init = function(p) {
                         for (var i=2; i < allTextLines.length; i++) {
                             var datas = allTextLines[i].replace(/(\d+)\,\s?(\d+)/, '$1?? $2').split(',');
 
-
                             var shack = {
                                          n: i,
                                          site: datas[0],

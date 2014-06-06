@@ -357,22 +357,19 @@ SKH.init = function(p) {
                 link: function(scope, element, attrs){
 
                     var indexurl = attrs.indexurl || '';
-                    
                     if (indexurl.search('.json') == -1) indexurl += '.json';
-                  
                     var myHref = location.href;
                                       
                     scope.$watch('loadtext', function(newValue, oldValue){
                         if (newValue !== oldValue){
                     //        window.alert("watch working");
-                    
                    //         console.log(newValue);
 
                             var myList = [];
 
                             for (var i = 0; i < newValue.length; i++) {
                                  var m = newValue[i];
-                                 var li = (myHref.indexOf(m.h) > -1) ? '<li class = "active">' : '<li>';
+                                 var li = (m.h.indexOf(myHref) > -1) ? '<li class = "active">' : '<li>';
                                  li += '<a href = "'+m.h+'">'+m[p.lang]+'</a></li>';
                                  myList.push(li);
                              };

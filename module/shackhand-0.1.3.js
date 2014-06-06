@@ -160,6 +160,8 @@ SKH.init = function(p) {
                 }
             }
 
+            console.log(h.name);
+            console.log(llC);
 
             var marker = {
                 lat: parseFloat(llC.split(/,\s*/)[0]),
@@ -766,7 +768,7 @@ SKH.init = function(p) {
 
                     if (!$scope.bases || !$scope.bases[i]) continue;
 
-                    console.log($scope.bases[i]);
+          //          console.log($scope.bases[i]);
 
                     var show = $filter('hideAncient')($scope.bases[i].hands,$scope.hideAncient,$scope.year,$scope.from,$scope.to);
                     
